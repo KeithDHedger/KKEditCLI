@@ -1,2 +1,10 @@
 TRIALS
 *.o
+Makefile
+KKEditCLI/src/.*
+autom4te.cache
+config.h
+config.log
+config.status
+stamp-h1
+KKEditCLI/app/kkeditcli
