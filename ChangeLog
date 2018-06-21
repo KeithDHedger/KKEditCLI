@@ -1,0 +1,39 @@
+0.0.7
+Fixed menu colours.
+Fixed mem leaks.
+Added check if dirty on quit.
+Added Open file.
+Code clean.
+Corrected add/delete chars from eol.
+ESC now toggles menus.
+Done normal key press.
+Live update when deleting.
+
+0.0.6
+Edit tweaks.
+Corrected pageup/down etc for split lines.
+Done Save.
+Menu nav.
+Added basic key short cuts.
+Basic menus done.
+Started menus.
+
+0.0.5
+Done forward delete.
+Basic mouse handling.
+Handled forward/back at begining/end of line.
+Handled bs at begining of line.
+Fixed visually moving cursor for tabs.
+Started editing.
+fixed for unicode term.
+Added new structs.
+Code clean.
+
+0.0.1
+Added home/end.
+Added line numbers.
+Source wraps correctly.
+Added src hightlighting.
+Basic editing.
+Done basic init.
+First commit.

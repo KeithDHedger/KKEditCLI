@@ -1,0 +1,17 @@
+
+AUTOMAKE_OPTIONS = subdir-objects
+
+include ../flagsandlibs
+include ../sources
+
+kkeditcli_SOURCES = $(COMMONSRC)
+
+kkeditcli_CFLAGS = -O3
+
+scriptfilesdir = $(pkgdatadir)/scripts
+scriptfiles_SCRIPTS = ../resources/scripts/*
+
+man1_MANS = ../resources/man/kkeditcli.1
+
+bin_PROGRAMS = kkeditcli
+
