@@ -18,7 +18,6 @@
  * along with KKEditCLI.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef _MENUS_
 #define _MENUS_
 

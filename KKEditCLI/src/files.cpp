@@ -22,49 +22,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <dialog.h>
 
 #include "globals.h"
-
-int tf(int argc, char **argv)
-       {
-            int status;
-            init_dialog(stdin, stdout);
-            status = dialog_yesno(
-                      "Hello, in dialog-format",
-                      "Hello World!",
-                      0, 100);
- 
-           status = dialog_fselect(
-                      "Hello, in dialog_fselect",
-                     argv[1],
-                      0, 0);
-dlg_clear();
- 
-// int ord=0;
-// ord=dlg_box_x_ordinate(3);
- dialog_vars.begin_set=1;
- dialog_vars.begin_x=2;
- dialog_vars.begin_y=2;
-
-           status = dialog_inputbox(
-                      "Hello, in dialog_inputbox",
-                    "prompt",
-                    
-                      0, 0,
-                      "data",
-                      false);
-			fflush(NULL);
-            end_dialog();
-            
-            printf("status=%i\n",status);
-            printf("len=%i inp=%s\n",dialog_vars.input_length,dialog_vars.input_result);
-            char *filepath=NULL;
-            filepath=realpath(dialog_vars.input_result,filepath);
-            printf("fullpath=%s\n",filepath);
-            free(filepath);
-            return status;
-       }
 
 void openTheFile(const char *path)
 {

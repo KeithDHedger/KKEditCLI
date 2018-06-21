@@ -113,25 +113,6 @@ static void debugFunc(const char *file,const char *func,int line,const char *fmt
 #include "menus.h"
 #include "gui.h"
 
-//#define ESC "\x1b"
-//static const struct
-//{
-//	const char	*KPAM;
-//	const char	*KPNM;
-//	const char	*MOUSE_ON;
-//	const char	*MOUSE_OFF;
-//	const char	*MOUSE_X10_ON;
-//	const char	*MOUSE_X10_OFF;
-//} seq=
-//{
-//	ESC "=",
-//	ESC ">",
-//	ESC "[?1000h",
-//	ESC "[?1000l",
-//	ESC "[?9h",
-//	ESC "[?9l"
-//};
-//
 //term info
 extern int	cols;
 extern int	rows;

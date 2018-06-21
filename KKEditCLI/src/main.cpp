@@ -79,14 +79,7 @@ int main(int argc, char **argv)
 			break;
 			}
 		}
-//SETBCOL(GREEN);
-//printf("XXX");
-//SETFCOL(BLACK);
-//printf("XXX");
-//printf("%sXXX",BCOL(BLUE));
-//exit(0);
-//init_dialog(stdin,stdout);
-//SETBACKCOL(RED);
+
 	clearScreen();
 	initCursesLib();
 	initEditor();
@@ -99,20 +92,10 @@ int main(int argc, char **argv)
 	moveCursToTemp(currentX,currentY);
 	printStatusBar();
 
-//saveFile("/tmp/xxx.cpp");
-
-
 	eventLoop();
 	finalizeCursesLib();
 	closePage();
 	fprintf(stderr,">>>>>>>>>QUITING\n");
-//	for(int j=0;j<page->maxLines;j++)
-//		{
-//			free(page->line[j].srcLine);
-//			free(page->line[j].edLine);
-//		}
-//dlg_clr_result();
-//end_dialog();
 	moveCursToTemp(1,rows);
 	printf("\n");
 	return 0;

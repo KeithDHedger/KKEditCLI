@@ -73,4 +73,3 @@ void clearToEOL(void)
 {
 	printf("\e[2J\e[H");
 }
-

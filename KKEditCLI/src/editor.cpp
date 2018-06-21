@@ -153,3 +153,4 @@ void moveCursDown(void)
 
 	moveInsert();
 }
+

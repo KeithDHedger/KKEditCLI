@@ -33,7 +33,6 @@ const char	*toolsMenuNames[]={"_Manage Tools",NULL};
 void drawMenuStyle(const char **menulist,int menunum,int x,int y,int style)
 {
 	moveCursToTemp(x,y);
-//	printf("\e[42m");
 	switch(style)
 		{
 			case FLATNORM:
