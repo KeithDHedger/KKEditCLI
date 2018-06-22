@@ -26,7 +26,7 @@ const char	*fileMenuNames[]={"_New     ","_Open    ","_Save    ","Save _As ","_Q
 const char	*editMenuNames[]={"_Cut   ","Cop_y  ","_Paste ",NULL};
 const char	*viewMenuNames[]={"Show docs","Show docs","Show docs",NULL};
 const char	*navMenuNames[]={"Goto _Define    ","Open _Include   ","Goto _Line      ","Search _GTK Docs",NULL};
-const char	*functionsMenuNames[]={"f1","f2","f2fdfsf","f2rerwrrew","f2erwrrewrweerw","f2",NULL};
+const char	*functionsMenuNames[]={"drawMenuStyle","drawMenuBar","printStatusBar","eventLoop","initCursesLib","oneLiner",NULL};
 const char	*bookmarksMenuNames[]={"_Remove All Marks","_Toggle BM       ",NULL};
 const char	*toolsMenuNames[]={"_Manage Tools",NULL};
 
@@ -88,8 +88,6 @@ int drawMenuWindow(const char **menulist,int sx,int sy,int prelight)
 			cnt++;
 		}
 	SETNORMAL;
-	//moveCursToTemp(1,1);
-	//printf(" ");
 	return(cnt);
 }
 

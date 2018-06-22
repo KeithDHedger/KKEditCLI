@@ -172,10 +172,63 @@ int handleNavMenu(void)
 	return(menuselect);
 }
 
+void getRecursiveTagList(char *filepath,void *ptr)
+{
+	FILE		*fp;
+	char		line[2048];
+//	GString	*str=g_string_new(NULL);
+	char		*command;
+	char		*newstr=NULL;
+	char		*sort=NULL;
+
+	if(filepath==NULL)
+		return;
+
+//	switch(listFunction)
+//		{
+//		case 0:
+//			sinkReturn=asprintf(&sort,"sort -k 2rb,2rb -k 1b,1b");
+//			break;
+//		case 1:
+//			sinkReturn=asprintf(&sort,"sort -k 2rb,2rb -k 3n,3n");
+//			break;
+//		case 2:
+//			sinkReturn=asprintf(&sort,"sort -k 3n");
+//			break;
+//		case 4:
+			asprintf(&sort,"sort -k 2rb,2rb -k 1b,1b");
+//			break;
+//		default:
+//			asprintf(&sort,"sort");
+//			break;
+//		}
+
+	asprintf(&command,"find \"%s\" -maxdepth %i|%s -L - -x|%s|sed 's@ \\+@ @g'",filepath,1,"/usr/bin/ctags",sort);
+	fp=popen(command, "r");
+	while(fgets(line,2048,fp))
+		{
+			//newstr=globalSlice->deleteSlice(line,filepath);
+			//if(globalSlice->getResult()==NOERROR)
+			//	{
+			//		g_string_append_printf(str,"%s",newstr);
+			//		ERRDATA debugFree(&newstr);
+			//	}
+			fprintf(stderr,"%s",line);
+			fflush(NULL);
+		}
+	pclose(fp);
+
+//	*((char**)ptr)=str->str;
+//	g_string_free(str,false);
+//	ERRDATA debugFree(&command);
+//	ERRDATA debugFree(&sort);
+}
+
+
 int handleFuncMenu(void)
 {
 	int menuselect;
-
+getRecursiveTagList(page->filePath,NULL);
 	menuselect=doMenuEvent(functionsMenuNames,27,2);
 	switch(menuselect)
 		{
@@ -285,7 +338,6 @@ void eventLoop(void)
 		{
 			memset(buf,0,16);
 			read(STDIN_FILENO,&buf,15);
-			//DEBUGFUNC("0=%x 1=%x 2=%x 3=%x",buf[0],buf[1],buf[2],buf[3]);
 			handled=false;
 
 			if(buf[0]==ESCCHAR)
@@ -297,6 +349,7 @@ void eventLoop(void)
 							switch(buf[2])
 								{
 								case CURSHOME:
+								case '1':
 									page->lineXCurs=0;
 									moveInsert();
 									handled=true;
@@ -310,8 +363,23 @@ void eventLoop(void)
 							break;
 //cursor keys
 						case '[':
+		//	DEBUGFUNC(">>>>0=%x 0=%c 1=%x 1=%c 2=%x 2=%c 3=%x 3=%c",buf[0],buf[0],buf[1],buf[1],buf[2],buf[2],buf[3],buf[3]);
+		//	DEBUGFUNC("buf[2]=%x",buf[2]);
 							switch(buf[2])
 								{
+//console keys
+								DEBUGFUNC("HOME","");
+								case 0x31:
+									page->lineXCurs=0;
+									moveInsert();
+									handled=true;
+									break;
+								case 0x34:
+									page->lineXCurs=page->line[page->currentLine].lineLen;
+									moveInsert();
+									handled=true;
+									break;
+
 //keys
 								case PAGEDOWN:
 									if(page->topLine+maxRows>page->maxLines)
@@ -403,6 +471,7 @@ void eventLoop(void)
 
 			if(handled==false)
 				{
+				DEBUGFUNC("FALSE","");
 					switch(buf[0])
 						{
 							case RETURNKEY:
