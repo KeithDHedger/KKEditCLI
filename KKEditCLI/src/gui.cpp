@@ -324,8 +324,6 @@ void refreshScreen(void)
 	page->maxLines=0;
 	openTheFile(tmpedfile);
 	printLines();
-	
-	DEBUGFUNC(">>>>x=%i y=%i",currentX,currentY);
 }
 
 void eventLoop(void)
@@ -334,6 +332,7 @@ void eventLoop(void)
 	bool			dorefresh=false;
 	bool			needsrefresh=false;
 	unsigned char	buf[16];
+		//	DEBUGFUNC(">>>>0=%x 0=%c 1=%x 1=%c 2=%x 2=%c 3=%x 3=%c",buf[0],buf[0],buf[1],buf[1],buf[2],buf[2],buf[3],buf[3]);
 	while(true)
 		{
 			memset(buf,0,16);
@@ -349,7 +348,6 @@ void eventLoop(void)
 							switch(buf[2])
 								{
 								case CURSHOME:
-								case '1':
 									page->lineXCurs=0;
 									moveInsert();
 									handled=true;
@@ -363,12 +361,9 @@ void eventLoop(void)
 							break;
 //cursor keys
 						case '[':
-		//	DEBUGFUNC(">>>>0=%x 0=%c 1=%x 1=%c 2=%x 2=%c 3=%x 3=%c",buf[0],buf[0],buf[1],buf[1],buf[2],buf[2],buf[3],buf[3]);
-		//	DEBUGFUNC("buf[2]=%x",buf[2]);
 							switch(buf[2])
 								{
 //console keys
-							//	DEBUGFUNC("HOME","");
 								case CURSHOMECONS:
 									page->lineXCurs=0;
 									moveInsert();
@@ -379,7 +374,6 @@ void eventLoop(void)
 									moveInsert();
 									handled=true;
 									break;
-
 //keys
 								case PAGEDOWN:
 									if(page->topLine+maxRows>page->maxLines)
@@ -471,7 +465,6 @@ void eventLoop(void)
 
 			if(handled==false)
 				{
-				DEBUGFUNC("FALSE","");
 					switch(buf[0])
 						{
 							case RETURNKEY:
