@@ -33,6 +33,8 @@
 #define RETURNKEY 0xa
 #define CURSHOME 'H'
 #define CURSEND 'F'
+#define CURSHOMECONS '1'
+#define CURSENDCONS '4'
 
 #define CTRL_B 0x2
 #define CTRL_E 0x5

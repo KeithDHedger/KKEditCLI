@@ -368,13 +368,13 @@ void eventLoop(void)
 							switch(buf[2])
 								{
 //console keys
-								DEBUGFUNC("HOME","");
-								case 0x31:
+							//	DEBUGFUNC("HOME","");
+								case CURSHOMECONS:
 									page->lineXCurs=0;
 									moveInsert();
 									handled=true;
 									break;
-								case 0x34:
+								case CURSENDCONS:
 									page->lineXCurs=page->line[page->currentLine].lineLen;
 									moveInsert();
 									handled=true;
