@@ -51,10 +51,10 @@ printf("Usage: kkeditcli [OPTION]\n"
 int main(int argc, char **argv)
 {
 	int c;
+	int option_index = 0;
 	while (1)
 		{
-		int option_index = 0;
-		c = getopt_long (argc, argv, "v?hlt:",long_options, &option_index);
+		c = getopt_long (argc, argv, "t:v?hl",long_options, &option_index);
 		if (c == -1)
 			break;
 
@@ -79,18 +79,30 @@ int main(int argc, char **argv)
 				return 0;
 				break;
 
-			default:
-				fprintf(stderr,"?? Unknown argument ??\n");
-				return UNKNOWNARG;
-			break;
+//			default:
+//				fprintf(stderr,"?? Unknown argument ??\n");
+//				return UNKNOWNARG;
+//			break;
 			}
 		}
-
+//	if (optind < argc) 
+//	{
+////        printf("non-option ARGV-elements: ");
+//       while (optind < argc)
+//       {
+//           DEBUGFUNC("optind=%i %s ",optind, argv[optind]);
+//           optind++;
+//           }
+// //       printf("\n");
+// //   }
+//}
+//DEBUGFUNC("c=%i argv[c]=%s",argc,argv[argc-1]);
+//exit(0);
 	clearScreen();
 	initCursesLib();
 	initEditor();
-	oneLiner(true,"cp %s %s",argv[1],tmpedfile);
-	page->filePath=strdup(argv[1]);
+	oneLiner(true,"cp %s %s",argv[argc-1],tmpedfile);
+	page->filePath=strdup(argv[argc-1]);
 	openTheFile(tmpedfile);
 	printLines();
 	currentX=minX;
