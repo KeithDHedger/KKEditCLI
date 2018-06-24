@@ -84,7 +84,7 @@ void openTheFile(const char *path)
 									dline[destchar]=tline[srcchar];
 									eline[edest]=tline[srcchar];
 									if(tline[srcchar]=='\t')
-										linelen+=4;
+										linelen+=tabs;
 									else
 										linelen++;
 									edest++;

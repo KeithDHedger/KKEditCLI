@@ -41,7 +41,7 @@ int		endY=1;
 int		lineColour=220;
 
 //prefs
-int		tabs=4;
+int		tabs=8;
 bool	liveUpdate=true;
 
 //files
