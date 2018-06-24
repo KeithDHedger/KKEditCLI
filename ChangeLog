@@ -1,4 +1,5 @@
 0.0.7
+Added --tabs,-t to cli options.
 Fixed menu colours.
 Fixed mem leaks.
 Added check if dirty on quit.

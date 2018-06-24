@@ -37,7 +37,7 @@ void initCursesLib(void)
 	char	*dump;
 	winsize w;
 
-	asprintf(&dump,"/usr/bin/tabs -%i",tabs);
+	asprintf(&dump,"tabs $(seq -s , 1 %i 256)",tabs);
 	system(dump);
 	free(dump);
 	tcgetattr(STDIN_FILENO,&termConfig);
@@ -53,7 +53,8 @@ void initCursesLib(void)
 	maxCols=cols-minX;
 	startY=1;
 	endY=startY+maxRows;
-	system("tabs $(seq -s , 1 8 256)");
+	
+//	system("tabs $(seq -s , 1 8 256)");
 }
 
 void finalizeCursesLib(void)

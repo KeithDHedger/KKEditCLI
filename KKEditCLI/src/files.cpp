@@ -41,9 +41,9 @@ void openTheFile(const char *path)
 
 	page->maxLines=0;
 
-	//tline=oneLiner(false,"source-highlight --infer-lang --style-file=esc.style -f esc --failsafe -i '%s' -o /dev/shm/src",path);
-	tline=oneLiner(false,"cat '%s' > /dev/shm/src",path);
-	free(tline);
+	oneLiner(false,"source-highlight --infer-lang --style-file=esc.style -f esc --failsafe -i '%s' -o /dev/shm/src",path);
+	//tline=oneLiner(false,"cat '%s' > /dev/shm/src",path);
+	//free(tline);
 	
 	fp=fopen("/dev/shm/src", "r");
 	if(fp != NULL)
