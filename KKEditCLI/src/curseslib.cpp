@@ -53,6 +53,7 @@ void initCursesLib(void)
 	maxCols=cols-minX;
 	startY=1;
 	endY=startY+maxRows;
+	system("tabs $(seq -s , 1 8 256)");
 }
 
 void finalizeCursesLib(void)
