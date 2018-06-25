@@ -26,7 +26,7 @@ void printLines(void)
 	int	screenline=minY;
 
 	HIDECURS;
-	clearScreen();
+	//clearScreen();
 	drawMenuBar();
 	for(int j=page->topLine; j<page->topLine+maxRows; j++)
 		{
@@ -38,7 +38,7 @@ void printLines(void)
 					printf("\e[38;5;%im%.4i\e[m",lineColour,page->line[j].lineNum);
 				}
 			moveCursToTemp(minX,screenline++);
-			printf("%s",page->line[j].srcLine);
+			printf("%s%s",CLEARTOEOL,page->line[j].srcLine);
 		}
 	SHOWCURS;
 }
