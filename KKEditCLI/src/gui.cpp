@@ -41,21 +41,6 @@ void printLines(void)
 		}
 }
 
-void cursToInsert(void)
-{
-	int xx=minX;
-	page->lineXCurs=0;
-	while(page->lineXCurs<currentX)
-		{
-			if(page->line[page->currentLine].edLine[page->lineXCurs]!='\t')
-				page->lineXCurs++;
-			else
-				page->lineXCurs+=tabs;
-			//page->lineXCurs++;
-		}
-	moveCursToTemp(currentX,currentY);
-}
-
 int handleFileMenu(void)
 {
 	int		menuselect;
@@ -349,12 +334,12 @@ void eventLoop(void)
 								{
 								case CURSHOME:
 									page->lineXCurs=0;
-									moveInsert();
+									adjCursor();
 									handled=true;
 									break;
 								case CURSEND:
 									page->lineXCurs=page->line[page->currentLine].lineLen;
-									moveInsert();
+									adjCursor();
 									handled=true;
 									break;
 								}
@@ -366,12 +351,12 @@ void eventLoop(void)
 //console keys
 								case CURSHOMECONS:
 									page->lineXCurs=0;
-									moveInsert();
+									adjCursor();
 									handled=true;
 									break;
 								case CURSENDCONS:
 									page->lineXCurs=page->line[page->currentLine].lineLen;
-									moveInsert();
+									adjCursor();
 									handled=true;
 									break;
 //keys
@@ -389,7 +374,7 @@ void eventLoop(void)
 											page->currentLine+=maxRows;
 										}
 									printLines();
-									moveInsert();
+									adjCursor();
 									handled=true;
 									break;
 								case PAGEUP:
@@ -412,7 +397,7 @@ void eventLoop(void)
 												}
 										}
 									printLines();
-									moveInsert();
+									adjCursor();
 									handled=true;
 									break;
 								case KEYUP:
@@ -424,19 +409,11 @@ void eventLoop(void)
 									handled=true;
 									break;
 								case KEYLEFT:
-									fflush(NULL);
-									fflush(STDIN_FILENO);
 									moveCursLeft();
 									handled=true;
-									fflush(NULL);
-									fflush(STDIN_FILENO);
 									break;
 								case KEYRITE:
-									fflush(NULL);
-									fflush(STDIN_FILENO);
 									moveCursRite();
-									fflush(NULL);
-									fflush(STDIN_FILENO);
 									handled=true;
 									break;
 //TODO needs tidying
@@ -481,7 +458,6 @@ void eventLoop(void)
 								currentY++;
 								page->currentLine++;
 								page->lineXCurs=0;
-								moveInsert();
 								dorefresh=true;
 								break;
 							case ESCCHAR:
@@ -510,7 +486,7 @@ void eventLoop(void)
 								needsrefresh=true;
 								page->lineXCurs--;
 								currentX--;
-								moveInsert();
+								adjCursor();
 								break;
 
 							case TABKEY:
@@ -560,8 +536,7 @@ void eventLoop(void)
 					page->maxLines=0;
 					openTheFile(tmpedfile);
 					printLines();
-					moveCursToTemp(currentX,currentY);
-					//moveInsert();
+					adjCursor();
 					continue;
 				}
 			printStatusBar();

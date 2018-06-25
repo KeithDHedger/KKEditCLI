@@ -44,7 +44,6 @@ struct pageStruct
 extern pageStruct	*page;
 
 void initEditor(void);
-void moveInsert(void);
 void moveCursRite(void);
 void moveCursDown(void);
 void moveCursUp(void);

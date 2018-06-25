@@ -47,50 +47,13 @@ void closePage(void)
 	page=NULL;
 }
 
-void adjustCursForTabs(bool rite)
-{
-	int	direction=-1;
-	if(rite==true)
-		direction=1;
-	
-	currentX+=(tabs*direction);
-	currentX=currentX / tabs;
-	currentX=currentX * tabs;
-	currentX++;
-}
-
-void moveInsert(void)
-{
-return;
-	size_t	tx=0;
-
-	currentX=minX;
-	while(tx<(size_t)page->lineXCurs)
-		{
-			if(tx+1==strlen(page->line[page->currentLine].edLine))
-				{
-					page->lineXCurs=tx;
-					moveCursToTemp(currentX,currentY);
-					return;
-				}
-			if(page->line[page->currentLine].edLine[tx]=='\t')
-				adjustCursForTabs(true);
-			else
-				currentX++;
-			tx++;
-		}
-	page->lineXCurs=tx;
-	moveCursToTemp(currentX,currentY);
-}
-
 void adjCursor(void)
 {
 	unsigned char	buf[16];
 	char			*ptr=NULL;
 
-	currentX=minX;
 	HIDECURS;
-	moveCursToTemp(currentX,currentY);
+	moveCursToTemp(minX,currentY);
 	if(page->lineXCurs>strlen(page->line[page->currentLine].edLine)-1)
 		page->lineXCurs=strlen(page->line[page->currentLine].edLine)-1;
 	if(page->lineXCurs<0)
@@ -102,31 +65,16 @@ void adjCursor(void)
 				{
 					case '\t':
 						fprintf(stdout,"\t");
-						//fprintf(stdout,"\e[6n");
-						//memset(buf,0,16);
-						//fflush(NULL);
-						//fflush(STDIN_FILENO);
-						//usleep(1000);
-						//read(STDIN_FILENO,&buf,15);
-						////ptr=strstr((char*)&buf,";");
-						//if(ptr!=NULL)
-						//	{
-						//		ptr++;
-						//		currentX=atoi(ptr);
-						//	}
 						break;
 					default:
 						printf(CURSFORWARD);
-						//currentX++;
 				}
-//			moveCursToTemp(currentX,currentY);
 		}
 
 	fprintf(stdout,"\e[6n");
 	memset(buf,0,16);
 	fflush(NULL);
-	fflush(STDIN_FILENO);
-	usleep(1000);
+	usleep(100);
 	read(STDIN_FILENO,&buf,15);
 	ptr=strstr((char*)&buf,";");
 	if(ptr!=NULL)
@@ -137,51 +85,7 @@ void adjCursor(void)
 
 	moveCursToTemp(currentX,currentY);
 	SHOWCURS;
-	fflush(STDIN_FILENO);
-}
-
-
-
-
-void adjCursorxxxx(void)
-{
-	unsigned char	buf[16];
-	char			*ptr=NULL;
-
-	currentX=minX;
-	HIDECURS;
-	moveCursToTemp(currentX,currentY);
-	if(page->lineXCurs>strlen(page->line[page->currentLine].edLine)-1)
-		page->lineXCurs=strlen(page->line[page->currentLine].edLine)-1;
-	if(page->lineXCurs<0)
-		page->lineXCurs=0;
-
-	for(int j=0;j<page->lineXCurs;j++)
-		{
-			switch(page->line[page->currentLine].edLine[j])
-				{
-					case '\t':
-						fprintf(stdout,"\t");
-						fprintf(stdout,"\e[6n");
-						memset(buf,0,16);
-						fflush(NULL);
-						fflush(STDIN_FILENO);
-						usleep(1000);
-						read(STDIN_FILENO,&buf,15);
-						ptr=strstr((char*)&buf,";");
-						if(ptr!=NULL)
-							{
-								ptr++;
-								currentX=atoi(ptr);
-							}
-						break;
-					default:
-						currentX++;
-				}
-			moveCursToTemp(currentX,currentY);
-		}
-	SHOWCURS;
-	fflush(STDIN_FILENO);
+	fflush(NULL);
 }
 
 void moveCursLeft(void)
@@ -200,249 +104,27 @@ void moveCursLeft(void)
 	adjCursor();
 }
 
-//void moveCursLeftHOLD(void)
-//{
-//	if((page->lineXCurs==0) && (page->currentLine==0))
-//		return;
-//	if(page->lineXCurs>0)
-//		page->lineXCurs--;
-//
-//	currentX--;
-//	if(currentX<minX)
-//		{
-//			page->currentLine--;
-//			currentY--;
-//			currentX=strlen(page->line[page->currentLine].edLine);
-//			page->lineXCurs=currentX;
-//		}
-//	moveInsert();
-//}
-//
-//void moveCursRite(void);
-//void moveCursLeftzzzz(void)
-//{
-//	unsigned char	buf[16];
-//	char			*ptr=NULL;
-//
-////	if((page->lineXCurs==0) && (page->currentLine==0))
-////		return;
-////
-////	if(page->lineXCurs>0)
-////		page->lineXCurs--;
-////	else
-////		{
-////			currentY--;
-////			page->currentLine--;
-////			moveCursToTemp(currentX,currentY);
-////			return;
-////		}
-//
-//	page->lineXCurs--;
-//	adjCursor();
-//	return;
-//fprintf(stderr,"%c",page->line[page->currentLine].edLine[page->lineXCurs]);
-//	switch(page->line[page->currentLine].edLine[page->lineXCurs])
-//		{
-//			case '\t':
-//				fprintf(stdout,"\e[Z\e[Z\t");
-//				fflush(NULL);
-//				fprintf(stdout,"\e[6n");
-//				memset(buf,0,16);
-//				fflush(NULL);
-//				read(STDIN_FILENO,&buf,15);
-//				ptr=strstr((char*)&buf,";");
-//				ptr++;
-//				currentX=atoi(ptr);
-//				//currentX++;
-//				//moveCursRite();
-//				
-//				break;
-////			case '\n':
-////				if(page->currentLine+1==page->maxLines)
-////					return;
-////				page->lineXCurs=0;
-////				currentY++;
-////				currentX=minX;
-////				page->currentLine++;
-////				break;
-//			default:
-//				//page->lineXCurs--;
-//				currentX--;
-//		}
-//
-//	moveCursToTemp(currentX,currentY);
-//	fflush(NULL);
-//}
-
 void moveCursRite(void)
 {
-	unsigned char	buf[16];
-	char			*ptr=NULL;
-
-	switch(page->line[page->currentLine].edLine[page->lineXCurs])
-		{
-			case '\n':
-				if(page->currentLine+1==page->maxLines)
-					return;
-				page->currentLine++;
-				currentY++;
-				if(currentY>rows-1)
-					{
-						currentY=rows-1;
-						page->topLine++;
-						printLines();
-					}
-				page->lineXCurs=0;
-//				currentX=minX;
-		//		page->currentLine++;
-				adjCursor();
-				return;
-				break;
-//			default:
-//				page->lineXCurs++;
-//				currentX++;
-		}
-//	moveCursToTemp(currentX,currentY);
-page->lineXCurs++;
-adjCursor();
-}
-
-void moveCursRiteqqqqq(void)
-{
-	unsigned char	buf[16];
-	char			*ptr=NULL;
-
-	switch(page->line[page->currentLine].edLine[page->lineXCurs])
-		{
-			case '\t':
-				fprintf(stdout,"\t");
-				fprintf(stdout,"\e[6n");
-				memset(buf,0,16);
-				fflush(NULL);
-				read(STDIN_FILENO,&buf,15);
-				ptr=strstr((char*)&buf,";");
-				ptr++;
-				currentX=atoi(ptr);
-				page->lineXCurs++;
-				break;
-			case '\n':
-				if(page->currentLine+1==page->maxLines)
-					return;
-				page->lineXCurs=0;
-				currentY++;
-				currentX=minX;
-				page->currentLine++;
-				break;
-			default:
-				page->lineXCurs++;
-				currentX++;
-		}
-	moveCursToTemp(currentX,currentY);
-}
-
-void moveCursRiteZZZZ(void)
-{
-	unsigned char	buf[16];
-	char			*ptr=NULL;
-
-	if(page->line[page->currentLine].edLine[page->lineXCurs]=='\t')
-		{
-			fprintf(stdout,"\t");
-			fprintf(stdout,"\e[6n");
-			memset(buf,0,16);
-			fflush(NULL);
-			read(STDIN_FILENO,&buf,15);
-			ptr=strstr((char*)&buf,";");
-			ptr++;
-			currentX=atoi(ptr);
-			page->lineXCurs++;
-			moveCursToTemp(currentX,currentY);
-		}
-	else
-		{
-			//if(page->lineXCurs+1==(int)strlen(page->line[page->currentLine].edLine))
-			if(page->line[page->currentLine].edLine[page->lineXCurs]=='\n')
-				{
-					if(page->currentLine+1==page->maxLines)
-						return;
-					page->lineXCurs=0;
-					currentY++;
-					currentX=minX;
-					page->currentLine++;
-				}
-			else
-				{
-					page->lineXCurs++;
-					currentX++;
-					moveCursToTemp(currentX,currentY);
-				}
-//			moveInsert();
-			moveCursToTemp(currentX,currentY);
-		}
-}
-
-void moveCursRiteqq(void)
-{
-fprintf(stdout,"\t");
-fflush(NULL);
-fprintf(stdout,"\e[6n");
-	unsigned char	buf[16];
-			memset(buf,0,16);
-//sleep(2);
-fflush(NULL);
-			read(STDIN_FILENO,&buf,15);
-
-char *ptr=strstr((char*)&buf,";");
-ptr++;
-int col=atoi(ptr);
-DEBUGFUNC("buf=%s xpos=%i",buf,col);
-fflush(NULL);
-
-//if(page->line[page->currentLine].edLine[page->lineXCurs]=='\t')
-//printf("\t");
-//else
-//printf("\e[1C");
-//char *tl=oneLiner(false,"/bin/echo -e \"\e[6n\" 2>&1");
-//DEBUGFUNC("tl=%s",tl);
-//currentX=atoi(&tl[1]);
-//moveInsert();
-//page->lineXCurs++;
-//return;
-	if(page->lineXCurs+1==(int)strlen(page->line[page->currentLine].edLine))
+	if(page->line[page->currentLine].edLine[page->lineXCurs]=='\n')
 		{
 			if(page->currentLine+1==page->maxLines)
 				return;
-			page->lineXCurs=0;
-			currentY++;
 			page->currentLine++;
+			currentY++;
+			if(currentY>rows-1)
+				{
+					currentY=rows-1;
+					page->topLine++;
+					printLines();
+				}
+			page->lineXCurs=0;
+			adjCursor();
+			return;
 		}
-	else
-		{
-			//if(page->line[page->currentLine].edLine[page->lineXCurs]=='\t')
-			//	page->lineXCurs+=tabs;
-//			/else
-//DEBUGFUNC("page->lineXCurs=%x",page->line[page->currentLine].edLine[page->lineXCurs]);
 
-//	int	direction=-1;
-//	//if(rite==true)
-//		direction=1;
-//int toadd=currentX;
-//	toadd++;
-//	//toadd+=(tabs*direction);
-//	
-//	toadd=toadd / tabs;
-//	//toadd=toadd * tabs;
-//
-//DEBUGFUNC("toadd=%i",toadd);
-
-				page->lineXCurs++;
-//currentX=currentX-toadd;
-		}
-	//currentX--;
-	moveInsert();
-	moveCursToTemp(currentX,currentY);
-//DEBUGFUNC("page->lineXCurs=%x",page->line[page->currentLine].edLine[page->lineXCurs]);
-
+	page->lineXCurs++;
+	adjCursor();
 }
 
 void moveCursUp(void)
@@ -464,7 +146,7 @@ void moveCursUp(void)
 	if(page->currentLine<0)
 		page->currentLine=0;
 
-	moveInsert();
+	adjCursor();
 }
 
 void moveCursDown(void)
@@ -480,6 +162,6 @@ void moveCursDown(void)
 			printLines();
 		}
 
-	moveInsert();
+	adjCursor();
 }
 
