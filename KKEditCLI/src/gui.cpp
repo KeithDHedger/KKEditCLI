@@ -377,6 +377,11 @@ void eventLoop(void)
 											page->currentLine+=maxRows;
 										}
 									printLines();
+									if(page->currentLine>page->maxLines-1)
+										{
+											page->currentLine=page->maxLines-1;
+											currentY=minY+(page->maxLines-page->topLine-1);
+										}
 									adjCursor();
 									handled=true;
 									break;

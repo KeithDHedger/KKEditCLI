@@ -54,6 +54,7 @@ void adjCursor(void)
 
 	HIDECURS;
 	moveCursToTemp(minX,currentY);
+
 	if(page->lineXCurs>strlen(page->line[page->currentLine].edLine)-1)
 		page->lineXCurs=strlen(page->line[page->currentLine].edLine)-1;
 	if(page->lineXCurs<0)
