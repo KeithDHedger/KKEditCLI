@@ -145,8 +145,6 @@ void moveCursUp(void)
 		page->topLine=0;
 	if(page->currentLine<0)
 		page->currentLine=0;
-
-	adjCursor();
 }
 
 void moveCursDown(void)
@@ -161,7 +159,5 @@ void moveCursDown(void)
 			page->topLine++;
 			printLines();
 		}
-
-//	adjCursor();
 }
 
