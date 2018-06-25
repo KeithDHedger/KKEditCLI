@@ -30,7 +30,7 @@ void printLines(void)
 	for(int j=page->topLine; j<page->topLine+maxRows; j++)
 		{
 			if(page->line[j].srcLine==NULL)
-				return;
+				break;
 			if(page->line[j].lineNum>0)
 				{
 					moveCursToTemp(1,screenline);
@@ -39,6 +39,8 @@ void printLines(void)
 			moveCursToTemp(minX,screenline++);
 			printf("%s%s",CLEARTOEOL,page->line[j].srcLine);
 		}
+
+	printf(CLEARTOEOS);
 	SHOWCURS;
 }
 

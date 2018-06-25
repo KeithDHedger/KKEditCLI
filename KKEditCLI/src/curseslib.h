@@ -68,6 +68,7 @@
 #define BACKCOL256(col) "\e[48;5;" #col "m"
 
 #define CLEARTOEOL "\e[0K"
+#define CLEARTOEOS "\e[0J"
 
 #define HIDECURS printf("\e[?25l")
 #define SHOWCURS printf("\e[?25h")
