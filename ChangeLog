@@ -1,4 +1,5 @@
 0.0.7
+Fixed flickering on slow ssh when fast scrolling.
 Adjusted cursor pos.
 Added --tabs,-t to cli options.
 Fixed menu colours.

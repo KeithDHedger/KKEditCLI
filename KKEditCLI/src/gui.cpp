@@ -26,7 +26,6 @@ void printLines(void)
 	int	screenline=minY;
 
 	HIDECURS;
-	//clearScreen();
 	drawMenuBar();
 	for(int j=page->topLine; j<page->topLine+maxRows; j++)
 		{

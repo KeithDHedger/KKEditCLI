@@ -196,9 +196,10 @@ int doMenuEvent(const char **menunames,int sx,int sy)
 				}
 		}
 	SETNORMAL;
-	SHOWCURS;
+	clearScreen();
 	printLines();
 	moveCursToTemp(currentX,currentY);
+	SHOWCURS;
 	return(selection);
 }
 
