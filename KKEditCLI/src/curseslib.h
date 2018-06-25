@@ -22,7 +22,7 @@
 #define _CURSESLIB_
 
 #define ESCCHAR 0x1b
-
+#define CURSFORWARD "\e[1C"
 #define NEXTSCRLINE "\n\e[8C"
 
 #define	FOREBLACK "\e[30m"

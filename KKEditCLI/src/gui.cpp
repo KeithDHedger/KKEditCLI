@@ -424,11 +424,19 @@ void eventLoop(void)
 									handled=true;
 									break;
 								case KEYLEFT:
+									fflush(NULL);
+									fflush(STDIN_FILENO);
 									moveCursLeft();
 									handled=true;
+									fflush(NULL);
+									fflush(STDIN_FILENO);
 									break;
 								case KEYRITE:
+									fflush(NULL);
+									fflush(STDIN_FILENO);
 									moveCursRite();
+									fflush(NULL);
+									fflush(STDIN_FILENO);
 									handled=true;
 									break;
 //TODO needs tidying
@@ -520,7 +528,6 @@ void eventLoop(void)
 										page->currentLine++;
 										moveCursToTemp(currentX,currentY);
 										refreshScreen();
-										//moveCursToTemp(currentX,currentY);
 										moveCursRite();
 										continue;
 									}
@@ -530,7 +537,6 @@ void eventLoop(void)
 										moveCursToTemp(minX,currentY);
 										printf("%s",page->line[page->currentLine].edLine);
 										currentX++;
-										//moveCursToTemp(currentX,currentY);
 										moveCursRite();
 									}
 								break;
@@ -555,10 +561,12 @@ void eventLoop(void)
 					openTheFile(tmpedfile);
 					printLines();
 					moveCursToTemp(currentX,currentY);
-					moveInsert();
+					//moveInsert();
 					continue;
 				}
 			printStatusBar();
+			fflush(NULL);
+			fflush(STDIN_FILENO);
 		}
 }
 

@@ -61,6 +61,7 @@ void adjustCursForTabs(bool rite)
 
 void moveInsert(void)
 {
+return;
 	size_t	tx=0;
 
 	currentX=minX;
@@ -101,10 +102,71 @@ void adjCursor(void)
 				{
 					case '\t':
 						fprintf(stdout,"\t");
+						//fprintf(stdout,"\e[6n");
+						//memset(buf,0,16);
+						//fflush(NULL);
+						//fflush(STDIN_FILENO);
+						//usleep(1000);
+						//read(STDIN_FILENO,&buf,15);
+						////ptr=strstr((char*)&buf,";");
+						//if(ptr!=NULL)
+						//	{
+						//		ptr++;
+						//		currentX=atoi(ptr);
+						//	}
+						break;
+					default:
+						printf(CURSFORWARD);
+						//currentX++;
+				}
+//			moveCursToTemp(currentX,currentY);
+		}
+
+	fprintf(stdout,"\e[6n");
+	memset(buf,0,16);
+	fflush(NULL);
+	fflush(STDIN_FILENO);
+	usleep(1000);
+	read(STDIN_FILENO,&buf,15);
+	ptr=strstr((char*)&buf,";");
+	if(ptr!=NULL)
+		{
+			ptr++;
+			currentX=atoi(ptr);
+		}
+
+	moveCursToTemp(currentX,currentY);
+	SHOWCURS;
+	fflush(STDIN_FILENO);
+}
+
+
+
+
+void adjCursorxxxx(void)
+{
+	unsigned char	buf[16];
+	char			*ptr=NULL;
+
+	currentX=minX;
+	HIDECURS;
+	moveCursToTemp(currentX,currentY);
+	if(page->lineXCurs>strlen(page->line[page->currentLine].edLine)-1)
+		page->lineXCurs=strlen(page->line[page->currentLine].edLine)-1;
+	if(page->lineXCurs<0)
+		page->lineXCurs=0;
+
+	for(int j=0;j<page->lineXCurs;j++)
+		{
+			switch(page->line[page->currentLine].edLine[j])
+				{
+					case '\t':
+						fprintf(stdout,"\t");
 						fprintf(stdout,"\e[6n");
 						memset(buf,0,16);
 						fflush(NULL);
-						usleep(100);
+						fflush(STDIN_FILENO);
+						usleep(1000);
 						read(STDIN_FILENO,&buf,15);
 						ptr=strstr((char*)&buf,";");
 						if(ptr!=NULL)
@@ -233,10 +295,20 @@ void moveCursRite(void)
 			case '\n':
 				if(page->currentLine+1==page->maxLines)
 					return;
-				page->lineXCurs=0;
-				currentY++;
-				currentX=minX;
+				//moveCursDown();
 				page->currentLine++;
+				currentY++;
+				if(currentY>rows-1)
+					{
+						currentY=rows-1;
+						page->topLine++;
+						printLines();
+					}
+
+				page->lineXCurs=0;
+	//			currentY++;
+				currentX=minX;
+		//		page->currentLine++;
 				adjCursor();
 				return;
 				break;
