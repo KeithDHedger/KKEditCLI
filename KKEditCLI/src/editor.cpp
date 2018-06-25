@@ -281,21 +281,9 @@ void moveCursRite(void)
 
 	switch(page->line[page->currentLine].edLine[page->lineXCurs])
 		{
-//			case '\t':
-//				fprintf(stdout,"\t");
-//				fprintf(stdout,"\e[6n");
-//				memset(buf,0,16);
-//				fflush(NULL);
-//				read(STDIN_FILENO,&buf,15);
-//				ptr=strstr((char*)&buf,";");
-//				ptr++;
-//				currentX=atoi(ptr);
-//				page->lineXCurs++;
-//				break;
 			case '\n':
 				if(page->currentLine+1==page->maxLines)
 					return;
-				//moveCursDown();
 				page->currentLine++;
 				currentY++;
 				if(currentY>rows-1)
@@ -304,10 +292,8 @@ void moveCursRite(void)
 						page->topLine++;
 						printLines();
 					}
-
 				page->lineXCurs=0;
-	//			currentY++;
-				currentX=minX;
+//				currentX=minX;
 		//		page->currentLine++;
 				adjCursor();
 				return;
