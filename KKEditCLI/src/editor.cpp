@@ -162,6 +162,6 @@ void moveCursDown(void)
 			printLines();
 		}
 
-	adjCursor();
+//	adjCursor();
 }
 
