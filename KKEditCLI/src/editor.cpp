@@ -82,26 +82,274 @@ void moveInsert(void)
 	moveCursToTemp(currentX,currentY);
 }
 
+void adjCursor(void)
+{
+	unsigned char	buf[16];
+	char			*ptr=NULL;
+
+	currentX=minX;
+	HIDECURS;
+	moveCursToTemp(currentX,currentY);
+	if(page->lineXCurs>strlen(page->line[page->currentLine].edLine)-1)
+		page->lineXCurs=strlen(page->line[page->currentLine].edLine)-1;
+	if(page->lineXCurs<0)
+		page->lineXCurs=0;
+
+	for(int j=0;j<page->lineXCurs;j++)
+		{
+			switch(page->line[page->currentLine].edLine[j])
+				{
+					case '\t':
+						fprintf(stdout,"\t");
+						fprintf(stdout,"\e[6n");
+						memset(buf,0,16);
+						fflush(NULL);
+						usleep(100);
+						read(STDIN_FILENO,&buf,15);
+						ptr=strstr((char*)&buf,";");
+						if(ptr!=NULL)
+							{
+								ptr++;
+								currentX=atoi(ptr);
+							}
+						break;
+					default:
+						currentX++;
+				}
+			moveCursToTemp(currentX,currentY);
+		}
+	SHOWCURS;
+	fflush(STDIN_FILENO);
+}
+
 void moveCursLeft(void)
 {
 	if((page->lineXCurs==0) && (page->currentLine==0))
 		return;
 	if(page->lineXCurs>0)
 		page->lineXCurs--;
-
-	currentX--;
-	if(currentX<minX)
+	else
 		{
 			page->currentLine--;
 			currentY--;
-			currentX=strlen(page->line[page->currentLine].edLine);
-			page->lineXCurs=currentX;
+			page->lineXCurs=strlen(page->line[page->currentLine].edLine)-1;
 		}
-	moveInsert();
+
+	adjCursor();
 }
+
+//void moveCursLeftHOLD(void)
+//{
+//	if((page->lineXCurs==0) && (page->currentLine==0))
+//		return;
+//	if(page->lineXCurs>0)
+//		page->lineXCurs--;
+//
+//	currentX--;
+//	if(currentX<minX)
+//		{
+//			page->currentLine--;
+//			currentY--;
+//			currentX=strlen(page->line[page->currentLine].edLine);
+//			page->lineXCurs=currentX;
+//		}
+//	moveInsert();
+//}
+//
+//void moveCursRite(void);
+//void moveCursLeftzzzz(void)
+//{
+//	unsigned char	buf[16];
+//	char			*ptr=NULL;
+//
+////	if((page->lineXCurs==0) && (page->currentLine==0))
+////		return;
+////
+////	if(page->lineXCurs>0)
+////		page->lineXCurs--;
+////	else
+////		{
+////			currentY--;
+////			page->currentLine--;
+////			moveCursToTemp(currentX,currentY);
+////			return;
+////		}
+//
+//	page->lineXCurs--;
+//	adjCursor();
+//	return;
+//fprintf(stderr,"%c",page->line[page->currentLine].edLine[page->lineXCurs]);
+//	switch(page->line[page->currentLine].edLine[page->lineXCurs])
+//		{
+//			case '\t':
+//				fprintf(stdout,"\e[Z\e[Z\t");
+//				fflush(NULL);
+//				fprintf(stdout,"\e[6n");
+//				memset(buf,0,16);
+//				fflush(NULL);
+//				read(STDIN_FILENO,&buf,15);
+//				ptr=strstr((char*)&buf,";");
+//				ptr++;
+//				currentX=atoi(ptr);
+//				//currentX++;
+//				//moveCursRite();
+//				
+//				break;
+////			case '\n':
+////				if(page->currentLine+1==page->maxLines)
+////					return;
+////				page->lineXCurs=0;
+////				currentY++;
+////				currentX=minX;
+////				page->currentLine++;
+////				break;
+//			default:
+//				//page->lineXCurs--;
+//				currentX--;
+//		}
+//
+//	moveCursToTemp(currentX,currentY);
+//	fflush(NULL);
+//}
 
 void moveCursRite(void)
 {
+	unsigned char	buf[16];
+	char			*ptr=NULL;
+
+	switch(page->line[page->currentLine].edLine[page->lineXCurs])
+		{
+//			case '\t':
+//				fprintf(stdout,"\t");
+//				fprintf(stdout,"\e[6n");
+//				memset(buf,0,16);
+//				fflush(NULL);
+//				read(STDIN_FILENO,&buf,15);
+//				ptr=strstr((char*)&buf,";");
+//				ptr++;
+//				currentX=atoi(ptr);
+//				page->lineXCurs++;
+//				break;
+			case '\n':
+				if(page->currentLine+1==page->maxLines)
+					return;
+				page->lineXCurs=0;
+				currentY++;
+				currentX=minX;
+				page->currentLine++;
+				adjCursor();
+				return;
+				break;
+//			default:
+//				page->lineXCurs++;
+//				currentX++;
+		}
+//	moveCursToTemp(currentX,currentY);
+page->lineXCurs++;
+adjCursor();
+}
+
+void moveCursRiteqqqqq(void)
+{
+	unsigned char	buf[16];
+	char			*ptr=NULL;
+
+	switch(page->line[page->currentLine].edLine[page->lineXCurs])
+		{
+			case '\t':
+				fprintf(stdout,"\t");
+				fprintf(stdout,"\e[6n");
+				memset(buf,0,16);
+				fflush(NULL);
+				read(STDIN_FILENO,&buf,15);
+				ptr=strstr((char*)&buf,";");
+				ptr++;
+				currentX=atoi(ptr);
+				page->lineXCurs++;
+				break;
+			case '\n':
+				if(page->currentLine+1==page->maxLines)
+					return;
+				page->lineXCurs=0;
+				currentY++;
+				currentX=minX;
+				page->currentLine++;
+				break;
+			default:
+				page->lineXCurs++;
+				currentX++;
+		}
+	moveCursToTemp(currentX,currentY);
+}
+
+void moveCursRiteZZZZ(void)
+{
+	unsigned char	buf[16];
+	char			*ptr=NULL;
+
+	if(page->line[page->currentLine].edLine[page->lineXCurs]=='\t')
+		{
+			fprintf(stdout,"\t");
+			fprintf(stdout,"\e[6n");
+			memset(buf,0,16);
+			fflush(NULL);
+			read(STDIN_FILENO,&buf,15);
+			ptr=strstr((char*)&buf,";");
+			ptr++;
+			currentX=atoi(ptr);
+			page->lineXCurs++;
+			moveCursToTemp(currentX,currentY);
+		}
+	else
+		{
+			//if(page->lineXCurs+1==(int)strlen(page->line[page->currentLine].edLine))
+			if(page->line[page->currentLine].edLine[page->lineXCurs]=='\n')
+				{
+					if(page->currentLine+1==page->maxLines)
+						return;
+					page->lineXCurs=0;
+					currentY++;
+					currentX=minX;
+					page->currentLine++;
+				}
+			else
+				{
+					page->lineXCurs++;
+					currentX++;
+					moveCursToTemp(currentX,currentY);
+				}
+//			moveInsert();
+			moveCursToTemp(currentX,currentY);
+		}
+}
+
+void moveCursRiteqq(void)
+{
+fprintf(stdout,"\t");
+fflush(NULL);
+fprintf(stdout,"\e[6n");
+	unsigned char	buf[16];
+			memset(buf,0,16);
+//sleep(2);
+fflush(NULL);
+			read(STDIN_FILENO,&buf,15);
+
+char *ptr=strstr((char*)&buf,";");
+ptr++;
+int col=atoi(ptr);
+DEBUGFUNC("buf=%s xpos=%i",buf,col);
+fflush(NULL);
+
+//if(page->line[page->currentLine].edLine[page->lineXCurs]=='\t')
+//printf("\t");
+//else
+//printf("\e[1C");
+//char *tl=oneLiner(false,"/bin/echo -e \"\e[6n\" 2>&1");
+//DEBUGFUNC("tl=%s",tl);
+//currentX=atoi(&tl[1]);
+//moveInsert();
+//page->lineXCurs++;
+//return;
 	if(page->lineXCurs+1==(int)strlen(page->line[page->currentLine].edLine))
 		{
 			if(page->currentLine+1==page->maxLines)
@@ -111,9 +359,32 @@ void moveCursRite(void)
 			page->currentLine++;
 		}
 	else
-		page->lineXCurs++;
+		{
+			//if(page->line[page->currentLine].edLine[page->lineXCurs]=='\t')
+			//	page->lineXCurs+=tabs;
+//			/else
+//DEBUGFUNC("page->lineXCurs=%x",page->line[page->currentLine].edLine[page->lineXCurs]);
 
+//	int	direction=-1;
+//	//if(rite==true)
+//		direction=1;
+//int toadd=currentX;
+//	toadd++;
+//	//toadd+=(tabs*direction);
+//	
+//	toadd=toadd / tabs;
+//	//toadd=toadd * tabs;
+//
+//DEBUGFUNC("toadd=%i",toadd);
+
+				page->lineXCurs++;
+//currentX=currentX-toadd;
+		}
+	//currentX--;
 	moveInsert();
+	moveCursToTemp(currentX,currentY);
+//DEBUGFUNC("page->lineXCurs=%x",page->line[page->currentLine].edLine[page->lineXCurs]);
+
 }
 
 void moveCursUp(void)

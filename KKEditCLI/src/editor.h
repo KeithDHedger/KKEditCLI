@@ -50,5 +50,6 @@ void moveCursDown(void);
 void moveCursUp(void);
 void moveCursLeft(void);
 void closePage(void);
+void adjCursor(void);
 
 #endif

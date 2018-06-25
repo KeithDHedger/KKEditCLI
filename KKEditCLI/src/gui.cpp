@@ -45,13 +45,13 @@ void cursToInsert(void)
 {
 	int xx=minX;
 	page->lineXCurs=0;
-	while(xx<currentX)
+	while(page->lineXCurs<currentX)
 		{
 			if(page->line[page->currentLine].edLine[page->lineXCurs]!='\t')
-				xx++;
+				page->lineXCurs++;
 			else
-				xx+=tabs;
-			page->lineXCurs++;
+				page->lineXCurs+=tabs;
+			//page->lineXCurs++;
 		}
 	moveCursToTemp(currentX,currentY);
 }
@@ -504,6 +504,12 @@ void eventLoop(void)
 								currentX--;
 								moveInsert();
 								break;
+
+							case TABKEY:
+								writeCharToFile(buf[0]);
+								refreshScreen();
+								moveCursRite();
+								break;
 							default:
 								writeCharToFile(buf[0]);
 								if(currentX==cols-1)
@@ -514,7 +520,7 @@ void eventLoop(void)
 										page->currentLine++;
 										moveCursToTemp(currentX,currentY);
 										refreshScreen();
-										moveCursToTemp(currentX,currentY);
+										//moveCursToTemp(currentX,currentY);
 										moveCursRite();
 										continue;
 									}
@@ -524,7 +530,7 @@ void eventLoop(void)
 										moveCursToTemp(minX,currentY);
 										printf("%s",page->line[page->currentLine].edLine);
 										currentX++;
-										moveCursToTemp(currentX,currentY);
+										//moveCursToTemp(currentX,currentY);
 										moveCursRite();
 									}
 								break;

@@ -31,6 +31,7 @@
 #define BACKSPACE 0x7f
 #define DELETEKEY '3'
 #define RETURNKEY 0xa
+#define TABKEY 0x9
 #define CURSHOME 'H'
 #define CURSEND 'F'
 #define CURSHOMECONS '1'
