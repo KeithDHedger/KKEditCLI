@@ -101,9 +101,21 @@ int main(int argc, char **argv)
 	clearScreen();
 	initCursesLib();
 	initEditor();
-	oneLiner(true,"cp %s %s",argv[argc-1],tmpedfile);
-	page->filePath=strdup(argv[argc-1]);
-	openTheFile(tmpedfile);
+
+	if(optind < argc)
+		{
+			oneLiner(true,"cp %s %s",argv[argc-1],tmpedfile);
+			page->filePath=strdup(argv[argc-1]);
+			openTheFile(tmpedfile);
+		}
+	else
+		{
+				asprintf(&page->filePath,"/tmp/Untitled-%i",newFileNum++);
+				tmpedfile="/dev/shm/edfile";
+				oneLiner(true,"echo \"New File\" > %s",page->filePath);
+				oneLiner(true,"cp %s %s",page->filePath,tmpedfile);
+				openTheFile(tmpedfile);
+		}
 	printLines();
 	currentX=minX;
 	currentY=minY;

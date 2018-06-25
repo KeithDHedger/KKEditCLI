@@ -73,9 +73,10 @@ int handleFileMenu(void)
 				asprintf(&message,"%s",page->filePath);
 				closePage();
 				init_dialog(stdin,stdout);
-					status=dialog_fselect("Open File",message,0,0);
+					status=dialog_fselect("Open File",message,rows-14,cols-14);
            		end_dialog();
 				dlg_clear();
+				clearScreen();
 				initEditor();
 				if(dialog_vars.input_result==NULL)
 					{

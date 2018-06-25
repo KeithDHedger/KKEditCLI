@@ -25,6 +25,7 @@ pageStruct	*page=NULL;
 void initEditor(void)
 {
 	page=new pageStruct;
+	page->filePath=NULL;
 	page->topLine=0;
 	page->currentLine=0;
 	page->lineXCurs=0;
