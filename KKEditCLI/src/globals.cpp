@@ -46,6 +46,7 @@ bool	liveUpdate=true;
 
 //files
 const char *tmpedfile="/dev/shm/edfile.cpp";
+const char *tmpeddir="/dev/shm/";
 
 //utils
 char* oneLiner(bool noreturn,const char* fmt,...)

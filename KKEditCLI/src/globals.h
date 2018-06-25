@@ -143,5 +143,6 @@ char* oneLiner(bool noreturn,const char* fmt,...);
 
 //files
 extern const char *tmpedfile;
+extern const char *tmpeddir;
 
 #endif

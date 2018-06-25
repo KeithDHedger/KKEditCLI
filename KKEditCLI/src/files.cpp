@@ -25,6 +25,14 @@
 
 #include "globals.h"
 
+void setTempEdFile(const char *path)
+{
+	char	*file=NULL;
+
+	asprintf(&file,path);
+	
+}
+
 void openTheFile(const char *path)
 {
 	FILE	*fp;
