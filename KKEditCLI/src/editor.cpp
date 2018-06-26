@@ -46,6 +46,8 @@ void closePage(void)
 	free(page->filePath);
 	delete page;
 	page=NULL;
+	DEBUGFUNC("%s",tmpEdFilePath);
+	unlink(tmpEdFilePath);
 }
 
 void adjCursor(void)

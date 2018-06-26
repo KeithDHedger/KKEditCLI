@@ -142,7 +142,8 @@ extern bool	liveUpdate;
 char* oneLiner(bool noreturn,const char* fmt,...);
 
 //files
-extern const char *tmpedfile;
-extern const char *tmpeddir;
+extern const char	*tmpEdDir;
+extern char			*tmpEdFile;
+extern char			*tmpEdFilePath;
 
 #endif

@@ -47,60 +47,27 @@ void printLines(void)
 int handleFileMenu(void)
 {
 	int		menuselect;
-//	char	*tfile;
-//	int		status;
 	char	*message=NULL;
 
 	menuselect=doMenuEvent(fileMenuNames,1,2);
 	switch(menuselect)
 		{
 			case FILENEW:
-				askSaveIfdirty();
-				closePage();
-				initEditor();
-				asprintf(&page->filePath,"/tmp/Untitled-%i",newFileNum++);
-				tmpedfile="/dev/shm/edfile";
-				oneLiner(true,"echo \"New File\" > %s",page->filePath);
-				oneLiner(true,"cp %s %s",page->filePath,tmpedfile);
-				openTheFile(page->filePath);
-				currentX=minX;
-				currentY=minY;
+				makeNewFile();
+				clearScreen();				 
 				refreshScreen();
 				moveCursToTemp(minX,currentY);			
 				break;
 			case FILEOPEN:
+				
 				askSaveIfdirty();
-				asprintf(&message,"%s",page->filePath);
-				closePage();
-				init_dialog(stdin,stdout);
-					dialog_fselect("Open File",message,rows-14,cols-14);
-           		end_dialog();
-				dlg_clear();
-				clearScreen();
-				initEditor();
-				if(dialog_vars.input_result==NULL)
-					{
-						oneLiner(true,"cp %s %s",message,tmpedfile);
-						page->filePath=strdup(message);
-						openTheFile(tmpedfile);
-						refreshScreen();
-					}
-				else
-					{
-						oneLiner(true,"cp %s %s",dialog_vars.input_result,tmpedfile);
-						page->filePath=strdup(dialog_vars.input_result);
-						openTheFile(tmpedfile);
-						refreshScreen();
-					}
-				free(message);
-				moveCursToTemp(minX,currentY);
+				askOpenFile();
 				break;
 			case FILESAVE:
 				saveFile(page->filePath);
-clearScreen();				 
-printLines();
-adjCursor();
-//refreshScreen();
+				clearScreen();				 
+				printLines();
+				adjCursor();
 				break;
 			case FILESAVEAS:
 				break;
@@ -315,7 +282,7 @@ void refreshScreen(void)
 			page->line[j].edLine=NULL;
 		}
 	page->maxLines=0;
-	openTheFile(tmpedfile);
+	openTheFile(tmpEdFilePath);
 	printLines();
 }
 
@@ -416,12 +383,15 @@ void eventLoop(void)
 									adjCursor();
 									handled=true;
 									break;
+//TODO//
 								case KEYUP:
 									moveCursUp();
+									adjCursor();
 									handled=true;
 									break;
 								case KEYDOWN:
 									moveCursDown();
+									adjCursor();
 									handled=true;
 									break;
 								case KEYLEFT:
@@ -550,7 +520,7 @@ void eventLoop(void)
 							free(page->line[j].edLine);
 						}
 					page->maxLines=0;
-					openTheFile(tmpedfile);
+					openTheFile(tmpEdFilePath);
 					printLines();
 					adjCursor();
 					continue;

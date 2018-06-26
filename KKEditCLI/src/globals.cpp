@@ -45,8 +45,10 @@ int		tabs=8;
 bool	liveUpdate=false;
 
 //files
-const char *tmpedfile="/dev/shm/edfile.cpp";
-const char *tmpeddir="/dev/shm/";
+const char	*tmpEdDir="/dev/shm/";
+char		*tmpEdFile=NULL;
+char		*tmpEdFilePath=NULL;
+
 
 //utils
 char* oneLiner(bool noreturn,const char* fmt,...)

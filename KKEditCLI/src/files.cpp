@@ -27,10 +27,12 @@
 
 void setTempEdFile(const char *path)
 {
-	char	*file=NULL;
+	char	*basec;
 
-	asprintf(&file,path);
-	
+	basec=strdup(path);
+	tmpEdFile=strdup(basename(basec));
+	asprintf(&tmpEdFilePath,"%s/%s",tmpEdDir,tmpEdFile);
+	free(basec);
 }
 
 void openTheFile(const char *path)
@@ -195,7 +197,7 @@ bool deleteCharFromFile(bool back)
 				}
 		}
 
-	fh=open(tmpedfile,O_WRONLY|O_TRUNC);
+	fh=open(tmpEdFilePath,O_WRONLY|O_TRUNC);
 	if(fh != -1)
 		{
 			for(int j=0;j<page->maxLines;j++)
@@ -218,7 +220,7 @@ void writeCharToFile(char c)
 	free(page->line[page->currentLine].edLine);
 	page->line[page->currentLine].edLine=newline;
 	page->line[page->currentLine].lineLen++;
-	fh=open(tmpedfile,O_WRONLY|O_CREAT|O_TRUNC);
+	fh=open(tmpEdFilePath,O_WRONLY|O_CREAT|O_TRUNC);
 	if(fh != -1)
 		{
 			for(int j=0;j<page->maxLines;j++)
@@ -232,7 +234,7 @@ void writeCharToFile(char c)
 void saveFile(const char *path)
 {
 	int		fh=0;
-	fh=open(tmpedfile,O_WRONLY|O_CREAT|O_TRUNC);
+	fh=open(tmpEdFilePath,O_WRONLY|O_CREAT|O_TRUNC);
 	if(fh != -1)
 		{
 			for(int j=0;j<page->maxLines;j++)
@@ -275,3 +277,54 @@ void askSaveIfdirty(void)
 				}
 		}
 }
+
+void makeNewFile(void)
+{
+	if(page!=NULL)
+		{
+			askSaveIfdirty();
+			closePage();
+		}
+
+	initEditor();
+	asprintf(&page->filePath,"/tmp/Untitled-%i",newFileNum++);
+	setTempEdFile(page->filePath);
+	oneLiner(true,"echo \"New File\" > %s",page->filePath);
+	oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
+	openTheFile(tmpEdFilePath);
+}
+
+void askOpenFile(void)
+{
+	char	*message;
+
+	asprintf(&message,"%s",page->filePath);
+	closePage();
+	init_dialog(stdin,stdout);
+		dialog_fselect("Open File",message,rows-14,cols-14);
+	end_dialog();
+	dlg_clear();
+	clearScreen();
+	initEditor();
+	if(dialog_vars.input_result==NULL)
+		{
+			setTempEdFile(message);
+			oneLiner(true,"cp %s %s/%s",message,tmpEdDir,tmpEdFile);
+			page->filePath=strdup(message);
+			openTheFile(tmpEdFilePath);
+		}
+	else
+		{
+			setTempEdFile(dialog_vars.input_result);
+			oneLiner(true,"cp %s %s",dialog_vars.input_result,tmpEdDir);
+			page->filePath=strdup(dialog_vars.input_result);
+			openTheFile(tmpEdFilePath);
+			currentX=minX;
+			currentY=minY;
+		}
+
+	free(message);
+	printLines();
+	moveCursToTemp(currentX,currentY);
+}
+

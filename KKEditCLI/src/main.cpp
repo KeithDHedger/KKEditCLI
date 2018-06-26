@@ -78,43 +78,22 @@ int main(int argc, char **argv)
 				printhelp();
 				return 0;
 				break;
-
-//			default:
-//				fprintf(stderr,"?? Unknown argument ??\n");
-//				return UNKNOWNARG;
-//			break;
 			}
 		}
-//	if (optind < argc) 
-//	{
-////        printf("non-option ARGV-elements: ");
-//       while (optind < argc)
-//       {
-//           DEBUGFUNC("optind=%i %s ",optind, argv[optind]);
-//           optind++;
-//           }
-// //       printf("\n");
-// //   }
-//}
-//DEBUGFUNC("c=%i argv[c]=%s",argc,argv[argc-1]);
-//exit(0);
 	clearScreen();
 	initCursesLib();
-	initEditor();
 
 	if(optind < argc)
 		{
-			oneLiner(true,"cp %s %s",argv[argc-1],tmpedfile);
+			initEditor();
+			setTempEdFile(argv[argc-1]);
+			oneLiner(true,"cp %s %s/%s",argv[argc-1],tmpEdDir,tmpEdFile);
 			page->filePath=strdup(argv[argc-1]);
-			openTheFile(tmpedfile);
+			openTheFile(tmpEdFilePath);
 		}
 	else
 		{
-				asprintf(&page->filePath,"/tmp/Untitled-%i",newFileNum++);
-				tmpedfile="/dev/shm/edfile";
-				oneLiner(true,"echo \"New File\" > %s",page->filePath);
-				oneLiner(true,"cp %s %s",page->filePath,tmpedfile);
-				openTheFile(tmpedfile);
+			makeNewFile();
 		}
 	printLines();
 	currentX=minX;

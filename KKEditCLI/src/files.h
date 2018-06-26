@@ -32,5 +32,8 @@ bool deleteCharFromFile(bool back);
 int getDispLineData(int start,int dne);
 void saveFile(const char *path);
 void askSaveIfdirty(void);
+void setTempEdFile(const char *path);
+void makeNewFile(void);
+void askOpenFile(void);
 
 #endif
