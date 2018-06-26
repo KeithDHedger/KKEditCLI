@@ -42,7 +42,7 @@ int		lineColour=220;
 
 //prefs
 int		tabs=8;
-bool	liveUpdate=true;
+bool	liveUpdate=false;
 
 //files
 const char *tmpedfile="/dev/shm/edfile.cpp";

@@ -47,8 +47,8 @@ void printLines(void)
 int handleFileMenu(void)
 {
 	int		menuselect;
-	char	*tfile;
-	int		status;
+//	char	*tfile;
+//	int		status;
 	char	*message=NULL;
 
 	menuselect=doMenuEvent(fileMenuNames,1,2);
@@ -73,7 +73,7 @@ int handleFileMenu(void)
 				asprintf(&message,"%s",page->filePath);
 				closePage();
 				init_dialog(stdin,stdout);
-					status=dialog_fselect("Open File",message,rows-14,cols-14);
+					dialog_fselect("Open File",message,rows-14,cols-14);
            		end_dialog();
 				dlg_clear();
 				clearScreen();
@@ -97,6 +97,10 @@ int handleFileMenu(void)
 				break;
 			case FILESAVE:
 				saveFile(page->filePath);
+clearScreen();				 
+printLines();
+adjCursor();
+//refreshScreen();
 				break;
 			case FILESAVEAS:
 				break;
@@ -325,6 +329,7 @@ void eventLoop(void)
 	while(true)
 		{
 			memset(buf,0,16);
+			fflush(NULL);
 			read(STDIN_FILENO,&buf,15);
 			handled=false;
 
@@ -353,11 +358,13 @@ void eventLoop(void)
 							switch(buf[2])
 								{
 //console keys
-								case CURSHOMECONS:
+									case CURSHOME:
+									case CURSHOMECONS:
 									page->lineXCurs=0;
 									adjCursor();
 									handled=true;
 									break;
+								case CURSEND:
 								case CURSENDCONS:
 									page->lineXCurs=page->line[page->currentLine].lineLen;
 									adjCursor();
