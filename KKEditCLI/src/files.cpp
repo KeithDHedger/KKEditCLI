@@ -29,6 +29,8 @@ void setTempEdFile(const char *path)
 {
 	char	*basec;
 
+	freeAndNull(&tmpEdFile);
+	freeAndNull(&tmpEdFilePath);
 	basec=strdup(path);
 	tmpEdFile=strdup(basename(basec));
 	asprintf(&tmpEdFilePath,"%s/%s",tmpEdDir,tmpEdFile);
@@ -51,7 +53,7 @@ void openTheFile(const char *path)
 
 	page->maxLines=0;
 
-	oneLiner(false,"source-highlight --infer-lang --style-file=esc.style -f esc --failsafe -i '%s' -o /dev/shm/src",path);
+	oneLiner(true,"source-highlight --infer-lang --style-file=esc.style -f esc --failsafe -i '%s' -o /dev/shm/src",path);
 	//tline=oneLiner(false,"cat '%s' > /dev/shm/src",path);
 	//free(tline);
 	
@@ -130,8 +132,7 @@ void openTheFile(const char *path)
 					page->line[page->maxLines++].edLine=strdup(eline);
 					memset(eline,0,strlen(eline));
 					memset(dline,0,strlen(dline));
-					free(tline);
-					tline=NULL;
+					freeAndNull(&tline);
 					len=0;
 				}
 			free(dline);
@@ -155,9 +156,8 @@ bool deleteCharFromFile(bool back)
 					page->line[page->currentLine].edLine[page->lineXCurs]=0;
 					asprintf(&newline,"%s%s",page->line[page->currentLine].edLine,&page->line[page->currentLine+1].edLine[(int)page->line[page->currentLine].isSplitLine]);
 					newlinelen=page->line[page->currentLine+1].lineLen+page->line[page->currentLine].lineLen-1;
-					free(page->line[page->currentLine+1].edLine);
-					free(page->line[page->currentLine].edLine);
-					page->line[page->currentLine+1].edLine=NULL;
+					freeAndNull(&page->line[page->currentLine+1].edLine);
+					freeAndNull(&page->line[page->currentLine].edLine);
 					page->line[page->currentLine].edLine=newline;
 					page->line[page->currentLine].lineLen=newlinelen;
 					retval=true;
@@ -180,9 +180,8 @@ bool deleteCharFromFile(bool back)
 					page->lineXCurs=page->line[page->currentLine-1].lineLen;
 					asprintf(&newline,"%.*s%s",page->line[page->currentLine-1].lineLen-1,page->line[page->currentLine-1].edLine,page->line[page->currentLine].edLine);
 					newlinelen=page->line[page->currentLine-1].lineLen+page->line[page->currentLine].lineLen-1;
-					free(page->line[page->currentLine].edLine);
-					free(page->line[page->currentLine-1].edLine);
-					page->line[page->currentLine].edLine=NULL;
+					freeAndNull(&page->line[page->currentLine].edLine);
+					freeAndNull(&page->line[page->currentLine-1].edLine);
 					page->currentLine--;
 					page->line[page->currentLine].edLine=newline;
 					page->line[page->currentLine].lineLen=newlinelen;

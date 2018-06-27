@@ -107,6 +107,16 @@ static void debugFunc(const char *file,const char *func,int line,const char *fmt
 #define DEBUGFUNC(...) fprintf(stderr,"Remove debug code here: %s:%i\n",__FILE__,__LINE__);
 #endif
 
+static void freeAndNull(char** ptr)
+{
+	DEBUGFUNC("ptr=%p",ptr);
+	if(*ptr!=NULL)
+		free(*ptr);
+
+	*ptr=NULL;
+}
+
+
 #include "curseslib.h"
 #include "editor.h"
 #include "files.h"

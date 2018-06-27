@@ -276,10 +276,8 @@ void refreshScreen(void)
 {
 	for(int j=0; j<page->maxLines;j++)
 		{
-			free(page->line[j].srcLine);
-			free(page->line[j].edLine);
-			page->line[j].srcLine=NULL;
-			page->line[j].edLine=NULL;
+			freeAndNull(&page->line[j].srcLine);
+			freeAndNull(&page->line[j].edLine);
 		}
 	page->maxLines=0;
 	openTheFile(tmpEdFilePath);
@@ -516,8 +514,8 @@ void eventLoop(void)
 					dorefresh=false;
 					for(int j=0; j<page->maxLines;j++)
 						{
-							free(page->line[j].srcLine);
-							free(page->line[j].edLine);
+							freeAndNull(&page->line[j].srcLine);
+							freeAndNull(&page->line[j].edLine);
 						}
 					page->maxLines=0;
 					openTheFile(tmpEdFilePath);
