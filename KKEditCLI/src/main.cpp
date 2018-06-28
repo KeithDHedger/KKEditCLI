@@ -104,8 +104,8 @@ int main(int argc, char **argv)
 	eventLoop();
 	finalizeCursesLib();
 	closePage();
-	fprintf(stderr,">>>>>>>>>QUITING\n");
-	moveCursToTemp(1,rows);
+//	fprintf(stderr,">>>>>>>>>QUITING\n");
+//	moveCursToTemp(1,rows);
 	printf("\n");
 	return 0;
 }

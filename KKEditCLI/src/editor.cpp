@@ -31,9 +31,14 @@ void initEditor(void)
 	page->lineXCurs=0;
 	page->dirty=false;
 	for(int j=0;j<MAXLINES;j++)
-		page->line[j].edLine=NULL;
+		{
+			page->line[j].edLine=NULL;
+			page->line[j].srcLine=NULL;
+		}
 	currentX=minX;
 	currentY=minY;
+	functionData=NULL;
+	functionsMenuNames=NULL;
 }
 
 void closePage(void)
@@ -43,10 +48,10 @@ void closePage(void)
 			free(page->line[j].srcLine);
 			free(page->line[j].edLine);
 		}
+
 	free(page->filePath);
 	delete page;
 	page=NULL;
-	DEBUGFUNC("%s",tmpEdFilePath);
 	unlink(tmpEdFilePath);
 }
 

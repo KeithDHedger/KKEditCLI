@@ -184,19 +184,55 @@ void getRecursiveTagList(char *filepath,void *ptr)
 //	ERRDATA debugFree(&sort);
 }
 
+void getTagList(void)
+{
+	char		*command;
+	const char	*sortcommand="sort -k 2rb,2rb -k 1b,1b";
+	char		*retval=NULL;
+	FILE		*fp;
+	char		line[2048];
+	int			funcs=0;
+	int			cnt=0;
+
+	asprintf(&command,"ctags -x \"%s\"|wc -l",tmpEdFilePath);
+	retval=oneLiner(false,command);
+	funcs=atoi(retval)+1;
+	functionsMenuNames=(char**)calloc(sizeof(char*),funcs);
+	functionData=(funcStruct**)calloc(sizeof(funcStruct*),funcs);
+
+	free(command);	
+	asprintf(&command,"ctags -x \"%s\"|%s|sed 's@ \\+@ @g'",tmpEdFilePath,sortcommand);
+	fp=popen(command, "r");
+	while(fgets(line,2048,fp))
+		{
+			functionData[cnt]=new funcStruct;
+			if(strlen(line)>1)
+				line[strlen(line)-1]=0;
+			char *ptr;
+			ptr=strchr((char*)&line,' ');
+			*ptr=0;
+			functionData[cnt]->name=strdup(line);
+			functionsMenuNames[cnt]=functionData[cnt]->name;
+			cnt++;
+		}
+	functionsMenuNames[cnt]=NULL;
+	functionData[cnt]=NULL;
+	pclose(fp);
+}
 
 int handleFuncMenu(void)
 {
 	int menuselect;
-getRecursiveTagList(page->filePath,NULL);
-	menuselect=doMenuEvent(functionsMenuNames,27,2);
-	switch(menuselect)
-		{
-			case FUNC0:
-				break;
-			case FUNC1:
-				break;
-		}
+	if(functionsMenuNames==NULL)
+		getTagList();
+	menuselect=doMenuEvent((const char**)functionsMenuNames,27,2);
+//	switch(menuselect)
+//		{
+//			case FUNC0:
+//				break;
+//			case FUNC1:
+//				break;
+//		}
 	return(menuselect);
 }
 

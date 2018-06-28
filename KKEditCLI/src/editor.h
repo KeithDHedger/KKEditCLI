@@ -41,6 +41,13 @@ struct pageStruct
 	bool			dirty;
 };
 
+struct funcStruct
+{
+	char	*name;
+	char	*type;
+	int		line;
+};
+
 extern pageStruct	*page;
 
 void initEditor(void);

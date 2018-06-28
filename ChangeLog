@@ -1,4 +1,6 @@
 0.0.7
+Started function menu.
+Fixed seg fault at exit.
 Editor stuff.
 Fixed flickering on slow ssh when fast scrolling.
 Adjusted cursor pos.
