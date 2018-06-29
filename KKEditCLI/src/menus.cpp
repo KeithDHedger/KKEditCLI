@@ -22,16 +22,17 @@
 #include "globals.h"
 
 const char	*menuNames[]={"_File","_Edit","_View","_Navigation","F_unctions","_Bookmarks","_Tools",NULL};
-const char	*fileMenuNames[]={"_New     ","_Open    ","_Save    ","Save _As ","_Quit    ",NULL};
-const char	*editMenuNames[]={"_Cut   ","Cop_y  ","_Paste ",NULL};
-const char	*viewMenuNames[]={"Show docs","Show docs","Show docs",NULL};
-const char	*navMenuNames[]={"Goto _Define    ","Open _Include   ","Goto _Line      ","Search _GTK Docs",NULL};
-//const char	*functionsMenuNames[]={"drawMenuStyle","drawMenuBar","printStatusBar","eventLoop","initCursesLib","oneLiner",NULL};
+const char	*fileMenuNames[]={" _New"," _Open"," _Save"," Save _As"," _Quit",NULL};
+const char	*editMenuNames[]={" _Cut"," Cop_y"," _Paste",NULL};
+const char	*viewMenuNames[]={" Show docs"," Show docs"," Show docs",NULL};
+const char	*navMenuNames[]={" Goto _Define"," Open _Include"," Goto _Line"," Search _GTK Docs",NULL};
 funcStruct	**functionData;
-char		**functionsMenuNames;
+const char	**functionsMenuNames;
 
-const char	*bookmarksMenuNames[]={"_Remove All Marks","_Toggle BM       ",NULL};
-const char	*toolsMenuNames[]={"_Manage Tools",NULL};
+const char	*bookmarksMenuNames[]={" _Remove All Marks"," _Toggle BM",NULL};
+const char	*toolsMenuNames[]={" _Manage Tools",NULL};
+
+int menuWidth=0;
 
 void drawMenuStyle(const char **menulist,int menunum,int x,int y,int style)
 {
@@ -50,15 +51,23 @@ void drawMenuStyle(const char **menulist,int menunum,int x,int y,int style)
 				break;
 		}
 
-	for(unsigned j=0;j<strlen(menulist[menunum]);j++)
+//	for(unsigned j=0;j<strlen(menulist[menunum]);j++)
+	for(unsigned j=0;j<menuWidth;j++)
 		{
+			if(j<strlen(menulist[menunum]))
+			{
 			if(menulist[menunum][j]=='_')
 				{
 					j++;
+					//printf("%s%c%s",UNDERSCOREON,menulist[menunum][j],UNDERSCOREOFF);
 					printf("%s%c%s",UNDERSCOREON,menulist[menunum][j],UNDERSCOREOFF);
 				}
 			else
+				//printf("%c",menulist[menunum][j]);
 				printf("%c",menulist[menunum][j]);
+			}
+			else
+				printf(" ");
 		}
 	fflush(NULL);
 }
@@ -71,6 +80,7 @@ void drawMenuBar(void)
 
 	while(menuNames[menucnt]!=NULL)
 		{
+			menuWidth=strlen(menuNames[menucnt]);
 			drawMenuStyle(menuNames,menucnt,x,y,FLATNORM);
 			x+=strlen(menuNames[menucnt++]);
 		}
@@ -82,6 +92,15 @@ int drawMenuWindow(const char **menulist,int sx,int sy,int prelight)
 	int	cnt=0;
 	int	y=sy;
 
+	menuWidth=0;
+	while(menulist[cnt]!=NULL)
+		{
+			if(strlen(menulist[cnt])>menuWidth)
+				menuWidth=strlen(menulist[cnt])+1;
+			cnt++;
+	}
+
+	cnt=0;
 	while(menulist[cnt]!=NULL)
 		{
 			if(prelight==cnt)

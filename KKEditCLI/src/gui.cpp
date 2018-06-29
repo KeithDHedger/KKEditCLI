@@ -59,7 +59,6 @@ int handleFileMenu(void)
 				moveCursToTemp(minX,currentY);			
 				break;
 			case FILEOPEN:
-				
 				askSaveIfdirty();
 				askOpenFile();
 				break;
@@ -132,58 +131,6 @@ int handleNavMenu(void)
 	return(menuselect);
 }
 
-void getRecursiveTagList(char *filepath,void *ptr)
-{
-	FILE		*fp;
-	char		line[2048];
-//	GString	*str=g_string_new(NULL);
-	char		*command;
-	char		*newstr=NULL;
-	char		*sort=NULL;
-
-	if(filepath==NULL)
-		return;
-
-//	switch(listFunction)
-//		{
-//		case 0:
-//			sinkReturn=asprintf(&sort,"sort -k 2rb,2rb -k 1b,1b");
-//			break;
-//		case 1:
-//			sinkReturn=asprintf(&sort,"sort -k 2rb,2rb -k 3n,3n");
-//			break;
-//		case 2:
-//			sinkReturn=asprintf(&sort,"sort -k 3n");
-//			break;
-//		case 4:
-			asprintf(&sort,"sort -k 2rb,2rb -k 1b,1b");
-//			break;
-//		default:
-//			asprintf(&sort,"sort");
-//			break;
-//		}
-
-	asprintf(&command,"find \"%s\" -maxdepth %i|%s -L - -x|%s|sed 's@ \\+@ @g'",filepath,1,"/usr/bin/ctags",sort);
-	fp=popen(command, "r");
-	while(fgets(line,2048,fp))
-		{
-			//newstr=globalSlice->deleteSlice(line,filepath);
-			//if(globalSlice->getResult()==NOERROR)
-			//	{
-			//		g_string_append_printf(str,"%s",newstr);
-			//		ERRDATA debugFree(&newstr);
-			//	}
-			fprintf(stderr,"%s",line);
-			fflush(NULL);
-		}
-	pclose(fp);
-
-//	*((char**)ptr)=str->str;
-//	g_string_free(str,false);
-//	ERRDATA debugFree(&command);
-//	ERRDATA debugFree(&sort);
-}
-
 void getTagList(void)
 {
 	char		*command;
@@ -193,11 +140,13 @@ void getTagList(void)
 	char		line[2048];
 	int			funcs=0;
 	int			cnt=0;
+	char		*ptr;
+	char		*ptr2;
 
 	asprintf(&command,"ctags -x \"%s\"|wc -l",tmpEdFilePath);
 	retval=oneLiner(false,command);
 	funcs=atoi(retval)+1;
-	functionsMenuNames=(char**)calloc(sizeof(char*),funcs);
+	functionsMenuNames=(const char**)calloc(sizeof(char*),funcs);
 	functionData=(funcStruct**)calloc(sizeof(funcStruct*),funcs);
 
 	free(command);	
@@ -208,20 +157,17 @@ void getTagList(void)
 			functionData[cnt]=new funcStruct;
 			if(strlen(line)>1)
 				line[strlen(line)-1]=0;
-			char *ptr;
-char *ptr2;
 			ptr=strchr((char*)&line,' ');
 			*ptr=0;
-			functionData[cnt]->name=strdup(line);
-ptr++;
-ptr2=strchr(ptr,' ');
-*ptr2=0;
-functionData[cnt]->type=strdup(ptr);
-ptr2++;
-ptr=strchr(ptr2,' ');
-*ptr=0;
-functionData[cnt]->line=atoi(ptr2);
-
+			asprintf(&functionData[cnt]->name," %s",line);
+			ptr++;
+			ptr2=strchr(ptr,' ');
+			*ptr2=0;
+			functionData[cnt]->type=strdup(ptr);
+			ptr2++;
+			ptr=strchr(ptr2,' ');
+			*ptr=0;
+			functionData[cnt]->line=atoi(ptr2)-1;
 			functionsMenuNames[cnt]=functionData[cnt]->name;
 				cnt++;
 		}
@@ -232,26 +178,21 @@ functionData[cnt]->line=atoi(ptr2);
 
 int handleFuncMenu(void)
 {
-	int menuselect;
+	int menuselect=0;
 	if(functionsMenuNames==NULL)
 		getTagList();
-//me uselect++;
+
 	menuselect=doMenuEvent((const char**)functionsMenuNames,27,2);
-
-menuselect--;
-
-printf(">>%s<< >>%s<< %i",functionData[menuselect]->name,functionData[menuselect]->type,functionData[menuselect]->line);
-
-;
-printf(" s=%i\n",menuselect);
-//exit(0);
-//	switch(menuselect)
-//		{
-//			case FUNC0:
-//				break;
-//			case FUNC1:
-//				break;
-//		}
+	if(menuselect>CONT)
+		{
+			menuselect--;
+			page->currentLine=functionData[menuselect]->line;
+			page->topLine=functionData[menuselect]->line;
+			clearScreen();				 
+			printLines();
+			adjCursor();	
+			return(CONT);
+		}
 	return(menuselect);
 }
 
