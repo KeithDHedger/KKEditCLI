@@ -1,4 +1,5 @@
 0.0.7
+Fixed menu width.
 Done nav by function.
 Started function menu.
 Fixed seg fault at exit.
