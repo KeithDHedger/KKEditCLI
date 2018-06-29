@@ -32,7 +32,8 @@ const char	**functionsMenuNames;
 const char	*bookmarksMenuNames[]={" _Remove All Marks"," _Toggle BM",NULL};
 const char	*toolsMenuNames[]={" _Manage Tools",NULL};
 
-int menuWidth=0;
+int			menuWidth=0;
+int			menuStart=0;
 
 void drawMenuStyle(const char **menulist,int menunum,int x,int y,int style)
 {
@@ -88,26 +89,27 @@ int drawMenuWindow(const char **menulist,int sx,int sy,int prelight)
 {
 	int	cnt=0;
 	int	y=sy;
+	int	maxitems=0;
 
 	menuWidth=0;
-	while(menulist[cnt]!=NULL)
+	while(menulist[maxitems]!=NULL)
 		{
-			if(strlen(menulist[cnt])>menuWidth)
-				menuWidth=strlen(menulist[cnt])+1;
-			cnt++;
+			if(strlen(menulist[maxitems])>menuWidth)
+				menuWidth=strlen(menulist[maxitems])+1;
+			maxitems++;
 		}
 
 	cnt=0;
-	while((menulist[cnt]!=NULL) && (y<maxRows))
+	while((menulist[cnt+menuStart]!=NULL) && (y<rows))
 		{
 			if(prelight==cnt)
-				drawMenuStyle(menulist,cnt,sx,y++,FLATINVERT);
+				drawMenuStyle(menulist,cnt+menuStart,sx,y++,FLATINVERT);
 			else
-				drawMenuStyle(menulist,cnt,sx,y++,FLATNORM);
+				drawMenuStyle(menulist,cnt+menuStart,sx,y++,FLATNORM);
 			cnt++;
 		}
 	SETNORMAL;
-	return(cnt);
+	return(maxitems);
 }
 
 int doMenuEvent(const char **menunames,int sx,int sy)
@@ -162,8 +164,12 @@ int doMenuEvent(const char **menunames,int sx,int sy)
 									break;
 								case KEYDOWN:
 									selection++;
-									if(selection>maxitems)
-										selection=maxitems;
+									if(selection>maxitems-2)
+										{
+											selection=maxitems-2;
+											menuStart++;
+											//if(selection+menuStart<
+										}
 									drawMenuWindow(menunames,sx,2,selection-1);
 									continue;
 									break;

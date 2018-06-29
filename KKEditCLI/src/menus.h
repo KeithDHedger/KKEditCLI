@@ -32,6 +32,7 @@ enum {FUNC0=1,FUNC1,FUNCCNT};
 enum {BMREMOVEALL,BMTOGGL,BMCNT};
 enum {TOOLMANAGE=1,TOOLCNT};
 
+extern int			menuStart;
 extern const char	*menuNames[];
 extern const char	*fileMenuNames[];
 extern const char	*editMenuNames[];
