@@ -139,10 +139,19 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 								{
 								case CURSHOME:
 									selection=1;
+									menuStart=0;
 									drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
 									break;
 								case CURSEND:
-									selection=maxitems;
+									if(maxitems>rows-2)
+										{
+											selection=rows-2;
+											menuStart=maxitems-rows+2;
+											if((menuStart+rows-2)>maxitems)
+												menuStart=maxitems-rows+2;
+										}
+									else
+										selection=maxitems;
 									drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
 									break;
 								}
@@ -153,8 +162,19 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 								{
 //keys
 								case PAGEDOWN:
+								DEBUGFUNC("rows+2=%i menuHite=%i",rows+2,menuHite);
+									if(maxitems<menuHite)
+										break;
+									menuStart+=menuHite;
+									if((menuStart+menuHite)>maxitems)
+										menuStart=(maxitems-rows)+2;
+									drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
 									break;
 								case PAGEUP:
+									menuStart-=menuHite;
+									if(menuStart<0)
+										menuStart=0;
+									drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
 									break;
 								case KEYUP:
 									selection--;
@@ -164,28 +184,24 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 											if(menuStart>0)
 												menuStart--;
 										}
-									
 									drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
 									break;
 								case KEYDOWN:
 									selection++;
-									//DEBUGFUNC("selection=%i maxitems=%i menuStart=%i rows=%i",selection,maxitems,menuStart,rows);
 									if(selection>maxitems)
-										{
-											selection=maxitems;
-										}
+										selection=maxitems;
+
 									if(selection+menuStart<=maxitems)
 										{
 											if(selection>rows-2)
 												{
-													selection=rows-2;
+													selection=menuHite;
 													menuStart++;
 												}
 										}
 									else
 										selection--;
 									drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
-									continue;
 									break;
 								case KEYLEFT:
 									menuStart=0;
@@ -209,7 +225,6 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 				{
 					loop=false;
 					selection=CONT;
-				//	menuStart=0;
 					continue;
 				}
 

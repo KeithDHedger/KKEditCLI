@@ -143,6 +143,9 @@ extern int	tabs;
 extern int	startY;
 extern int	endY;
 extern int	lineColour;
+extern int	mBarHite;
+extern int	statusBarHite;
+extern int	menuHite;
 
 //prefs
 extern int	tabs;

@@ -182,7 +182,6 @@ int handleFuncMenu(void)
 	if(functionsMenuNames==NULL)
 		getTagList();
 
-//	menuStart=0;
 	menuselect=doMenuEvent((const char**)functionsMenuNames,27,2,false);
 	if(menuselect>CONT)
 		{

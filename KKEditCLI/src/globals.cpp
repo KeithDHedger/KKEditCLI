@@ -39,6 +39,9 @@ int		newFileNum=1;
 int		startY=1;
 int		endY=1;
 int		lineColour=220;
+int		mBarHite=1;
+int		statusBarHite=1;
+int		menuHite=1;
 
 //prefs
 int		tabs=8;

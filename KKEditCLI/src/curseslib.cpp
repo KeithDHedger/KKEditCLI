@@ -53,6 +53,8 @@ void initCursesLib(void)
 	maxCols=cols-minX;
 	startY=1;
 	endY=startY+maxRows;
+
+	menuHite=rows-mBarHite-statusBarHite-1;
 	
 //	system("tabs $(seq -s , 1 8 256)");
 }
