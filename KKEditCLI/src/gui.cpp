@@ -209,11 +209,21 @@ void getTagList(void)
 			if(strlen(line)>1)
 				line[strlen(line)-1]=0;
 			char *ptr;
+char *ptr2;
 			ptr=strchr((char*)&line,' ');
 			*ptr=0;
 			functionData[cnt]->name=strdup(line);
+ptr++;
+ptr2=strchr(ptr,' ');
+*ptr2=0;
+functionData[cnt]->type=strdup(ptr);
+ptr2++;
+ptr=strchr(ptr2,' ');
+*ptr=0;
+functionData[cnt]->line=atoi(ptr2);
+
 			functionsMenuNames[cnt]=functionData[cnt]->name;
-			cnt++;
+				cnt++;
 		}
 	functionsMenuNames[cnt]=NULL;
 	functionData[cnt]=NULL;
@@ -225,7 +235,16 @@ int handleFuncMenu(void)
 	int menuselect;
 	if(functionsMenuNames==NULL)
 		getTagList();
+//me uselect++;
 	menuselect=doMenuEvent((const char**)functionsMenuNames,27,2);
+
+menuselect--;
+
+printf(">>%s<< >>%s<< %i",functionData[menuselect]->name,functionData[menuselect]->type,functionData[menuselect]->line);
+
+;
+printf(" s=%i\n",menuselect);
+//exit(0);
 //	switch(menuselect)
 //		{
 //			case FUNC0:
