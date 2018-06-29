@@ -35,7 +35,7 @@ const char	*toolsMenuNames[]={" _Manage Tools",NULL};
 int			menuWidth=0;
 int			menuStart=0;
 
-void drawMenuStyle(const char **menulist,int menunum,int x,int y,int style)
+void drawMenuStyle(const char **menulist,int menunum,int x,int y,int style,bool doshortcut)
 {
 	moveCursToTemp(x,y);
 	switch(style)
@@ -56,7 +56,7 @@ void drawMenuStyle(const char **menulist,int menunum,int x,int y,int style)
 		{
 			if(j<strlen(menulist[menunum]))
 				{
-					if(menulist[menunum][j]=='_')
+					if((menulist[menunum][j]=='_') && (doshortcut==true))
 						{
 							j++;
 							printf("%s%c%s",UNDERSCOREON,menulist[menunum][j],UNDERSCOREOFF);
@@ -79,13 +79,13 @@ void drawMenuBar(void)
 	while(menuNames[menucnt]!=NULL)
 		{
 			menuWidth=strlen(menuNames[menucnt]);
-			drawMenuStyle(menuNames,menucnt,x,y,FLATNORM);
+			drawMenuStyle(menuNames,menucnt,x,y,FLATNORM,true);
 			x+=strlen(menuNames[menucnt++]);
 		}
 	SETNORMAL;
 }
 
-int drawMenuWindow(const char **menulist,int sx,int sy,int prelight)
+int drawMenuWindow(const char **menulist,int sx,int sy,int prelight,bool doshortcut)
 {
 	int	cnt=0;
 	int	y=sy;
@@ -103,16 +103,16 @@ int drawMenuWindow(const char **menulist,int sx,int sy,int prelight)
 	while((menulist[cnt+menuStart]!=NULL) && (y<rows))
 		{
 			if(prelight==cnt)
-				drawMenuStyle(menulist,cnt+menuStart,sx,y++,FLATINVERT);
+				drawMenuStyle(menulist,cnt+menuStart,sx,y++,FLATINVERT,doshortcut);
 			else
-				drawMenuStyle(menulist,cnt+menuStart,sx,y++,FLATNORM);
+				drawMenuStyle(menulist,cnt+menuStart,sx,y++,FLATNORM,doshortcut);
 			cnt++;
 		}
 	SETNORMAL;
 	return(maxitems);
 }
 
-int doMenuEvent(const char **menunames,int sx,int sy)
+int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 {
 	bool	loop=true;
 	int		selection=0;
@@ -121,7 +121,7 @@ int doMenuEvent(const char **menunames,int sx,int sy)
 	int		cnt=0;
 	char	tstr[3]={'_',0,0};
 
-	maxitems=drawMenuWindow(menunames,sx,sy,-1);
+	maxitems=drawMenuWindow(menunames,sx,sy,-1,doshortcut);
 	HIDECURS;
 	fflush(NULL);
 	while(loop==true)
@@ -139,11 +139,11 @@ int doMenuEvent(const char **menunames,int sx,int sy)
 								{
 								case CURSHOME:
 									selection=1;
-									drawMenuWindow(menunames,sx,2,selection-1);
+									drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
 									break;
 								case CURSEND:
 									selection=maxitems;
-									drawMenuWindow(menunames,sx,2,selection-1);
+									drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
 									break;
 								}
 							break;
@@ -159,26 +159,42 @@ int doMenuEvent(const char **menunames,int sx,int sy)
 								case KEYUP:
 									selection--;
 									if(selection<1)
-										selection=1;
-									drawMenuWindow(menunames,sx,2,selection-1);
+										{
+											selection=1;
+											if(menuStart>0)
+												menuStart--;
+										}
+									
+									drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
 									break;
 								case KEYDOWN:
 									selection++;
-									if(selection>maxitems-2)
+									//DEBUGFUNC("selection=%i maxitems=%i menuStart=%i rows=%i",selection,maxitems,menuStart,rows);
+									if(selection>maxitems)
 										{
-											selection=maxitems-2;
-											menuStart++;
-											//if(selection+menuStart<
+											selection=maxitems;
 										}
-									drawMenuWindow(menunames,sx,2,selection-1);
+									if(selection+menuStart<=maxitems)
+										{
+											if(selection>rows-2)
+												{
+													selection=rows-2;
+													menuStart++;
+												}
+										}
+									else
+										selection--;
+									drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
 									continue;
 									break;
 								case KEYLEFT:
+									menuStart=0;
 									selection=MENULEFT;
 									loop=false;
 									continue;
 									break;
 								case KEYRITE:
+									menuStart=0;
 									selection=MENURITE;									
 									loop=false;
 									continue;
@@ -193,6 +209,7 @@ int doMenuEvent(const char **menunames,int sx,int sy)
 				{
 					loop=false;
 					selection=CONT;
+				//	menuStart=0;
 					continue;
 				}
 
@@ -202,7 +219,7 @@ int doMenuEvent(const char **menunames,int sx,int sy)
 					SHOWCURS;
 					printLines();
 					moveCursToTemp(currentX,currentY);
-					return(selection);
+					return(selection+menuStart);
 				}
 
 			tstr[1]=buf[0];

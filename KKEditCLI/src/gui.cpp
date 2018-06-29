@@ -49,7 +49,7 @@ int handleFileMenu(void)
 	int		menuselect;
 	char	*message=NULL;
 
-	menuselect=doMenuEvent(fileMenuNames,1,2);
+	menuselect=doMenuEvent(fileMenuNames,1,2,true);
 	switch(menuselect)
 		{
 			case FILENEW:
@@ -82,7 +82,7 @@ int handleEditMenu(void)
 {
 	int menuselect;
 
-	menuselect=doMenuEvent(editMenuNames,6,2);
+	menuselect=doMenuEvent(editMenuNames,6,2,true);
 	switch(menuselect)
 		{
 			case EDITCUT:
@@ -99,7 +99,7 @@ int handleViewMenu(void)
 {
 	int menuselect;
 
-	menuselect=doMenuEvent(viewMenuNames,11,2);
+	menuselect=doMenuEvent(viewMenuNames,11,2,true);
 	switch(menuselect)
 		{
 			case VIEWDOC0:
@@ -116,7 +116,7 @@ int handleNavMenu(void)
 {
 	int menuselect;
 
-	menuselect=doMenuEvent(navMenuNames,16,2);
+	menuselect=doMenuEvent(navMenuNames,16,2,true);
 	switch(menuselect)
 		{
 			case NAVEGOTODEF:
@@ -182,8 +182,8 @@ int handleFuncMenu(void)
 	if(functionsMenuNames==NULL)
 		getTagList();
 
-	menuStart=0;
-	menuselect=doMenuEvent((const char**)functionsMenuNames,27,2);
+//	menuStart=0;
+	menuselect=doMenuEvent((const char**)functionsMenuNames,27,2,false);
 	if(menuselect>CONT)
 		{
 			menuselect--;
@@ -201,7 +201,7 @@ int handleBMMenu(void)
 {
 	int menuselect;
 
-	menuselect=doMenuEvent(bookmarksMenuNames,37,2);
+	menuselect=doMenuEvent(bookmarksMenuNames,37,2,true);
 	switch(menuselect)
 		{
 			case BMREMOVEALL:
@@ -216,7 +216,7 @@ int handleToolMenu(void)
 {
 	int menuselect;
 
-	menuselect=doMenuEvent(toolsMenuNames,47,2);
+	menuselect=doMenuEvent(toolsMenuNames,47,2,true);
 	switch(menuselect)
 		{
 			case TOOLMANAGE:
@@ -442,6 +442,7 @@ void eventLoop(void)
 								dorefresh=true;
 								break;
 							case ESCCHAR:
+								menuStart=0;
 								if(handleAllMenus()==BRAKE)
 									return;
 								continue;

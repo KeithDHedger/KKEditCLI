@@ -44,6 +44,6 @@ extern const char	*bookmarksMenuNames[];
 extern const char	*toolsMenuNames[];
 
 void drawMenuBar(void);
-int doMenuEvent(const char **menunames,int sx,int sy);
+int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut);
 
 #endif

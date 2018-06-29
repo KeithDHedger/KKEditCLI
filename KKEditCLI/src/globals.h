@@ -109,7 +109,7 @@ static void debugFunc(const char *file,const char *func,int line,const char *fmt
 
 static void freeAndNull(char** ptr)
 {
-	DEBUGFUNC("ptr=%p",ptr);
+	//DEBUGFUNC("ptr=%p",ptr);
 	if(*ptr!=NULL)
 		free(*ptr);
 
