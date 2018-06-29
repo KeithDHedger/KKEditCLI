@@ -51,21 +51,18 @@ void drawMenuStyle(const char **menulist,int menunum,int x,int y,int style)
 				break;
 		}
 
-//	for(unsigned j=0;j<strlen(menulist[menunum]);j++)
 	for(unsigned j=0;j<menuWidth;j++)
 		{
 			if(j<strlen(menulist[menunum]))
-			{
-			if(menulist[menunum][j]=='_')
 				{
-					j++;
-					//printf("%s%c%s",UNDERSCOREON,menulist[menunum][j],UNDERSCOREOFF);
-					printf("%s%c%s",UNDERSCOREON,menulist[menunum][j],UNDERSCOREOFF);
+					if(menulist[menunum][j]=='_')
+						{
+							j++;
+							printf("%s%c%s",UNDERSCOREON,menulist[menunum][j],UNDERSCOREOFF);
+						}
+					else
+						printf("%c",menulist[menunum][j]);
 				}
-			else
-				//printf("%c",menulist[menunum][j]);
-				printf("%c",menulist[menunum][j]);
-			}
 			else
 				printf(" ");
 		}
@@ -98,10 +95,10 @@ int drawMenuWindow(const char **menulist,int sx,int sy,int prelight)
 			if(strlen(menulist[cnt])>menuWidth)
 				menuWidth=strlen(menulist[cnt])+1;
 			cnt++;
-	}
+		}
 
 	cnt=0;
-	while(menulist[cnt]!=NULL)
+	while((menulist[cnt]!=NULL) && (y<maxRows))
 		{
 			if(prelight==cnt)
 				drawMenuStyle(menulist,cnt,sx,y++,FLATINVERT);
