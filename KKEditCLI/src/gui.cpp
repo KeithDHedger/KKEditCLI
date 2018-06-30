@@ -169,11 +169,13 @@ void getTagList(void)
 			*ptr=0;
 			functionData[cnt]->line=atoi(ptr2)-1;
 			functionsMenuNames[cnt]=functionData[cnt]->name;
-				cnt++;
+			cnt++;
 		}
 	functionsMenuNames[cnt]=NULL;
 	functionData[cnt]=NULL;
 	pclose(fp);
+	free(command);
+	free(retval);
 }
 
 int handleFuncMenu(void)
