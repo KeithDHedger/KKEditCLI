@@ -57,5 +57,6 @@ void moveCursUp(void);
 void moveCursLeft(void);
 void closePage(void);
 void adjCursor(void);
+int findLineByLineNumber(int linenumber);
 
 #endif

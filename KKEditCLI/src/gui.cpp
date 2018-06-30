@@ -179,6 +179,8 @@ void getTagList(void)
 int handleFuncMenu(void)
 {
 	int menuselect=0;
+	int	line=0;
+
 	if(functionsMenuNames==NULL)
 		getTagList();
 
@@ -186,10 +188,13 @@ int handleFuncMenu(void)
 	if(menuselect>CONT)
 		{
 			menuselect--;
-			page->currentLine=functionData[menuselect]->line;
-			page->topLine=functionData[menuselect]->line;
+			line=findLineByLineNumber(functionData[menuselect]->line)+1;
+			page->currentLine=line;
+			page->topLine=line;
 			clearScreen();				 
 			printLines();
+			page->lineXCurs=0;
+			currentY=minY;
 			adjCursor();	
 			return(CONT);
 		}
