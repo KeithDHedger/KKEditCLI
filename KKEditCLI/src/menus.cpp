@@ -100,7 +100,7 @@ int drawMenuWindow(const char **menulist,int sx,int sy,int prelight,bool doshort
 		}
 
 	cnt=0;
-	while((menulist[cnt+menuStart]!=NULL) && (y<rows))
+	while((menulist[cnt+menuStart]!=NULL) && (y<menuHite+mBarHite))
 		{
 			if(prelight==cnt)
 				drawMenuStyle(menulist,cnt+menuStart,sx,y++,FLATINVERT,doshortcut);
@@ -162,12 +162,11 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 								{
 //keys
 								case PAGEDOWN:
-								DEBUGFUNC("rows+2=%i menuHite=%i",rows+2,menuHite);
 									if(maxitems<menuHite)
-										break;
+										break;								
 									menuStart+=menuHite;
 									if((menuStart+menuHite)>maxitems)
-										menuStart=(maxitems-rows)+2;
+										menuStart=maxitems-menuHite+1;
 									drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
 									break;
 								case PAGEUP:
@@ -188,14 +187,16 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 									break;
 								case KEYDOWN:
 									selection++;
+									if((selection>maxitems) || (selection>menuHite))
+										selection=menuHite-mBarHite;
 									if(selection>maxitems)
 										selection=maxitems;
 
 									if(selection+menuStart<=maxitems)
 										{
-											if(selection>rows-2)
+											if(selection>menuHite-mBarHite)
 												{
-													selection=menuHite;
+													selection=menuHite-mBarHite;
 													menuStart++;
 												}
 										}
