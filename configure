@@ -590,6 +590,7 @@ LTLIBOBJS
 LIBOBJS
 DIALOG_LIBS
 DIALOG_CFLAGS
+CTAGS
 DIALOG
 SOURCEHILITE_LIBS
 SOURCEHILITE_CFLAGS
@@ -4630,6 +4631,54 @@ $as_echo "$as_me: https://invisible-island.net/dialog/" >&6;}
 else
 	DIALOG_CFLAGS=`/usr/bin/dialog-config --cflags`
 	DIALOG_LIBS=`/usr/bin/dialog-config --libs`
+fi
+
+# Extract the first word of "ctags ", so it can be a program name with args.
+set dummy ctags ; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_CTAGS+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$CTAGS"; then
+  ac_cv_prog_CTAGS="$CTAGS" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_CTAGS="true"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_CTAGS" && ac_cv_prog_CTAGS="false"
+fi
+fi
+CTAGS=$ac_cv_prog_CTAGS
+if test -n "$CTAGS"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $CTAGS" >&5
+$as_echo "$CTAGS" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+if test $CTAGS = false; then
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: No ctags program found!" >&5
+$as_echo "$as_me: No ctags program found!" >&6;}
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: You can download it from here:" >&5
+$as_echo "$as_me: You can download it from here:" >&6;}
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: http://ctags.sourceforge.net" >&5
+$as_echo "$as_me: http://ctags.sourceforge.net" >&6;}
+	exit 0
 fi
 
 

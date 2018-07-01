@@ -35,6 +35,14 @@ else
 	DIALOG_LIBS=`/usr/bin/dialog-config --libs`
 fi
 
+AC_CHECK_PROG(CTAGS, ctags ,true,false)
+if test $CTAGS = false; then
+	AC_MSG_NOTICE([No ctags program found!])
+	AC_MSG_NOTICE([You can download it from here:])
+	AC_MSG_NOTICE([http://ctags.sourceforge.net])
+	exit 0
+fi
+
 AC_SUBST(DIALOG_CFLAGS)
 AC_SUBST(DIALOG_LIBS)
 

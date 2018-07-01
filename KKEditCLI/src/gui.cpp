@@ -293,12 +293,16 @@ void eventLoop(void)
 	bool			dorefresh=false;
 	bool			needsrefresh=false;
 	unsigned char	buf[16];
+	int				charsread;
+	bool			donereadbuffer=true;
+	int				totallinelen=0;
+
 		//	DEBUGFUNC(">>>>0=%x 0=%c 1=%x 1=%c 2=%x 2=%c 3=%x 3=%c",buf[0],buf[0],buf[1],buf[1],buf[2],buf[2],buf[3],buf[3]);
 	while(true)
 		{
 			memset(buf,0,16);
 			fflush(NULL);
-			read(STDIN_FILENO,&buf,15);
+			charsread=read(STDIN_FILENO,&buf,15);
 			handled=false;
 
 			if(buf[0]==ESCCHAR)
@@ -478,12 +482,33 @@ void eventLoop(void)
 								break;
 
 							case TABKEY:
-								writeCharToFile(buf[0]);
-								refreshScreen();
-								moveCursRite();
-								break;
+								if(charsread==1)
+								{	
+									writeCharToFile(buf[0]);
+									refreshScreen();
+									moveCursRite();
+									break;
+								}
 							default:
-								writeCharToFile(buf[0]);
+								totallinelen=0;
+								donereadbuffer=false;
+								while(donereadbuffer==false)
+									{
+										for(int j=0;j<charsread;j++)
+											{
+												writeCharToFile(buf[j]);
+												page->lineXCurs++;
+												totallinelen++;
+											}
+										if(charsread<15)
+											break;
+										charsread=read(STDIN_FILENO,&buf,15);
+									}
+								page->lineXCurs--;
+								fflush(NULL);
+								if(totallinelen>1)
+									dorefresh=true;
+
 								if(currentX==cols-1)
 									{
 										currentY++;
@@ -499,7 +524,8 @@ void eventLoop(void)
 									{
 										needsrefresh=true;
 										moveCursToTemp(minX,currentY);
-										printf("%s",page->line[page->currentLine].edLine);
+										if(totallinelen<2)
+											printf("%s",page->line[page->currentLine].edLine);
 										currentX++;
 										moveCursRite();
 									}

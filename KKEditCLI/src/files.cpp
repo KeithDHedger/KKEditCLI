@@ -260,7 +260,7 @@ void askSaveIfdirty(void)
 
 	if(page->dirty==true)
 		{
-			DEBUGFUNC("save dirty","");
+			//DEBUGFUNC("save dirty","");
 			asprintf(&message,"\"%s\"\n\nHas been changed, save?",page->filePath);
 			init_dialog(stdin,stdout);
 				status=dialog_yesno("",message,8,strlen(page->filePath)+8);

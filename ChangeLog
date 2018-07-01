@@ -1,4 +1,5 @@
 0.0.8
+Added check for ctags in configure.ac.
 Fixed mem leak.
 Fixed jump to line from func menu.
 Fixed pageup/down in menus.
