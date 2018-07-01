@@ -21,11 +21,21 @@
 #include <string.h>
 #include "globals.h"
 
+void clearTrough(void)
+{
+	for(int j=1;j<rows;j++)
+		{
+			moveCursToTemp(minX,j);
+			printf(CLEARTOSOL);
+		}
+}
+
 void printLines(void)
 {
 	int	screenline=minY;
 
 	HIDECURS;
+	clearTrough();
 	drawMenuBar();
 	for(int j=page->topLine; j<page->topLine+maxRows; j++)
 		{
