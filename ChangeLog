@@ -1,4 +1,8 @@
 0.0.8
+Added Goto Line to Nav menu.
+Added Goto Def to Nav Menu.
+Added tag type to Functions menu.
+Added word under cursor to status bar.
 Fixed junk in trough.
 Fixed for paste more than one char.
 Added check for ctags in configure.ac.

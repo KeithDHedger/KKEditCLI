@@ -21,6 +21,8 @@
 #include "globals.h"
 
 pageStruct	*page=NULL;
+char		*wordBuf[1024]={0,};
+const char	*wordBufPtr=(const char*)wordBuf;
 
 void initEditor(void)
 {
@@ -53,6 +55,7 @@ void closePage(void)
 	delete page;
 	page=NULL;
 	unlink(tmpEdFilePath);
+	clearTagList();
 }
 
 void adjCursor(void)
@@ -181,3 +184,36 @@ int findLineByLineNumber(int linenumber)
 		}
 	return(0);
 }
+
+void findWordUnderCursor(void)
+{
+	int	startx;
+	int	endx;
+
+	wordBuf[0]=0;
+	if(!isalnum(page->line[page->currentLine].edLine[page->lineXCurs]))
+		return;
+
+	startx=page->lineXCurs;
+	endx=startx;
+
+	while(((isalnum(page->line[page->currentLine].edLine[startx])) || (page->line[page->currentLine].edLine[startx]=='_')) && (startx>=0))
+		startx--;
+
+	while(((isalnum(page->line[page->currentLine].edLine[endx])) || (page->line[page->currentLine].edLine[endx]=='_')) && (endx<=page->line[page->currentLine].lineLen))
+		endx++;
+
+	snprintf((char*)&wordBuf,endx-startx,"%s",&page->line[page->currentLine].edLine[startx+1]);
+}
+
+
+
+
+
+
+
+
+
+
+
+

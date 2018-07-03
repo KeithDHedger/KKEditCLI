@@ -48,6 +48,9 @@ struct funcStruct
 	int		line;
 };
 
+extern char			*wordBuf[1024];
+extern const char	*wordBufPtr;
+
 extern pageStruct	*page;
 
 void initEditor(void);
@@ -58,5 +61,6 @@ void moveCursLeft(void);
 void closePage(void);
 void adjCursor(void);
 int findLineByLineNumber(int linenumber);
+void findWordUnderCursor(void);
 
 #endif

@@ -43,6 +43,9 @@
 #define BACKCYAN "\e[46m"
 #define BACKWHITE "\e[47m"
 
+#define INVERTON "\e[7m"
+#define INVERTOFF "\e[27m"
+
 #define BLACK "0"
 #define RED "1"
 #define GREEN "2"

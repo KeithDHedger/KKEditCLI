@@ -98,6 +98,7 @@ int handleEditMenu(void)
 			case EDITCUT:
 				break;
 			case EDITCOPY:
+				//fprintf(stdin,"
 				break;
 			case EDITPASTE:
 				break;
@@ -130,62 +131,55 @@ int handleNavMenu(void)
 	switch(menuselect)
 		{
 			case NAVEGOTODEF:
+				{
+					int	cnt=0;
+					int	line=0;
+					if(functionsMenuNames==NULL)
+						getTagList();
+
+					while(functionData[cnt]!=NULL)
+						{
+							if(strcmp(wordBufPtr,functionData[cnt]->name)==0)
+								{
+									line=findLineByLineNumber(functionData[cnt]->line)+1;
+									page->currentLine=line;
+									page->topLine=line;
+									page->lineXCurs=0;
+									currentY=minY;
+									adjCursor();
+									break;
+								}
+							cnt++;
+						}
+				}
+				clearScreen();
+				refreshScreen();
+				return(CONT);
 				break;
 			case NAVEOPENINC:
 				break;
 			case NAVGOTOLINE:
+				{
+					int	status=0;
+				init_dialog(stdin,stdout);
+					status=dialog_inputbox("","Goto Line?",0,0,"",false);
+				end_dialog();
+				if(status==0)
+					{
+						page->currentLine=atoi(dialog_vars.input_result)-1;
+						page->topLine=page->currentLine;
+						page->lineXCurs=0;
+						currentY=minY;
+						adjCursor();
+					}
+				clearScreen();
+				refreshScreen();
+				}
 				break;
 			case NAVSEARCHGTK:
 				break;
 		}
 	return(menuselect);
-}
-
-void getTagList(void)
-{
-	char		*command;
-	const char	*sortcommand="sort -k 2rb,2rb -k 1b,1b";
-	char		*retval=NULL;
-	FILE		*fp;
-	char		line[2048];
-	int			funcs=0;
-	int			cnt=0;
-	char		*ptr;
-	char		*ptr2;
-
-	asprintf(&command,"ctags -x \"%s\"|wc -l",tmpEdFilePath);
-	retval=oneLiner(false,command);
-	funcs=atoi(retval)+1;
-	functionsMenuNames=(const char**)calloc(sizeof(char*),funcs);
-	functionData=(funcStruct**)calloc(sizeof(funcStruct*),funcs);
-
-	free(command);	
-	asprintf(&command,"ctags -x \"%s\"|%s|sed 's@ \\+@ @g'",tmpEdFilePath,sortcommand);
-	fp=popen(command, "r");
-	while(fgets(line,2048,fp))
-		{
-			functionData[cnt]=new funcStruct;
-			if(strlen(line)>1)
-				line[strlen(line)-1]=0;
-			ptr=strchr((char*)&line,' ');
-			*ptr=0;
-			asprintf(&functionData[cnt]->name," %s",line);
-			ptr++;
-			ptr2=strchr(ptr,' ');
-			*ptr2=0;
-			functionData[cnt]->type=strdup(ptr);
-			ptr2++;
-			ptr=strchr(ptr2,' ');
-			*ptr=0;
-			functionData[cnt]->line=atoi(ptr2)-1;
-			functionsMenuNames[cnt]=functionData[cnt]->name;
-			cnt++;
-		}
-	functionsMenuNames[cnt]=NULL;
-	functionData[cnt]=NULL;
-	pclose(fp);
-	free(command);
-	free(retval);
 }
 
 int handleFuncMenu(void)
@@ -306,15 +300,15 @@ void eventLoop(void)
 	int				charsread;
 	bool			donereadbuffer=true;
 	int				totallinelen=0;
-
-		//	DEBUGFUNC(">>>>0=%x 0=%c 1=%x 1=%c 2=%x 2=%c 3=%x 3=%c",buf[0],buf[0],buf[1],buf[1],buf[2],buf[2],buf[3],buf[3]);
 	while(true)
 		{
-			memset(buf,0,16);
+			//DEBUGFUNC(">>>>0=%x 0=%c 1=%x 1=%c 2=%x 2=%c 3=%x 3=%c",buf[0],buf[0],buf[1],buf[1],buf[2],buf[2],buf[3],buf[3]);
+			
+			printStatusBar();
 			fflush(NULL);
+			memset(buf,0,16);
 			charsread=read(STDIN_FILENO,&buf,15);
 			handled=false;
-
 			if(buf[0]==ESCCHAR)
 				{
 					switch(buf[1])
@@ -563,7 +557,6 @@ void eventLoop(void)
 					adjCursor();
 					continue;
 				}
-			printStatusBar();
 			fflush(NULL);
 			fflush(STDIN_FILENO);
 		}
@@ -571,6 +564,8 @@ void eventLoop(void)
 
 void printStatusBar(void)
 {
+	findWordUnderCursor();
 	printf("\e[m\e[%i;%iHLine=%i Column=%i   ",rows,1,currentY-minY+1,currentX-minX+1);
+	printf("%s%s",wordBufPtr,CLEARTOEOL);
 	printf("\e[%i;%iH",currentY,currentX);
 }

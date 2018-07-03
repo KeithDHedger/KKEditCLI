@@ -35,5 +35,7 @@ void askSaveIfdirty(void);
 void setTempEdFile(const char *path);
 void makeNewFile(void);
 void askOpenFile(void);
+void getTagList(void);
+void clearTagList(void);
 
 #endif

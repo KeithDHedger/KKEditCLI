@@ -327,3 +327,67 @@ void askOpenFile(void)
 	moveCursToTemp(currentX,currentY);
 }
 
+void clearTagList(void)
+{
+	int	cnt=0;
+
+	if(functionData!=NULL)
+		{
+			free(functionsMenuNames);
+			while(functionData[cnt]!=NULL)
+				{
+					free(functionData[cnt]->name);
+					free(functionData[cnt]->type);
+					delete functionData[cnt++];
+				}
+			free(functionData);
+		}
+	functionData==NULL;
+	functionsMenuNames=NULL;
+}
+
+void getTagList(void)
+{
+	char		*command;
+	const char	*sortcommand="sort -k 2rb,2rb -k 1b,1b";
+	char		*retval=NULL;
+	FILE		*fp;
+	char		line[2048];
+	int			funcs=0;
+	int			cnt=0;
+	char		*ptr;
+	char		*ptr2;
+
+	asprintf(&command,"ctags -x \"%s\"|wc -l",tmpEdFilePath);
+	retval=oneLiner(false,command);
+	funcs=atoi(retval)+1;
+	functionsMenuNames=(char**)calloc(sizeof(char*),funcs);
+	functionData=(funcStruct**)calloc(sizeof(funcStruct*),funcs);
+	free(command);	
+	asprintf(&command,"ctags -x \"%s\"|%s|sed 's@ \\+@ @g'",tmpEdFilePath,sortcommand);
+	fp=popen(command, "r");
+	while(fgets(line,2048,fp))
+		{
+			functionData[cnt]=new funcStruct;
+			if(strlen(line)>1)
+				line[strlen(line)-1]=0;
+			ptr=strchr((char*)&line,' ');
+			*ptr=0;
+			asprintf(&functionData[cnt]->name,"%s",line);
+			ptr++;
+			ptr2=strchr(ptr,' ');
+			*ptr2=0;
+			functionData[cnt]->type=strdup(ptr);
+			ptr2++;
+			ptr=strchr(ptr2,' ');
+			*ptr=0;
+			functionData[cnt]->line=atoi(ptr2)-1;
+			asprintf(&functionsMenuNames[cnt]," %s%.4s%s %s",BACKRED,functionData[cnt]->type,BACKBLACK,functionData[cnt]->name);
+			cnt++;
+		}
+	functionsMenuNames[cnt]=NULL;
+	functionData[cnt]=NULL;
+	pclose(fp);
+	free(command);
+	free(retval);
+}

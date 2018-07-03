@@ -39,7 +39,7 @@ extern const char	*editMenuNames[];
 extern const char	*viewMenuNames[];
 extern const char	*navMenuNames[];
 extern funcStruct	**functionData;
-extern const char	**functionsMenuNames;
+extern char			**functionsMenuNames;
 extern const char	*bookmarksMenuNames[];
 extern const char	*toolsMenuNames[];
 
