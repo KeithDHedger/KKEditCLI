@@ -49,6 +49,7 @@ void initCursesLib(void)
 	cols=w.ws_col;
 	cols=159;
 	rows=w.ws_row;
+	minY=mBarHite+2;
 	maxRows=rows-minY;
 	maxCols=cols-minX;
 	startY=1;

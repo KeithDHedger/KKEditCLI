@@ -160,20 +160,26 @@ int handleNavMenu(void)
 				break;
 			case NAVGOTOLINE:
 				{
-					int	status=0;
-				init_dialog(stdin,stdout);
-					status=dialog_inputbox("","Goto Line?",0,0,"",false);
-				end_dialog();
-				if(status==0)
-					{
-						page->currentLine=atoi(dialog_vars.input_result)-1;
-						page->topLine=page->currentLine;
-						page->lineXCurs=0;
-						currentY=minY;
-						adjCursor();
-					}
-				clearScreen();
-				refreshScreen();
+					int	status=-1;
+					init_dialog(stdin,stdout);
+						dialog_vars.default_button=-1;
+						status=dialog_inputbox("","Goto Line?",0,0,"",false);
+					end_dialog();
+					if(status==0)
+						{
+							page->currentLine=atoi(dialog_vars.input_result)-1;
+							if(page->currentLine>page->maxLines)
+								page->currentLine=page->maxLines-1;
+							if(page->currentLine<1)
+								page->currentLine=0;
+							
+							page->topLine=page->currentLine;
+							page->lineXCurs=0;
+							currentY=minY;
+							adjCursor();
+						}
+					clearScreen();
+					refreshScreen();
 				}
 				break;
 			case NAVSEARCHGTK:
