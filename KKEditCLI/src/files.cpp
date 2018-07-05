@@ -297,24 +297,16 @@ void makeNewFile(void)
 
 void askOpenFile(void)
 {
-	char	*message;
+	int	status=-100;
 
-	asprintf(&message,"%s",page->filePath);
 	init_dialog(stdin,stdout);
-		dialog_fselect("Open File",message,rows-14,cols-14);
+		status=dialog_fselect("Open File",page->filePath,rows-14,cols-14);
 	end_dialog();
 	dlg_clear();
 	clearScreen();
-	initEditor();
-	if(dialog_vars.input_result==NULL)
+	if(status==0)
 		{
-			setTempEdFile(message);
-			oneLiner(true,"cp %s %s/%s",message,tmpEdDir,tmpEdFile);
-			page->filePath=strdup(message);
-			openTheFile(tmpEdFilePath);
-		}
-	else
-		{
+			initEditor();
 			setTempEdFile(dialog_vars.input_result);
 			page->filePath=strdup(dialog_vars.input_result);
 			oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
@@ -322,8 +314,6 @@ void askOpenFile(void)
 			currentX=minX;
 			currentY=minY;
 		}
-
-	free(message);
 	printLines();
 	moveCursToTemp(currentX,currentY);
 }
