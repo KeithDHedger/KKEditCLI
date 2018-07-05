@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 				}
 		}
 	free(pages);
-			
+	oneLiner(true,"rm %s/src",tmpEdDir);		
 	printf("\n");
 	return 0;
 }
