@@ -79,14 +79,15 @@ void initEditor(void)
 		}
 	page->pageNum=currentPage;
 	pages[currentPage]=page;
-//	buildTabMenu();
-//for(int j=0;j<maxPages;j++)
-//	DEBUGFUNC("------------------currentPage=%i maxpages=%i;pages[%i]=%p pages=%p",currentPage,maxPages,j,pages[j],*pages);
 }
 
 void closePage(void)
 {
 	int	freenum=page->pageNum;
+
+	if(page!=NULL)
+		askSaveIfdirty();
+
 	for(int j=0;j<page->maxLines;j++)
 		{
 			free(page->line[j].srcLine);

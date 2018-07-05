@@ -1,4 +1,6 @@
 0.0.9
+Check for dirty files on quit.
+Removed tmp files on quit.
 Fixed 'Cancel' in open file dialog.
 Added file path.
 Fixed various bugs and leaks.

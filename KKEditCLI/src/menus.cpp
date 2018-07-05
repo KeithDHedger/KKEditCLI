@@ -239,7 +239,6 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 					SHOWCURS;
 					printLines();
 					moveCursToTemp(currentX,currentY);
-					DEBUGFUNC("selection+menuStart=%i",selection+menuStart);
 					return(selection+menuStart);
 				}
 

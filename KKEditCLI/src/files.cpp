@@ -32,7 +32,6 @@ void setTempEdFile(const char *path)
 	freeAndNull(&tmpEdFile);
 	freeAndNull(&tmpEdFilePath);
 	basec=strdup(path);
-//	tmpEdFile=strdup(basename(basec));
 	asprintf(&tmpEdFile,"%i.%s",page->pageNum,basename(basec));
 	asprintf(&tmpEdFilePath,"%s/%s",tmpEdDir,tmpEdFile);
 	free(basec);
@@ -280,12 +279,6 @@ void askSaveIfdirty(void)
 
 void makeNewFile(void)
 {
-//	if(page!=NULL)
-//		{
-//			askSaveIfdirty();
-//			closePage();
-//		}
-
 	initEditor();
 	asprintf(&page->filePath,"/tmp/Untitled-%i",newFileNum++);
 	setTempEdFile(page->filePath);
