@@ -30,6 +30,14 @@ void clearTrough(void)
 		}
 }
 
+void drawFilePath(void)
+{
+	char	*rp=realpath(page->filePath,NULL);
+	moveCursToTemp((cols/2)-(strlen(rp)/2),mBarHite+1);
+	printf(BACKRED FOREWHITE "%s" NORMAL,rp);
+	free(rp);
+}
+
 void printLines(void)
 {
 	int	screenline=minY;
@@ -37,6 +45,7 @@ void printLines(void)
 	HIDECURS;
 	clearTrough();
 	drawMenuBar();
+
 	for(int j=page->topLine; j<page->topLine+maxRows; j++)
 		{
 			if(page->line[j].srcLine==NULL)
@@ -51,6 +60,7 @@ void printLines(void)
 		}
 
 	printf(CLEARTOEOS);
+	drawFilePath();
 	SHOWCURS;
 }
 

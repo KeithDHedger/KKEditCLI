@@ -25,15 +25,15 @@
 //static menus
 const char	*menuNames[]={"_File","_Edit","_Tabs","_Navigation","F_unctions","_Bookmarks","_Tools",NULL};
 const char	*fileMenuNames[]={" _New"," _Open"," _Save"," Save _As"," _Quit",NULL};
-const char	*editMenuNames[]={" _Cut"," Cop_y"," _Paste",NULL};
+const char	*editMenuNames[]={"TODO ..."," _Cut"," Cop_y"," _Paste",NULL};
 const char	*navMenuNames[]={" Goto _Define"," Open _Include"," Goto _Line"," Search _GTK Docs",NULL};
 
 //dynamic menus
 char		**tabsMenuNames=NULL;
 funcStruct	**functionData=NULL;
 char		**functionsMenuNames=NULL;
-const char	*bookmarksMenuNames[]={" _Remove All Marks"," _Toggle BM",NULL};
-const char	*toolsMenuNames[]={" _Manage Tools",NULL};
+const char	*bookmarksMenuNames[]={"TODO ..."," _Remove All Marks"," _Toggle BM",NULL};
+const char	*toolsMenuNames[]={"TODO ..."," _Manage Tools",NULL};
 
 int			menuWidth=0;
 int			menuStart=0;

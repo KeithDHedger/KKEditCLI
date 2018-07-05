@@ -1,4 +1,5 @@
 0.0.9
+Added file path.
 Fixed various bugs and leaks.
 Renamed 'View' menu to 'Tabs'.
 Added multiple tabs.
