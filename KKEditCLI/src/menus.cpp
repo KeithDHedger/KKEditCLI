@@ -24,7 +24,7 @@
 //menus
 //static menus
 const char	*menuNames[]={"_File","_Edit","_Tabs","_Navigation","F_unctions","_Bookmarks","_Tools",NULL};
-const char	*fileMenuNames[]={" _New"," _Open"," _Save"," Save _As"," _Quit",NULL};
+const char	*fileMenuNames[]={" _New"," _Open"," _Save"," Save _As"," _Close"," _Quit",NULL};
 const char	*editMenuNames[]={"TODO ..."," _Cut"," Cop_y"," _Paste",NULL};
 const char	*navMenuNames[]={" Goto _Define"," Open _Include"," Goto _Line"," Search _GTK Docs",NULL};
 
@@ -276,11 +276,12 @@ void buildTabMenu(void)
 			tabsMenuNames=NULL;
 		}
 
+	cnt=0;
 	tabsMenuNames=(char**)calloc(sizeof(char*),maxPages+1);
 	for(int j=0;j<maxPages;j++)
 		{
 			if(pages[j]!=NULL)
-				asprintf(&tabsMenuNames[j]," %s ",pages[j]->filePath);
+				asprintf(&tabsMenuNames[cnt++]," %s %c%i",pages[j]->filePath,0,j);
 		}
 	tabsMenuNames[maxPages]=NULL;
 }

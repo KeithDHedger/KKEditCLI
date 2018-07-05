@@ -113,8 +113,8 @@ int main(int argc, char **argv)
 					closePage();
 				}
 		}
+	finalizeCursesLib();
 	free(pages);
-	oneLiner(true,"rm %s/src",tmpEdDir);		
 	printf("\n");
 	return 0;
 }

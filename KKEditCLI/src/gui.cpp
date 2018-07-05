@@ -67,7 +67,6 @@ void printLines(void)
 int handleFileMenu(void)
 {
 	int		menuselect;
-	char	*message=NULL;
 
 	menuselect=doMenuEvent(fileMenuNames,1,2,true);
 	switch(menuselect)
@@ -79,7 +78,6 @@ int handleFileMenu(void)
 				moveCursToTemp(minX,currentY);			
 				break;
 			case FILEOPEN:
-				//askSaveIfdirty();
 				askOpenFile();
 				break;
 			case FILESAVE:
@@ -90,8 +88,27 @@ int handleFileMenu(void)
 				break;
 			case FILESAVEAS:
 				break;
+			case FILECLOSE:
+				closePage();
+				for(int j=0;j<maxPages;j++)
+					{
+						if(pages[j]!=NULL)
+							{
+								page=pages[j];
+								currentPage=page->pageNum;
+								setTempEdFile(page->filePath);
+								currentX=page->saveX;
+								currentY=page->saveY;
+								moveCursToTemp(currentX,currentY);
+								clearScreen();
+								refreshScreen();
+								clearTagList();
+								adjCursor();
+								buildTabMenu();
+								return(menuselect);
+							}
+					}
 			case FILEQUIT:
-				askSaveIfdirty();
 				return(BRAKE);
 				break;
 		}
@@ -119,16 +136,18 @@ int handleEditMenu(void)
 int handleTabsMenu(void)
 {
 	int menuselect;
-
+	char	*ptr;
 	if(tabsMenuNames==NULL)
 		return(CONT);
 
 	menuselect=doMenuEvent((const char**)tabsMenuNames,11,2,true);
 	if(menuselect>CONT)
 		{
+			ptr=tabsMenuNames[menuselect-1];
+			ptr+=strlen(tabsMenuNames[menuselect-1])+1;
 			page->saveX=currentX;
 			page->saveY=currentY;
-			page=pages[menuselect-1];
+			page=pages[atoi(ptr)];
 			currentPage=page->pageNum;
 			setTempEdFile(page->filePath);
 			currentX=page->saveX;

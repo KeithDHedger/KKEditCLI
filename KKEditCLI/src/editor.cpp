@@ -109,8 +109,8 @@ void adjCursor(void)
 	HIDECURS;
 	moveCursToTemp(minX,currentY);
 
-	if(page->lineXCurs>strlen(page->line[page->currentLine].edLine)-1)
-		page->lineXCurs=strlen(page->line[page->currentLine].edLine)-1;
+	if(page->lineXCurs>page->line[page->currentLine].lineLen-1)
+		page->lineXCurs=page->line[page->currentLine].lineLen-1;
 	if(page->lineXCurs<0)
 		page->lineXCurs=0;
 
@@ -153,7 +153,7 @@ void moveCursLeft(void)
 		{
 			page->currentLine--;
 			currentY--;
-			page->lineXCurs=strlen(page->line[page->currentLine].edLine)-1;
+			page->lineXCurs=page->line[page->currentLine].lineLen-1;
 		}
 
 	adjCursor();
