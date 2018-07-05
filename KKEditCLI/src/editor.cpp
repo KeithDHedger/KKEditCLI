@@ -20,7 +20,9 @@
 
 #include "globals.h"
 
-pageStruct	*page=NULL;
+int			pageNumber=0;
+int			currentPage=0;
+int			totalPages=0;
 char		*wordBuf[1024]={0,};
 const char	*wordBufPtr=(const char*)wordBuf;
 
@@ -37,14 +39,54 @@ void initEditor(void)
 			page->line[j].edLine=NULL;
 			page->line[j].srcLine=NULL;
 		}
+	clearTagList();
 	currentX=minX;
 	currentY=minY;
-	functionData=NULL;
-	functionsMenuNames=NULL;
+	page->saveX=currentX;
+	page->saveY=currentY;
+
+	if(pages==NULL)
+		{
+			pages=(pageStruct**)calloc(4,sizeof(pageStruct*));
+			maxPages=4;
+			currentPage=0;
+			totalPages=1;
+		}
+	else
+		{
+			currentPage=-1;
+			for(int j=0;j<maxPages;j++)
+				{
+					if(pages[j]==NULL)
+						{
+							currentPage=j;
+							break;
+						}
+				}
+			if(currentPage==-1)
+				{
+					maxPages+=4;
+					pages=(pageStruct**)realloc((void*)pages,maxPages*sizeof(pageStruct*));
+					for(int j=maxPages-4;j<maxPages;j++)
+						pages[j]=NULL;
+					currentPage=totalPages;
+					totalPages++;
+				}
+			else
+				{
+					totalPages++;
+				}
+		}
+	page->pageNum=currentPage;
+	pages[currentPage]=page;
+//	buildTabMenu();
+//for(int j=0;j<maxPages;j++)
+//	DEBUGFUNC("------------------currentPage=%i maxpages=%i;pages[%i]=%p pages=%p",currentPage,maxPages,j,pages[j],*pages);
 }
 
 void closePage(void)
 {
+	int	freenum=page->pageNum;
 	for(int j=0;j<page->maxLines;j++)
 		{
 			free(page->line[j].srcLine);
@@ -53,7 +95,7 @@ void closePage(void)
 
 	free(page->filePath);
 	delete page;
-	page=NULL;
+	pages[freenum]=NULL;
 	unlink(tmpEdFilePath);
 	clearTagList();
 }

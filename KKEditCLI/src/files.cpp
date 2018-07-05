@@ -32,7 +32,8 @@ void setTempEdFile(const char *path)
 	freeAndNull(&tmpEdFile);
 	freeAndNull(&tmpEdFilePath);
 	basec=strdup(path);
-	tmpEdFile=strdup(basename(basec));
+//	tmpEdFile=strdup(basename(basec));
+	asprintf(&tmpEdFile,"%i.%s",page->pageNum,basename(basec));
 	asprintf(&tmpEdFilePath,"%s/%s",tmpEdDir,tmpEdFile);
 	free(basec);
 }
@@ -139,6 +140,7 @@ void openTheFile(const char *path)
 			free(eline);
 			free(tline);
 			fclose(fp);
+			buildTabMenu();
 		}
 }
 
@@ -278,11 +280,11 @@ void askSaveIfdirty(void)
 
 void makeNewFile(void)
 {
-	if(page!=NULL)
-		{
-			askSaveIfdirty();
-			closePage();
-		}
+//	if(page!=NULL)
+//		{
+//			askSaveIfdirty();
+//			closePage();
+//		}
 
 	initEditor();
 	asprintf(&page->filePath,"/tmp/Untitled-%i",newFileNum++);
@@ -290,6 +292,7 @@ void makeNewFile(void)
 	oneLiner(true,"echo \"New File\" > %s",page->filePath);
 	oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
 	openTheFile(tmpEdFilePath);
+	buildTabMenu();
 }
 
 void askOpenFile(void)
@@ -297,7 +300,6 @@ void askOpenFile(void)
 	char	*message;
 
 	asprintf(&message,"%s",page->filePath);
-	closePage();
 	init_dialog(stdin,stdout);
 		dialog_fselect("Open File",message,rows-14,cols-14);
 	end_dialog();
@@ -314,8 +316,8 @@ void askOpenFile(void)
 	else
 		{
 			setTempEdFile(dialog_vars.input_result);
-			oneLiner(true,"cp %s %s",dialog_vars.input_result,tmpEdDir);
 			page->filePath=strdup(dialog_vars.input_result);
+			oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
 			openTheFile(tmpEdFilePath);
 			currentX=minX;
 			currentY=minY;
@@ -332,7 +334,6 @@ void clearTagList(void)
 
 	if(functionData!=NULL)
 		{
-			free(functionsMenuNames);
 			while(functionData[cnt]!=NULL)
 				{
 					free(functionData[cnt]->name);
@@ -341,7 +342,18 @@ void clearTagList(void)
 				}
 			free(functionData);
 		}
-	functionData==NULL;
+
+	cnt=0;
+	if(functionsMenuNames!=NULL)
+		{
+			while(functionsMenuNames[cnt]!=NULL)
+				{
+					free(functionsMenuNames[cnt++]);
+				}
+			free(functionsMenuNames);
+		}
+
+	functionData=NULL;
 	functionsMenuNames=NULL;
 }
 
@@ -362,7 +374,8 @@ void getTagList(void)
 	funcs=atoi(retval)+1;
 	functionsMenuNames=(char**)calloc(sizeof(char*),funcs);
 	functionData=(funcStruct**)calloc(sizeof(funcStruct*),funcs);
-	free(command);	
+	free(command);
+	free(retval);	
 	asprintf(&command,"ctags -x \"%s\"|%s|sed 's@ \\+@ @g'",tmpEdFilePath,sortcommand);
 	fp=popen(command, "r");
 	while(fgets(line,2048,fp))
@@ -388,5 +401,5 @@ void getTagList(void)
 	functionData[cnt]=NULL;
 	pclose(fp);
 	free(command);
-	free(retval);
+//	free(retval);
 }

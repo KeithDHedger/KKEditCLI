@@ -1,3 +1,8 @@
+0.0.9
+Fixed various bugs and leaks.
+Renamed 'View' menu to 'Tabs'.
+Added multiple tabs.
+
 0.0.8
 Added Goto Line to Nav menu.
 Added Goto Def to Nav Menu.

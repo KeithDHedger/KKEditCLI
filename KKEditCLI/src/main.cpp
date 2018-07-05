@@ -87,6 +87,7 @@ int main(int argc, char **argv)
 		{
 			initEditor();
 			setTempEdFile(argv[argc-1]);
+			DEBUGFUNC("tmpEdFile=%s",tmpEdFile);
 			oneLiner(true,"cp %s %s/%s",argv[argc-1],tmpEdDir,tmpEdFile);
 			page->filePath=strdup(argv[argc-1]);
 			openTheFile(tmpEdFilePath);
@@ -103,7 +104,18 @@ int main(int argc, char **argv)
 
 	eventLoop();
 	finalizeCursesLib();
-	closePage();
+//	closePage();
+	clearTagList();
+	for(int j=0;j<maxPages;j++)
+		{
+			if(pages[j]!=NULL)
+				{
+					page=pages[j];
+					closePage();
+				}
+		}
+	free(pages);
+			
 //	fprintf(stderr,">>>>>>>>>QUITING\n");
 //	moveCursToTemp(1,rows);
 	printf("\n");

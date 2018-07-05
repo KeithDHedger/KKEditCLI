@@ -52,6 +52,10 @@ const char	*tmpEdDir="/dev/shm/";
 char		*tmpEdFile=NULL;
 char		*tmpEdFilePath=NULL;
 
+//pages
+int			maxPages=0;
+pageStruct	**pages=NULL;
+pageStruct	*page=NULL;
 
 //utils
 char* oneLiner(bool noreturn,const char* fmt,...)

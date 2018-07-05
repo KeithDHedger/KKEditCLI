@@ -39,6 +39,9 @@ struct pageStruct
 	lineStruct		line[MAXLINES];
 	char			*filePath;
 	bool			dirty;
+	int				pageNum;
+	int				saveX;
+	int				saveY;
 };
 
 struct funcStruct
@@ -50,8 +53,7 @@ struct funcStruct
 
 extern char			*wordBuf[1024];
 extern const char	*wordBufPtr;
-
-extern pageStruct	*page;
+extern int			currentPage;
 
 void initEditor(void);
 void moveCursRite(void);

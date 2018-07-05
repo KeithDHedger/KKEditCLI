@@ -21,14 +21,17 @@
 
 #include "globals.h"
 
-const char	*menuNames[]={"_File","_Edit","_View","_Navigation","F_unctions","_Bookmarks","_Tools",NULL};
+//menus
+//static menus
+const char	*menuNames[]={"_File","_Edit","_Tabs","_Navigation","F_unctions","_Bookmarks","_Tools",NULL};
 const char	*fileMenuNames[]={" _New"," _Open"," _Save"," Save _As"," _Quit",NULL};
 const char	*editMenuNames[]={" _Cut"," Cop_y"," _Paste",NULL};
-const char	*viewMenuNames[]={" Show docs"," Show docs"," Show docs",NULL};
 const char	*navMenuNames[]={" Goto _Define"," Open _Include"," Goto _Line"," Search _GTK Docs",NULL};
-funcStruct	**functionData;
-char		**functionsMenuNames;
 
+//dynamic menus
+char		**tabsMenuNames=NULL;
+funcStruct	**functionData=NULL;
+char		**functionsMenuNames=NULL;
 const char	*bookmarksMenuNames[]={" _Remove All Marks"," _Toggle BM",NULL};
 const char	*toolsMenuNames[]={" _Manage Tools",NULL};
 
@@ -121,7 +124,8 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 	int		cnt=0;
 	char	tstr[3]={'_',0,0};
 
-	maxitems=drawMenuWindow(menunames,sx,sy,-1,doshortcut);
+	if(menunames!=NULL)
+		maxitems=drawMenuWindow(menunames,sx,sy,-1,doshortcut);
 	HIDECURS;
 	fflush(NULL);
 	while(loop==true)
@@ -261,4 +265,26 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 	SHOWCURS;
 	return(selection);
 }
+
+void buildTabMenu(void)
+{
+	int	cnt=0;
+	if(tabsMenuNames!=NULL)
+		{
+			while(tabsMenuNames[cnt]!=NULL)
+				free(tabsMenuNames[cnt++]);
+			free(tabsMenuNames);
+			tabsMenuNames=NULL;
+		}
+
+	tabsMenuNames=(char**)calloc(sizeof(char*),maxPages+1);
+	for(int j=0;j<maxPages;j++)
+		{
+			if(pages[j]!=NULL)
+				asprintf(&tabsMenuNames[j]," %s ",pages[j]->filePath);
+		}
+	tabsMenuNames[maxPages]=NULL;
+}
+
+
 

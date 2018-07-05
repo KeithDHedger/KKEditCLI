@@ -159,4 +159,9 @@ extern const char	*tmpEdDir;
 extern char			*tmpEdFile;
 extern char			*tmpEdFilePath;
 
+//pages
+extern int			maxPages;
+extern pageStruct	**pages;
+extern pageStruct	*page;
+
 #endif

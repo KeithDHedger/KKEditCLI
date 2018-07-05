@@ -69,7 +69,7 @@ int handleFileMenu(void)
 				moveCursToTemp(minX,currentY);			
 				break;
 			case FILEOPEN:
-				askSaveIfdirty();
+				//askSaveIfdirty();
 				askOpenFile();
 				break;
 			case FILESAVE:
@@ -106,19 +106,28 @@ int handleEditMenu(void)
 	return(menuselect);
 }
 
-int handleViewMenu(void)
+int handleTabsMenu(void)
 {
 	int menuselect;
 
-	menuselect=doMenuEvent(viewMenuNames,11,2,true);
-	switch(menuselect)
+	if(tabsMenuNames==NULL)
+		return(CONT);
+
+	menuselect=doMenuEvent((const char**)tabsMenuNames,11,2,true);
+	if(menuselect>CONT)
 		{
-			case VIEWDOC0:
-				break;
-			case VIEWDOC1:
-				break;
-			case VIEWDOC2:
-				break;
+			page->saveX=currentX;
+			page->saveY=currentY;
+			page=pages[menuselect-1];
+			currentPage=page->pageNum;
+			setTempEdFile(page->filePath);
+			currentX=page->saveX;
+			currentY=page->saveY;
+			moveCursToTemp(currentX,currentY);
+			clearScreen();
+			refreshScreen();
+			clearTagList();
+			adjCursor();
 		}
 	return(menuselect);
 }
@@ -265,8 +274,8 @@ int handleAllMenus(void)
 					case EDITMENU:
 						retval=handleEditMenu();
 						break;
-					case VIEWMENU:
-						retval=handleViewMenu();
+					case TABSMENU:
+						retval=handleTabsMenu();
 						break;
 					case NAVIGATIONMENU:
 						retval=handleNavMenu();

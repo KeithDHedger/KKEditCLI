@@ -23,7 +23,7 @@
 
 enum {FLATNORM=0,FLATINVERT};
 
-enum {FILEMENU=0,EDITMENU,VIEWMENU,NAVIGATIONMENU,FUNCTIONSMENU,BOOKMARKSMENU,TOOLSMENU,MAXMENUS};
+enum {FILEMENU=0,EDITMENU,TABSMENU,NAVIGATIONMENU,FUNCTIONSMENU,BOOKMARKSMENU,TOOLSMENU,MAXMENUS};
 enum {FILENEW=1,FILEOPEN,FILESAVE,FILESAVEAS,FILEQUIT,FILECNT};
 enum {EDITCUT=1,EDITCOPY,EDITPASTE,EDITCNT};
 enum {VIEWDOC0=1,VIEWDOC1,VIEWDOC2,VIEWCNT};
@@ -33,11 +33,14 @@ enum {BMREMOVEALL,BMTOGGL,BMCNT};
 enum {TOOLMANAGE=1,TOOLCNT};
 
 extern int			menuStart;
+//menus
+//static menus
 extern const char	*menuNames[];
 extern const char	*fileMenuNames[];
 extern const char	*editMenuNames[];
-extern const char	*viewMenuNames[];
 extern const char	*navMenuNames[];
+//dynamic menus
+extern char			**tabsMenuNames;
 extern funcStruct	**functionData;
 extern char			**functionsMenuNames;
 extern const char	*bookmarksMenuNames[];
@@ -45,5 +48,6 @@ extern const char	*toolsMenuNames[];
 
 void drawMenuBar(void);
 int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut);
+void buildTabMenu(void);
 
 #endif
