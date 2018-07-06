@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 			setTempEdFile(argv[argc-1]);
 			oneLiner(true,"cp %s %s/%s",argv[argc-1],tmpEdDir,tmpEdFile);
 			page->filePath=strdup(argv[argc-1]);
-			openTheFile(tmpEdFilePath);
+			openTheFile(tmpEdFilePath,false);
 		}
 	else
 		{

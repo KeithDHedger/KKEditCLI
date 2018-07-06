@@ -25,7 +25,7 @@
 extern int	maxLines;
 extern int	dispLineData[];
 
-void openTheFile(const char *path);
+void openTheFile(const char *path,bool extsrc);
 void writeCharToFile(char c);
 bool deleteCharFromFile(bool back);
 

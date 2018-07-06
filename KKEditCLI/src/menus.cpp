@@ -26,7 +26,7 @@
 const char	*menuNames[]={"_File","_Edit","_Tabs","_Navigation","F_unctions","_Bookmarks","T_ools",NULL};
 const char	*fileMenuNames[]={" _New"," _Open"," _Save"," Save _As"," _Close"," _Quit",NULL};
 const char	*editMenuNames[]={" TODO ..."," _Cut"," Cop_y"," _Paste",NULL};
-const char	*navMenuNames[]={" Goto _Define"," Open _Include"," Goto _Line",NULL};
+const char	*navMenuNames[]={" Goto _Define"," Open _Include"," Goto _Line"," Open _Manpage",NULL};
 
 //dynamic menus
 char		**tabsMenuNames=NULL;
@@ -281,7 +281,7 @@ void buildTabMenu(void)
 	for(int j=0;j<maxPages;j++)
 		{
 			if(pages[j]!=NULL)
-				asprintf(&tabsMenuNames[cnt++]," %s %c%i",pages[j]->filePath,0,j);
+				asprintf(&tabsMenuNames[cnt++]," %s%c%i",pages[j]->filePath,0,j);
 		}
 	tabsMenuNames[maxPages]=NULL;
 }

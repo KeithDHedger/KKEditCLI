@@ -37,7 +37,7 @@ void setTempEdFile(const char *path)
 	free(basec);
 }
 
-void openTheFile(const char *path)
+void openTheFile(const char *path,bool extsrc)
 {
 	FILE	*fp;
 	size_t	len=0;
@@ -53,7 +53,8 @@ void openTheFile(const char *path)
 
 	page->maxLines=0;
 
-	oneLiner(true,"source-highlight --infer-lang --style-file=esc.style -f esc --failsafe -i '%s' -o /dev/shm/src 2>/dev/null",path);
+	if(extsrc==false)
+		oneLiner(true,"source-highlight --infer-lang --style-file=esc.style -f esc --failsafe -i '%s' -o /dev/shm/src 2>/dev/null",path);
 	
 	fp=fopen("/dev/shm/src", "r");
 	if(fp != NULL)
@@ -282,7 +283,7 @@ void makeNewFile(void)
 	setTempEdFile(page->filePath);
 	oneLiner(true,"echo \"New File\" > %s",page->filePath);
 	oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
-	openTheFile(tmpEdFilePath);
+	openTheFile(tmpEdFilePath,false);
 	buildTabMenu();
 }
 
@@ -301,7 +302,7 @@ void askOpenFile(void)
 			setTempEdFile(dialog_vars.input_result);
 			page->filePath=strdup(dialog_vars.input_result);
 			oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
-			openTheFile(tmpEdFilePath);
+			openTheFile(tmpEdFilePath,false);
 			currentX=minX;
 			currentY=minY;
 		}

@@ -139,6 +139,7 @@ int handleTabsMenu(void)
 {
 	int menuselect;
 	char	*ptr;
+
 	if(tabsMenuNames==NULL)
 		return(CONT);
 
@@ -220,6 +221,29 @@ int handleNavMenu(void)
 						}
 					clearScreen();
 					refreshScreen();
+				}
+				break;
+			case NAVOPENMANPAGE:
+				{
+					char	*command;
+
+					asprintf(&command,"COLUMNS=%i MAN_KEEP_FORMATTING=1 man $(man -w %s) > /tmp/$(basename $(man -w %s))",maxCols,wordBufPtr,wordBufPtr);
+					system(command);
+					free(command);
+
+					command=oneLiner(false,"echo /tmp/$(basename $(man -w %s))",wordBufPtr);					
+					page->saveX=currentX;
+					page->saveY=currentY;
+
+					initEditor();
+					setTempEdFile(command);
+					page->filePath=command;
+					oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
+					openTheFile(tmpEdFilePath,false);
+					clearScreen();
+					refreshScreen();
+				//	printLines();
+					moveCursToTemp(currentX,currentY);
 				}
 				break;
 		}
@@ -330,7 +354,7 @@ void refreshScreen(void)
 			freeAndNull(&page->line[j].edLine);
 		}
 	page->maxLines=0;
-	openTheFile(tmpEdFilePath);
+	openTheFile(tmpEdFilePath,false);
 	printLines();
 }
 
@@ -612,7 +636,7 @@ void eventLoop(void)
 							freeAndNull(&page->line[j].edLine);
 						}
 					page->maxLines=0;
-					openTheFile(tmpEdFilePath);
+					openTheFile(tmpEdFilePath,false);
 					printLines();
 					adjCursor();
 					continue;
