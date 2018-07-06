@@ -27,7 +27,7 @@
 
 void setTempEdFile(const char *path)
 {
-	char	*basec;
+	char	*basec=NULL;
 
 	freeAndNull(&tmpEdFile);
 	freeAndNull(&tmpEdFilePath);

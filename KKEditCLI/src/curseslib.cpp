@@ -60,10 +60,35 @@ void initCursesLib(void)
 
 void finalizeCursesLib(void)
 {
+	int	cnt=0;
+
 	termConfig.c_lflag |= (ICANON | ECHO);
 	tcsetattr(STDIN_FILENO,TCSANOW,&termConfig);
 	unlink("/dev/shm/src");
 	system("/usr/bin/tabs -8");
+
+	clearTagList();
+	for(int j=0;j<maxPages;j++)
+		{
+			if(pages[j]!=NULL)
+				{
+					page=pages[j];
+					setTempEdFile(page->filePath);
+					closePage();
+				}
+		}
+	free(pages);
+
+	if(tabsMenuNames!=NULL)
+		{
+			while(tabsMenuNames[cnt]!=NULL)
+				free(tabsMenuNames[cnt++]);
+			free(tabsMenuNames);
+			tabsMenuNames=NULL;
+		}
+	freeAndNull(&tmpEdFile);
+	freeAndNull(&tmpEdFilePath);
+
 	SETNORMAL;
 }
 

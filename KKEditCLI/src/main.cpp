@@ -51,7 +51,8 @@ printf("Usage: kkeditcli [OPTION]\n"
 int main(int argc, char **argv)
 {
 	int c;
-	int option_index = 0;
+	int option_index=0;
+
 	while (1)
 		{
 		c = getopt_long (argc, argv, "t:v?hl",long_options, &option_index);
@@ -103,18 +104,6 @@ int main(int argc, char **argv)
 
 	eventLoop();
 	finalizeCursesLib();
-	clearTagList();
-	for(int j=0;j<maxPages;j++)
-		{
-			if(pages[j]!=NULL)
-				{
-					page=pages[j];
-					setTempEdFile(page->filePath);
-					closePage();
-				}
-		}
-	finalizeCursesLib();
-	free(pages);
 	printf("\n");
 	return 0;
 }

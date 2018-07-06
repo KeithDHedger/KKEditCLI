@@ -277,7 +277,7 @@ void buildTabMenu(void)
 		}
 
 	cnt=0;
-	tabsMenuNames=(char**)calloc(sizeof(char*),maxPages+1);
+	tabsMenuNames=(char**)calloc(maxPages+1,sizeof(char*));
 	for(int j=0;j<maxPages;j++)
 		{
 			if(pages[j]!=NULL)

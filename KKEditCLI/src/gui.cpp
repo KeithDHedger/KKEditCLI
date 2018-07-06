@@ -242,7 +242,6 @@ int handleNavMenu(void)
 					openTheFile(tmpEdFilePath,false);
 					clearScreen();
 					refreshScreen();
-				//	printLines();
 					moveCursToTemp(currentX,currentY);
 				}
 				break;
