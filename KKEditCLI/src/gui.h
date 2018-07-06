@@ -37,14 +37,14 @@
 #define CURSHOMECONS '1'
 #define CURSENDCONS '4'
 
-#define CTRL_B 0x2
-#define CTRL_E 0x5
-#define CTRL_F 0x6
-#define CTRL_HASH 0x23
-#define CTRL_N 0xe
-#define CTRL_T 0x14
-#define CTRL_U 0x15
-#define CTRL_V 0x16
+//#define CTRL_B 0x2
+//#define CTRL_E 0x5
+//#define CTRL_F 0x6
+//#define CTRL_HASH 0x23
+//#define CTRL_N 0xe
+//#define CTRL_T 0x14
+//#define CTRL_U 0x15
+//#define CTRL_V 0x16
 
 //ui
 #define CONT 0
@@ -55,6 +55,8 @@
 //mouse
 #define BUTTON1DOWN ' '
 #define BUTTON1UP '#'
+
+extern int	menuNumber;
 
 void initSrcHilite(void);
 void printSrcLines(void);

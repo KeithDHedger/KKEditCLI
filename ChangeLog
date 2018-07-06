@@ -1,4 +1,6 @@
 0.0.9
+Esc now remembers last menu used.
+Fixed shortcut key for main menus.
 Added 'Close' menu.
 Check for dirty files on quit.
 Removed tmp files on quit.

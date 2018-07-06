@@ -23,16 +23,16 @@
 
 //menus
 //static menus
-const char	*menuNames[]={"_File","_Edit","_Tabs","_Navigation","F_unctions","_Bookmarks","_Tools",NULL};
+const char	*menuNames[]={"_File","_Edit","_Tabs","_Navigation","F_unctions","_Bookmarks","T_ools",NULL};
 const char	*fileMenuNames[]={" _New"," _Open"," _Save"," Save _As"," _Close"," _Quit",NULL};
-const char	*editMenuNames[]={"TODO ..."," _Cut"," Cop_y"," _Paste",NULL};
-const char	*navMenuNames[]={" Goto _Define"," Open _Include"," Goto _Line"," Search _GTK Docs",NULL};
+const char	*editMenuNames[]={" TODO ..."," _Cut"," Cop_y"," _Paste",NULL};
+const char	*navMenuNames[]={" Goto _Define"," Open _Include"," Goto _Line",NULL};
 
 //dynamic menus
 char		**tabsMenuNames=NULL;
 funcStruct	**functionData=NULL;
 char		**functionsMenuNames=NULL;
-const char	*bookmarksMenuNames[]={"TODO ..."," _Remove All Marks"," _Toggle BM",NULL};
+const char	*bookmarksMenuNames[]={" TODO ..."," _Remove All Marks"," _Toggle BM",NULL};
 const char	*toolsMenuNames[]={"TODO ..."," _Manage Tools",NULL};
 
 int			menuWidth=0;
@@ -97,7 +97,7 @@ int drawMenuWindow(const char **menulist,int sx,int sy,int prelight,bool doshort
 	menuWidth=0;
 	while(menulist[maxitems]!=NULL)
 		{
-			if(strlen(menulist[maxitems])>menuWidth)
+			if(strlen(menulist[maxitems])>=menuWidth)
 				menuWidth=strlen(menulist[maxitems])+1;
 			maxitems++;
 		}
@@ -132,7 +132,7 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 		{
 			memset(buf,0,16);
 			read(STDIN_FILENO,&buf,15);
-//			DEBUGFUNC("0=%x 1=%x 2=%x 3=%x",buf[0],buf[1],buf[2],buf[3]);
+			//DEBUGFUNC("0=%x 1=%x 2=%x 3=%x",buf[0],buf[1],buf[2],buf[3]);
 			if(buf[0]==ESCCHAR)
 				{
 					switch(buf[1])

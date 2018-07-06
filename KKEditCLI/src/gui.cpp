@@ -21,6 +21,8 @@
 #include <string.h>
 #include "globals.h"
 
+int	menuNumber=0;
+
 void clearTrough(void)
 {
 	for(int j=1;j<rows;j++)
@@ -220,8 +222,6 @@ int handleNavMenu(void)
 					refreshScreen();
 				}
 				break;
-			case NAVSEARCHGTK:
-				break;
 		}
 	return(menuselect);
 }
@@ -281,21 +281,20 @@ int handleToolMenu(void)
 
 int handleAllMenus(void)
 {
-	int	mnum=0;
 	int	retval=-1000;
 
 	while(retval<BRAKE)
 		{
 			if(retval==MENURITE)
-				mnum++;
-			if(mnum==MAXMENUS)
-				mnum--;
+				menuNumber++;
+			if(menuNumber==MAXMENUS)
+				menuNumber--;
 			if(retval==MENULEFT)
-				mnum--;
-			if(mnum==-1)
-				mnum++;
+				menuNumber--;
+			if(menuNumber==-1)
+				menuNumber++;
 			
-			switch(mnum)
+			switch(menuNumber)
 				{
 					case FILEMENU:
 						retval=handleFileMenu();
@@ -344,15 +343,32 @@ void eventLoop(void)
 	int				charsread;
 	bool			donereadbuffer=true;
 	int				totallinelen=0;
+	int				cnt;
+	char			tstr[3]={'_',0,0};
+
 	while(true)
 		{
-			//DEBUGFUNC(">>>>0=%x 0=%c 1=%x 1=%c 2=%x 2=%c 3=%x 3=%c",buf[0],buf[0],buf[1],buf[1],buf[2],buf[2],buf[3],buf[3]);
-			
 			printStatusBar();
 			fflush(NULL);
 			memset(buf,0,16);
 			charsread=read(STDIN_FILENO,&buf,15);
 			handled=false;
+
+			//DEBUGFUNC(">>>>0=%x 0=%c 1=%x 1=%c 2=%x 2=%c 3=%x 3=%c",buf[0],buf[0],buf[1],buf[1],buf[2],buf[2],buf[3],buf[3]);
+				cnt=0;
+				tstr[1]=buf[0]+0x60;
+				while(menuNames[cnt]!=NULL)
+					{
+						if(strcasestr((char*)menuNames[cnt],(char*)&tstr)!=NULL)
+								{
+									menuNumber=cnt;
+									buf[0]=ESCCHAR;
+									buf[1]=0;
+									break;
+								}
+					cnt++;
+				}
+
 			if(buf[0]==ESCCHAR)
 				{
 					switch(buf[1])
