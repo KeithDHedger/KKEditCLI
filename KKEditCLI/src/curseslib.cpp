@@ -47,7 +47,7 @@ void initCursesLib(void)
     ioctl(STDOUT_FILENO,TIOCGWINSZ,&w);
 
 	cols=w.ws_col;
-	cols=159;
+//	cols=159;
 	rows=w.ws_row;
 	minY=mBarHite+2;
 	maxRows=rows-minY;
@@ -56,6 +56,7 @@ void initCursesLib(void)
 	endY=startY+maxRows;
 
 	menuHite=rows-mBarHite;
+fprintf(stderr,"cols=%i\n",maxCols);
 }
 
 void finalizeCursesLib(void)
