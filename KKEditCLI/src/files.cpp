@@ -1,3 +1,4 @@
+
 /*
  *
  * ©K. D. Hedger. Sun 20 May 14:02:15 BST 2018 kdhedger68713@gmail.com
@@ -104,7 +105,7 @@ void openTheFile(const char *path,bool extsrc)
 							destchar++;
 							srcchar++;
 
-							if(linelen>=149)
+							if(linelen>=maxCols)
 								{
 									page->line[page->maxLines].isSplitLine=true;
 									dline[destchar++]='\n';
