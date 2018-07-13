@@ -362,7 +362,7 @@ void eventLoop(void)
 	bool			handled=false;
 	bool			dorefresh=false;
 	bool			needsrefresh=false;
-	unsigned char	buf[16];
+	unsigned char	buf[256]={0,};
 	int				charsread;
 	bool			donereadbuffer=true;
 	int				totallinelen=0;
@@ -372,9 +372,9 @@ void eventLoop(void)
 	while(true)
 		{
 			printStatusBar();
-			fflush(NULL);
-			memset(buf,0,16);
-			charsread=read(STDIN_FILENO,&buf,15);
+		//	fflush(NULL);
+		//	memset(buf,0,16);
+			charsread=read(STDIN_FILENO,&buf,255);
 			handled=false;
 
 			//DEBUGFUNC(">>>>0=%x 0=%c 1=%x 1=%c 2=%x 2=%c 3=%x 3=%c",buf[0],buf[0],buf[1],buf[1],buf[2],buf[2],buf[3],buf[3]);
