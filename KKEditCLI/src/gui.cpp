@@ -372,8 +372,8 @@ void eventLoop(void)
 	while(true)
 		{
 			printStatusBar();
-		//	fflush(NULL);
-		//	memset(buf,0,16);
+			fflush(NULL);
+			memset(buf,0,255);
 			charsread=read(STDIN_FILENO,&buf,255);
 			handled=false;
 
