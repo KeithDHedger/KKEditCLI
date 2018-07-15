@@ -227,10 +227,10 @@ int handleNavMenu(void)
 				{
 					char	*command;
 
-					asprintf(&command,"COLUMNS=%i MAN_KEEP_FORMATTING=1 man $(man -w %s) > /tmp/$(basename $(man -w %s))",maxCols,wordBufPtr,wordBufPtr);
+					asprintf(&command,"MANWIDTH=%i MAN_KEEP_FORMATTING=1 man $(man -w %s) > /tmp/$(basename $(man -w %s))",maxCols,wordBufPtr,wordBufPtr);
 					system(command);
 					free(command);
-
+//DEBUGFUNC("COLUMNS=%i MAN_KEEP_FORMATTING=1 man $(man -w %s) > /tmp/$(basename $(man -w %s))",maxCols,wordBufPtr,wordBufPtr);
 					command=oneLiner(false,"echo /tmp/$(basename $(man -w %s))",wordBufPtr);					
 					page->saveX=currentX;
 					page->saveY=currentY;
