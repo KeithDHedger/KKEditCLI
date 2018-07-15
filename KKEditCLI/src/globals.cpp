@@ -29,6 +29,7 @@ int		currentX=minX;
 int		currentY=minY;
 int		maxRows=0;
 int		maxCols=0;
+int		forceCols=-1;
 
 //file
 char	*currentFilePath=NULL;

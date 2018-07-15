@@ -131,6 +131,7 @@ extern int	currentX;
 extern int	currentY;
 extern int	maxRows;
 extern int	maxCols;
+extern int	forceCols;
 
 //file
 extern char	*currentFilePath;

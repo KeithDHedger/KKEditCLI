@@ -31,6 +31,7 @@ struct option long_options[] =
 	{
 		{"no-liveupdate",0,0,'l'},
 		{"tabs",1,0,'t'},
+		{"cols",1,0,'c'},
 		{"version",0,0,'v'},
 		{"help",0,0,'?'},
 		{0, 0, 0, 0}
@@ -42,6 +43,7 @@ printf("Usage: kkeditcli [OPTION]\n"
 	"A CLI application\n"
 	" -l, --no-liveupdate	Update source highlighting as you type.\n"
 	" -t, --tabs			Tab width.\n"
+	" -c, --cols			Force number of coloumns.\n"
 	" -v, --version	output version information and exit\n"
 	" -h, -?, --help	print this help\n\n"
 	"Report bugs to kdhedger@yahoo.co.uk\n"
@@ -55,7 +57,7 @@ int main(int argc, char **argv)
 
 	while (1)
 		{
-		c = getopt_long (argc, argv, "t:v?hl",long_options, &option_index);
+		c = getopt_long (argc, argv, "t:c:v?hl",long_options, &option_index);
 		if (c == -1)
 			break;
 
@@ -67,6 +69,10 @@ int main(int argc, char **argv)
 
 			case 't':
 				tabs=atoi(optarg);
+				break;
+
+			case 'c':
+				forceCols=atoi(optarg);
 				break;
 
 			case 'v':
