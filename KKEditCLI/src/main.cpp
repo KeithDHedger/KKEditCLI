@@ -57,36 +57,37 @@ int main(int argc, char **argv)
 
 	while (1)
 		{
-		c = getopt_long (argc, argv, "t:c:v?hl",long_options, &option_index);
-		if (c == -1)
-			break;
-
-		switch (c)
-			{
-			case 'l':
-				liveUpdate=false;
+			c = getopt_long (argc, argv, "t:c:v?hl",long_options, &option_index);
+			if (c == -1)
 				break;
 
-			case 't':
-				tabs=atoi(optarg);
-				break;
+			switch (c)
+				{
+					case 'l':
+						liveUpdate=false;
+						break;
 
-			case 'c':
-				forceCols=atoi(optarg);
-				break;
+					case 't':
+						tabs=atoi(optarg);
+						break;
 
-			case 'v':
-				printf("kkeditcli %s\n",VERSION);
-				return 0;
-				break;
+					case 'c':
+						forceCols=atoi(optarg);
+						break;
 
-			case '?':
-			case 'h':
-				printhelp();
-				return 0;
-				break;
-			}
+					case 'v':
+						printf("kkeditcli %s\n",VERSION);
+						return 0;
+						break;
+
+					case '?':
+					case 'h':
+						printhelp();
+						return 0;
+						break;
+				}
 		}
+
 	clearScreen();
 	initCursesLib();
 

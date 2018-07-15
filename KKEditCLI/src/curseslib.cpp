@@ -50,6 +50,7 @@ void initCursesLib(void)
 		cols=w.ws_col;
 	else
 		cols=forceCols;
+
 	rows=w.ws_row;
 	minY=mBarHite+2;
 	maxRows=rows-minY;
