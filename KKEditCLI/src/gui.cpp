@@ -227,7 +227,7 @@ int handleNavMenu(void)
 				{
 					char	*command;
 
-					asprintf(&command,"COLUMNS=%i MAN_KEEP_FORMATTING=1 man $(man -w %s) > /tmp/$(basename $(man -w %s))",maxCols,wordBufPtr,wordBufPtr);
+					asprintf(&command,"COLUMNS=%i MAN_KEEP_FORMATTING=1 man $(man -w %s) > /tmp/$(basename $(man -w %s))",maxCols-4,wordBufPtr,wordBufPtr);
 					system(command);
 					free(command);
 
