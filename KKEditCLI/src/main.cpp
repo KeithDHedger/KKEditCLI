@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Sun 20 May 13:34:52 BST 2018 kdhedger68713@gmail.com  ©K. D. Hedger. Sun 20May13:34:52BST201kdhedger68713@gmail.com ©K. D. Hedger. Sun 20 May 13:34:52 BST 2018 kdhedger68713@gmail.com
+ * ©K. D. Hedger. Tue 31 Jul 13:10:14 BST 2018 keithdhedger@gmail.com
 
  * This file (main.cpp) is part of KKEditCLI.
 

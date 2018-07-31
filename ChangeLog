@@ -1,4 +1,5 @@
 0.0.9
+Updated addesses.
 Added --cols to args to force width.
 Added 'Open manpage' to nav menu.
 Esc now remembers last menu used.

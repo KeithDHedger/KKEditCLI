@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Sun 20 May 14:12:16 BST 2018 kdhedger68713@gmail.com
+ * ©K. D. Hedger. Sun 20 May 14:12:16 BST 2018 keithdhedger@gmail.com
 
  * This file (gui.h) is part of KKEditCLI.
 

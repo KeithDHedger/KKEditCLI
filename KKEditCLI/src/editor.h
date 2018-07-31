@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Sat 26 May 12:06:58 BST 2018 kdhedger68713@gmail.com
+ * ©K. D. Hedger. Sat 26 May 12:06:58 BST 2018 keithdhedger@gmail.com
 
  * This file (editor.h) is part of KKEditCLI.
 

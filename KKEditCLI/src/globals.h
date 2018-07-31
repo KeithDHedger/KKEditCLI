@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Sun 20 May 13:34:08 BST 2018 kdhedger68713@gmail.com
+ * ©K. D. Hedger. Tue 31 Jul 13:10:48 BST 2018 keithdhedger@gmail.com
 
  * This file (globals.h) is part of KKEditCLI.
 
