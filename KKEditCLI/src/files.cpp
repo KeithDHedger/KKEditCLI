@@ -54,9 +54,11 @@ void openTheFile(const char *path,bool extsrc)
 
 	page->maxLines=0;
 
-	if(extsrc==false)
+	if(extsrc==true)
 		oneLiner(true,"source-highlight --infer-lang --style-file=esc.style -f esc --failsafe -i '%s' -o /dev/shm/src 2>/dev/null",path);
-	
+	else
+		oneLiner(true,"cp '%s' /dev/shm/src 2>/dev/null",path);  
+		
 	fp=fopen("/dev/shm/src", "r");
 	if(fp != NULL)
 		{
@@ -284,7 +286,7 @@ void makeNewFile(void)
 	setTempEdFile(page->filePath);
 	oneLiner(true,"echo \"New File\" > %s",page->filePath);
 	oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
-	openTheFile(tmpEdFilePath,false);
+	openTheFile(tmpEdFilePath,hilite);
 	buildTabMenu();
 }
 
@@ -303,7 +305,7 @@ void askOpenFile(void)
 			setTempEdFile(dialog_vars.input_result);
 			page->filePath=strdup(dialog_vars.input_result);
 			oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
-			openTheFile(tmpEdFilePath,false);
+			openTheFile(tmpEdFilePath,hilite);
 			currentX=minX;
 			currentY=minY;
 		}

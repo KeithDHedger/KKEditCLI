@@ -114,29 +114,34 @@ void adjCursor(void)
 	if(page->lineXCurs<0)
 		page->lineXCurs=0;
 
+	int ccnt=minX;
 	for(int j=0;j<page->lineXCurs;j++)
 		{
 			switch(page->line[page->currentLine].edLine[j])
 				{
 					case '\t':
 						fprintf(stdout,"\t");
+						ccnt+=tabs;
 						break;
 					default:
+						ccnt++;
 						printf(CURSFORWARD);
 				}
 		}
+currentX=ccnt;
 
-	fprintf(stdout,"\e[6n");
-	memset(buf,0,16);
-	fflush(NULL);
-	usleep(100);
-	read(STDIN_FILENO,&buf,15);
-	ptr=strstr((char*)&buf,";");
-	if(ptr!=NULL)
-		{
-			ptr++;
-			currentX=atoi(ptr);
-		}
+//			currentX=atoi(ptr);
+//	fprintf(stdout,"\e[6n");
+//	memset(buf,0,16);
+//	fflush(NULL);
+//	usleep(500);
+//	read(STDIN_FILENO,&buf,15);
+//	ptr=strstr((char*)&buf,";");
+//	if(ptr!=NULL)
+//		{
+//			ptr++;
+//			currentX=atoi(ptr);
+//		}
 
 	moveCursToTemp(currentX,currentY);
 	SHOWCURS;

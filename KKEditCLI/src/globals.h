@@ -150,6 +150,7 @@ extern int	menuHite;
 //prefs
 extern int	tabs;
 extern bool	liveUpdate;
+extern bool	hilite;
 
 //utils
 char* oneLiner(bool noreturn,const char* fmt,...);

@@ -47,6 +47,7 @@ int		menuHite=1;
 //prefs
 int		tabs=8;
 bool	liveUpdate=false;
+bool	hilite=true;
 
 //files
 const char	*tmpEdDir="/dev/shm/";

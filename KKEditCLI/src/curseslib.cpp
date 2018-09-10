@@ -37,7 +37,7 @@ void initCursesLib(void)
 	char	*dump;
 	winsize w;
 
-	asprintf(&dump,"tabs $(seq -s , 1 %i 256)",tabs);
+	asprintf(&dump,"tabs $(seq -s , 1 %i 256) 2>&1",tabs);
 	system(dump);
 	free(dump);
 	tcgetattr(STDIN_FILENO,&termConfig);
@@ -69,7 +69,7 @@ void finalizeCursesLib(void)
 	termConfig.c_lflag |= (ICANON | ECHO);
 	tcsetattr(STDIN_FILENO,TCSANOW,&termConfig);
 	unlink("/dev/shm/src");
-	system("/usr/bin/tabs -8");
+	system("/usr/bin/tabs -8 2>&1");
 
 	clearTagList();
 	for(int j=0;j<maxPages;j++)

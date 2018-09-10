@@ -30,6 +30,7 @@
 struct option long_options[] =
 	{
 		{"no-liveupdate",0,0,'l'},
+		{"no-hilite",0,0,'n'},
 		{"tabs",1,0,'t'},
 		{"cols",1,0,'c'},
 		{"version",0,0,'v'},
@@ -42,6 +43,7 @@ void printhelp(void)
 printf("Usage: kkeditcli [OPTION]\n"
 	"A CLI application\n"
 	" -l, --no-liveupdate	Update source highlighting as you type.\n"
+	" -n, --no-hilite		No source highlighting.\n"
 	" -t, --tabs			Tab width.\n"
 	" -c, --cols			Force number of coloumns.\n"
 	" -v, --version	output version information and exit\n"
@@ -57,7 +59,7 @@ int main(int argc, char **argv)
 
 	while (1)
 		{
-			c = getopt_long (argc, argv, "t:c:v?hl",long_options, &option_index);
+			c = getopt_long (argc, argv, "t:c:v?hln",long_options, &option_index);
 			if (c == -1)
 				break;
 
@@ -65,6 +67,10 @@ int main(int argc, char **argv)
 				{
 					case 'l':
 						liveUpdate=false;
+						break;
+
+					case 'n':
+						hilite=false;
 						break;
 
 					case 't':
@@ -97,7 +103,7 @@ int main(int argc, char **argv)
 			setTempEdFile(argv[argc-1]);
 			oneLiner(true,"cp %s %s/%s",argv[argc-1],tmpEdDir,tmpEdFile);
 			page->filePath=strdup(argv[argc-1]);
-			openTheFile(tmpEdFilePath,false);
+			openTheFile(tmpEdFilePath,hilite);
 		}
 	else
 		{

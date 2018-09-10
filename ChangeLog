@@ -1,4 +1,6 @@
 0.0.9
+Added "--no-hilite" option.
+Fixed buffer errors.
 Updated addesses.
 Added --cols to args to force width.
 Added 'Open manpage' to nav menu.
