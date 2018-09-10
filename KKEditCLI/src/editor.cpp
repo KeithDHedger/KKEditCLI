@@ -113,7 +113,6 @@ void adjCursor(void)
 		page->lineXCurs=page->line[page->currentLine].lineLen-1;
 	if(page->lineXCurs<0)
 		page->lineXCurs=0;
-
 	int ccnt=minX;
 	for(int j=0;j<page->lineXCurs;j++)
 		{
@@ -128,20 +127,35 @@ void adjCursor(void)
 						printf(CURSFORWARD);
 				}
 		}
+
 currentX=ccnt;
 
 //			currentX=atoi(ptr);
-//	fprintf(stdout,"\e[6n");
-//	memset(buf,0,16);
-//	fflush(NULL);
-//	usleep(500);
+	fprintf(stdout,"\e[6n");
+	
+	memset(buf,0,16);
+	fflush(NULL);
+	usleep(500);
+	ccnt=0;
+	bool flag=true;
+	while(flag==true)
+		{
+			buf[ccnt]=fgetc(stdin);
+			if(buf[ccnt]=='R')
+				flag=false;
+//DEBUGFUNC("ccnt=%i",ccnt);
+//			fprintf(stderr,"%c",buf[ccnt]);
+			ccnt++;
+//DEBUGFUNC("buff=%s",buf);
+		}
+//DEBUGFUNC("XXXXXXXXXXXXXX","");
 //	read(STDIN_FILENO,&buf,15);
-//	ptr=strstr((char*)&buf,";");
-//	if(ptr!=NULL)
-//		{
-//			ptr++;
-//			currentX=atoi(ptr);
-//		}
+	ptr=strstr((char*)&buf,";");
+	if(ptr!=NULL)
+		{
+			ptr++;
+			currentX=atoi(ptr);
+		}
 
 	moveCursToTemp(currentX,currentY);
 	SHOWCURS;
