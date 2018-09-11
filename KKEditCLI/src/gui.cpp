@@ -376,9 +376,9 @@ void eventLoop(void)
 			memset(buf,0,255);
 			charsread=read(STDIN_FILENO,&buf,255);
 			handled=false;
-			for(int j=0;j<charsread;j++)
-				fprintf(stderr,"char %i %c %x ",j,buf[j],buf[j]);
-			fprintf(stderr,"\n");
+			//for(int j=0;j<charsread;j++)
+			//	fprintf(stderr,"char %i %c %x ",j,buf[j],buf[j]);
+			//fprintf(stderr,"\n");
 
 			//DEBUGFUNC(">>>>0=%x 0=%c 1=%x 1=%c 2=%x 2=%c 3=%x 3=%c",buf[0],buf[0],buf[1],buf[1],buf[2],buf[2],buf[3],buf[3]);
 				cnt=0;

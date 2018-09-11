@@ -23,6 +23,7 @@
 
 #define ESCCHAR 0x1b
 #define CURSFORWARD "\e[1C"
+#define TABCHAR		"\t"
 #define NEXTSCRLINE "\n\e[8C"
 
 #define	FOREBLACK "\e[30m"
@@ -74,8 +75,11 @@
 #define CLEARTOSOL "\e[1K"
 #define CLEARTOEOS "\e[0J"
 
+#define GETCURSPOS	"\e[6n"
+
 #define HIDECURS printf("\e[?25l")
 #define SHOWCURS printf("\e[?25h")
+
 
 void initCursesLib(void);
 void finalizeCursesLib(void);
