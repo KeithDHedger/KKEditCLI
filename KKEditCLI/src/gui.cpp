@@ -197,9 +197,32 @@ int handleNavMenu(void)
 				refreshScreen();
 				return(CONT);
 				break;
+
 			case NAVEOPENINC:
+				{
+					DEBUGFUNC("lline=%s",page->line[page->currentLine].edLine);
+char *retline=oneLiner(false,"echo -n '%s'|awk '{print $2}'|sed 's@[<>]@@g'|xargs -I[] find . -iname '[]' -exec realpath '{}' \\;",
+page->line[page->currentLine].edLine
+);
+DEBUGFUNC(">>%s<<","echo -n '%s'|awk '{print $2}'|sed 's@[<>]@@g'|xargs -I[] find . -iname '[]' -exec realpath '{}' \\;");
+
+initEditor();
+setTempEdFile(retline);
+page->filePath=strdup(retline);
+oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
+openTheFile(tmpEdFilePath,hilite);
+currentX=minX;
+currentY=minY;
+printLines();
+moveCursToTemp(currentX,currentY);
+
+
+
+				DEBUGFUNC(">>>%s<<<",retline);
+				}
 				break;
-			case NAVGOTOLINE:
+
+				case NAVGOTOLINE:
 				{
 					int	status=-1;
 					init_dialog(stdin,stdout);
