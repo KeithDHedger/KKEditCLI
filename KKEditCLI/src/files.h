@@ -37,5 +37,6 @@ void makeNewFile(void);
 void askOpenFile(void);
 void getTagList(void);
 void clearTagList(void);
+void openFileList(const char *files);
 
 #endif

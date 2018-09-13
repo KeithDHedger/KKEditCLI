@@ -200,25 +200,45 @@ int handleNavMenu(void)
 
 			case NAVEOPENINC:
 				{
-					DEBUGFUNC("lline=%s",page->line[page->currentLine].edLine);
-char *retline=oneLiner(false,"echo -n '%s'|awk '{print $2}'|sed 's@[<>]@@g'|xargs -I[] find . -iname '[]' -exec realpath '{}' \\;",
-page->line[page->currentLine].edLine
-);
-DEBUGFUNC(">>%s<<","echo -n '%s'|awk '{print $2}'|sed 's@[<>]@@g'|xargs -I[] find . -iname '[]' -exec realpath '{}' \\;");
+					char		*filename=NULL;
+					const char	*includepath=".";
 
-initEditor();
-setTempEdFile(retline);
-page->filePath=strdup(retline);
-oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
-openTheFile(tmpEdFilePath,hilite);
-currentX=minX;
-currentY=minY;
-printLines();
-moveCursToTemp(currentX,currentY);
+//check for local includes ("")
+					filename=oneLiner(false,"echo -n '%s'|sed -n 's/^#include.*\"\\(.*\\)\"$/\\1/p'",page->line[page->currentLine].edLine);
+					if(strlen(filename)<2)
+						{
+//check for local includes (<>)
+							filename=oneLiner(false,"echo -n '%s'|sed -n 's/^#include.*<\\(.*\\)>$/\\1/p'",page->line[page->currentLine].edLine);
+							if(strlen(filename)>2)
+								includepath="/usr/include";
+						}
 
+					if(strlen(filename)>2)
+						{
+							char	*command;
+							FILE	*fp;
+							char	line[2048];
 
-
-				DEBUGFUNC(">>>%s<<<",retline);
+							asprintf(&command,"echo -n '%s'|xargs -I[] find '%s' -iname '[]' -exec realpath '{}' \\;",filename,includepath);
+							fp=popen(command, "r");
+							if(fp!=NULL)
+								{
+									while(fgets(line,2048,fp))
+										{
+											line[strlen(line)-1]=0;
+											initEditor();
+											setTempEdFile(line);
+											page->filePath=strdup(line);
+											oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
+											openTheFile(tmpEdFilePath,hilite);
+											currentX=minX;
+											currentY=minY;
+											printLines();
+											moveCursToTemp(currentX,currentY);
+										}
+									pclose(fp);
+								}
+						}
 				}
 				break;
 

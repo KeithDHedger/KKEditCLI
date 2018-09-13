@@ -386,5 +386,10 @@ void getTagList(void)
 	functionData[cnt]=NULL;
 	pclose(fp);
 	free(command);
-//	free(retval);
 }
+
+void openFileList(const char *files)
+{
+	DEBUGFUNC(">>>path list=%s<<<",files);
+}
+
