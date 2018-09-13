@@ -41,14 +41,13 @@ struct option long_options[] =
 void printhelp(void)
 {
 printf("Usage: kkeditcli [OPTION]\n"
-	"A CLI application\n"
-	" -l, --no-liveupdate	Update source highlighting as you type.\n"
+	" -l, --no-liveupdate	Don't update source highlighting as you type.\n"
 	" -n, --no-hilite		No source highlighting.\n"
 	" -t, --tabs			Tab width.\n"
 	" -c, --cols			Force number of coloumns.\n"
 	" -v, --version	output version information and exit\n"
 	" -h, -?, --help	print this help\n\n"
-	"Report bugs to kdhedger@yahoo.co.uk\n"
+	"Report bugs to kdhedger68713@gmail.com\n"
 	);
 }
 
