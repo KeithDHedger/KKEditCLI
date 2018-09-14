@@ -35,6 +35,8 @@ void clearTrough(void)
 void drawFilePath(void)
 {
 	char	*rp=realpath(page->filePath,NULL);
+	moveCursToTemp(1,2);
+	printf(CLEARTOEOL);
 	moveCursToTemp((cols/2)-(strlen(rp)/2),mBarHite+1);
 	printf(BACKRED FOREWHITE "%s" NORMAL,rp);
 	free(rp);
