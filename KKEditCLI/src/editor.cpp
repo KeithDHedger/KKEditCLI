@@ -231,13 +231,16 @@ void moveCursDown(void)
 int findLineByLineNumber(int linenumber)
 {
 	int cnt=0;
+	
+	if(linenumber<=0)
+		return(0);
 	while(page->line[cnt].edLine!=NULL)
 		{
 			if(page->line[cnt].lineNum==linenumber)
 				return(cnt);
 			cnt++;
 		}
-	return(0);
+	return(cnt-1);
 }
 
 void findWordUnderCursor(void)

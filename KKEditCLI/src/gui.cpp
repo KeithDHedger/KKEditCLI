@@ -260,7 +260,9 @@ int handleNavMenu(void)
 					end_dialog();
 					if(status==0)
 						{
-							page->currentLine=atoi(dialog_vars.input_result)-1;
+							int realline=findLineByLineNumber(atoi(dialog_vars.input_result));
+							//page->currentLine=atoi(dialog_vars.input_result)-1;
+							page->currentLine=realline;
 							if(page->currentLine>page->maxLines)
 								page->currentLine=page->maxLines-1;
 							if(page->currentLine<1)

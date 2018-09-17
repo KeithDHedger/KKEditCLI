@@ -1,4 +1,5 @@
 0.0.9
+Fixd 'Goto Line'.
 Fixed saving file postion when switching tabs.
 Done "open include file".
 Added "--no-hilite" option.
