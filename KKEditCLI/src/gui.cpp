@@ -282,7 +282,6 @@ int handleNavMenu(void)
 					asprintf(&command,"MANWIDTH=%i MAN_KEEP_FORMATTING=1 man $(man -w %s) > /tmp/$(basename $(man -w %s))",maxCols,wordBufPtr,wordBufPtr);
 					system(command);
 					free(command);
-//DEBUGFUNC("COLUMNS=%i MAN_KEEP_FORMATTING=1 man $(man -w %s) > /tmp/$(basename $(man -w %s))",maxCols,wordBufPtr,wordBufPtr);
 					command=oneLiner(false,"echo /tmp/$(basename $(man -w %s))",wordBufPtr);					
 					page->saveX=currentX;
 					page->saveY=currentY;
@@ -406,8 +405,6 @@ void refreshScreen(void)
 		}
 	page->maxLines=0;
 	openTheFile(tmpEdFilePath,hilite);
-//	for(int j=0;j<40;j++)
-//		fprintf(stderr,"%s\n",page->line[j].edLine);
 	printLines();
 }
 
