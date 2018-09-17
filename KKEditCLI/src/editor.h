@@ -42,6 +42,8 @@ struct pageStruct
 	int				pageNum;
 	int				saveX;
 	int				saveY;
+	int				saveCurrentLine;
+	
 };
 
 struct funcStruct

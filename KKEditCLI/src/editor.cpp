@@ -28,6 +28,13 @@ const char	*wordBufPtr=(const char*)wordBuf;
 
 void initEditor(void)
 {
+	if(page!=NULL)
+		{
+			page->saveX=currentX;
+			page->saveY=currentY;
+			page->saveCurrentLine=page->currentLine;
+		}
+
 	page=new pageStruct;
 	page->filePath=NULL;
 	page->topLine=0;

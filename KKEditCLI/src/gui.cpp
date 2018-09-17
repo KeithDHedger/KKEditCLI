@@ -152,14 +152,17 @@ int handleTabsMenu(void)
 			ptr+=strlen(tabsMenuNames[menuselect-1])+1;
 			page->saveX=currentX;
 			page->saveY=currentY;
+			page->saveCurrentLine=page->currentLine;
+
 			page=pages[atoi(ptr)];
 			currentPage=page->pageNum;
 			setTempEdFile(page->filePath);
 			currentX=page->saveX;
 			currentY=page->saveY;
+			page->currentLine=page->saveCurrentLine;
 			moveCursToTemp(currentX,currentY);
 			clearScreen();
-			refreshScreen();
+			printLines();
 			clearTagList();
 			adjCursor();
 		}
@@ -233,9 +236,13 @@ int handleNavMenu(void)
 											page->filePath=strdup(line);
 											oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
 											openTheFile(tmpEdFilePath,hilite);
+											page->topLine=0;
+											page->currentLine=0;
 											currentX=minX;
 											currentY=minY;
+											page->lineXCurs=0;
 											printLines();
+											adjCursor();
 											moveCursToTemp(currentX,currentY);
 										}
 									pclose(fp);
@@ -399,6 +406,8 @@ void refreshScreen(void)
 		}
 	page->maxLines=0;
 	openTheFile(tmpEdFilePath,hilite);
+//	for(int j=0;j<40;j++)
+//		fprintf(stderr,"%s\n",page->line[j].edLine);
 	printLines();
 }
 
