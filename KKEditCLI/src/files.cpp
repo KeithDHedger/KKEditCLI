@@ -38,6 +38,44 @@ void setTempEdFile(const char *path)
 	free(basec);
 }
 
+#include <iostream>
+#include "srchilite/sourcehighlight.h"
+#include "srchilite/langmap.h"
+#include <srchilite/languageinfer.h>
+
+using namespace std;
+using namespace srchilite;
+#define SHDATADIR "/usr/share/source-highlight/"
+
+void makeSrc(const char *path)
+{
+	LanguageInfer inf;
+	SourceHighlight sourceHighlight("esc.outlang");
+	LangMap langMap(SHDATADIR,"lang.map");
+	string inputLang="nohilite.lang";
+
+	sourceHighlight.setDataDir(SHDATADIR);
+
+
+	string lang=langMap.getMappedFileNameFromFileName(path);
+
+	if(lang != "")
+		inputLang=lang;
+	else
+		{
+			lang=inf.infer(path);
+			if(lang != "")
+				{
+					langMap.open();
+					inputLang=langMap.getFileName(lang);
+				}
+		}
+
+	DEBUGFUNC("inputLang=%s",inputLang.c_str());
+	sourceHighlight.setStyleFile("esc.style");
+	sourceHighlight.highlight(path,"/dev/shm/src",inputLang);
+}
+
 void openTheFile(const char *path,bool extsrc)
 {
 	FILE	*fp;
@@ -55,7 +93,8 @@ void openTheFile(const char *path,bool extsrc)
 	page->maxLines=0;
 
 	if(extsrc==true)
-		oneLiner(true,"source-highlight --infer-lang --style-file=esc.style -f esc --failsafe -i '%s' -o /dev/shm/src 2>/dev/null",path);
+		makeSrc(path);
+		//oneLiner(true,"source-highlight --infer-lang --style-file=esc.style -f esc --failsafe -i '%s' -o /dev/shm/src 2>/dev/null",path);
 	else
 		oneLiner(true,"cp '%s' /dev/shm/src 2>/dev/null",path);  
 		

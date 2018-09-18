@@ -1,4 +1,6 @@
 0.1.0
+Better source highlight guessing.
+Converted to using source-highlight library instead of application.
 Version bump.
 
 0.0.9
