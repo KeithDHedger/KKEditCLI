@@ -104,7 +104,11 @@ static void debugFunc(const char *file,const char *func,int line,const char *fmt
 }
 #define DEBUGFUNC(x,...) debugFunc(__FILE__,__func__,__LINE__,(const char*)x,__VA_ARGS__)
 #else
+#ifdef _WARN_ENABLEDEBUG_
 #define DEBUGFUNC(...) fprintf(stderr,"Remove debug code here: %s:%i\n",__FILE__,__LINE__);
+#else
+#define DEBUGFUNC(...) 
+#endif
 #endif
 
 static void freeAndNull(char** ptr)
