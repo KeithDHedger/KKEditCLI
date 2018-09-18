@@ -274,6 +274,8 @@ void writeCharToFile(char c)
 
 void saveFile(const char *path)
 {
+
+DEBUGFUNC("path=%s",path);
 	int		fh=0;
 	fh=open(tmpEdFilePath,O_WRONLY|O_CREAT|O_TRUNC);
 	if(fh != -1)
@@ -284,7 +286,7 @@ void saveFile(const char *path)
 			close(fh);
 		}
 
-	fh=open(path,O_WRONLY|O_CREAT|O_TRUNC);
+	fh=open(path,O_WRONLY|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 	if(fh != -1)
 		{
 			for(int j=0;j<page->maxLines;j++)
@@ -334,7 +336,7 @@ void askOpenFile(void)
 	int	status=-100;
 
 	init_dialog(stdin,stdout);
-		status=dialog_fselect("Open File",page->filePath,rows-14,cols-14);
+		status=dialog_fselect("Open File ...",page->filePath,rows-14,cols-14);
 	end_dialog();
 	dlg_clear();
 	clearScreen();
@@ -351,6 +353,29 @@ void askOpenFile(void)
 	printLines();
 	moveCursToTemp(currentX,currentY);
 }
+
+void askSaveFile(void)
+{
+	int	status=-100;
+	init_dialog(stdin,stdout);
+		status=dialog_fselect("Save File As ..",page->filePath,rows-14,cols-14);
+	end_dialog();
+	dlg_clear();
+	clearScreen();
+	if(status==0)
+		{
+			saveFile(dialog_vars.input_result);
+			DEBUGFUNC("openTheFile(dialog_vars.input_result,hilite)=%s",dialog_vars.input_result);
+			fflush(NULL);
+			unlink(tmpEdFilePath);
+			setTempEdFile(dialog_vars.input_result);
+			page->filePath=strdup(dialog_vars.input_result);
+			oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
+			openTheFile(tmpEdFilePath,hilite);
+			printLines();
+		}
+}
+
 
 void clearTagList(void)
 {

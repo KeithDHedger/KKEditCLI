@@ -91,6 +91,7 @@ int handleFileMenu(void)
 				adjCursor();
 				break;
 			case FILESAVEAS:
+				askSaveFile();
 				break;
 			case FILECLOSE:
 				closePage();
