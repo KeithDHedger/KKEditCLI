@@ -20,11 +20,13 @@
 
 #include "globals.h"
 
-int			pageNumber=0;
-int			currentPage=0;
-int			totalPages=0;
-char		*wordBuf[1024]={0,};
-const char	*wordBufPtr=(const char*)wordBuf;
+int				pageNumber=0;
+int				currentPage=0;
+int				totalPages=0;
+char			*wordBuf[1024]={0,};
+const char		*wordBufPtr=(const char*)wordBuf;
+bookmarkStruct	bookmarks[MAXBOOKMARKS];
+int				currentBMNum=0;
 
 void initEditor(void)
 {

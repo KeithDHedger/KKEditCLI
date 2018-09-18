@@ -32,14 +32,15 @@ const char	*navMenuNames[]={" Goto _Define"," Open _Include"," Goto _Line"," Ope
 char		**tabsMenuNames=NULL;
 funcStruct	**functionData=NULL;
 char		**functionsMenuNames=NULL;
-const char	*bookmarksMenuNames[]={" TODO ..."," _Remove All Marks"," _Toggle BM",NULL};
+char		*bookmarksMenuNames[MAXBOOKMARKS]={" _Remove All Marks "," _Toggle BM",NULL};
 const char	*toolsMenuNames[]={"TODO ..."," _Manage Tools",NULL};
 
 int			menuWidth=0;
 int			menuStart=0;
 
-void drawMenuStyle(const char **menulist,int menunum,int x,int y,int style,bool doshortcut)
+void drawMenuStyle(const char **menulist,int menunum,int x,int y,int style,bool doshortcut,bool dopad)
 {
+	bool	gotus;
 	moveCursToTemp(x,y);
 	switch(style)
 		{
@@ -55,6 +56,7 @@ void drawMenuStyle(const char **menulist,int menunum,int x,int y,int style,bool 
 				break;
 		}
 
+	gotus=false;
 	for(unsigned j=0;j<menuWidth;j++)
 		{
 			if(j<strlen(menulist[menunum]))
@@ -63,6 +65,7 @@ void drawMenuStyle(const char **menulist,int menunum,int x,int y,int style,bool 
 						{
 							j++;
 							printf("%s%c%s",UNDERSCOREON,menulist[menunum][j],UNDERSCOREOFF);
+							gotus=true;
 						}
 					else
 						printf("%c",menulist[menunum][j]);
@@ -70,6 +73,8 @@ void drawMenuStyle(const char **menulist,int menunum,int x,int y,int style,bool 
 			else
 				printf(" ");
 		}
+	if((gotus==true) && (dopad==true))
+		printf(" ");
 	fflush(NULL);
 }
 
@@ -82,7 +87,7 @@ void drawMenuBar(void)
 	while(menuNames[menucnt]!=NULL)
 		{
 			menuWidth=strlen(menuNames[menucnt]);
-			drawMenuStyle(menuNames,menucnt,x,y,FLATNORM,true);
+			drawMenuStyle(menuNames,menucnt,x,y,FLATNORM,true,false);
 			x+=strlen(menuNames[menucnt++]);
 		}
 	SETNORMAL;
@@ -106,9 +111,9 @@ int drawMenuWindow(const char **menulist,int sx,int sy,int prelight,bool doshort
 	while((menulist[cnt+menuStart]!=NULL) && (y<menuHite+mBarHite))
 		{
 			if(prelight==cnt)
-				drawMenuStyle(menulist,cnt+menuStart,sx,y++,FLATINVERT,doshortcut);
+				drawMenuStyle(menulist,cnt+menuStart,sx,y++,FLATINVERT,doshortcut,true);
 			else
-				drawMenuStyle(menulist,cnt+menuStart,sx,y++,FLATNORM,doshortcut);
+				drawMenuStyle(menulist,cnt+menuStart,sx,y++,FLATNORM,doshortcut,true);
 			cnt++;
 		}
 	SETNORMAL;
@@ -284,6 +289,19 @@ void buildTabMenu(void)
 				asprintf(&tabsMenuNames[cnt++]," %s%c%i",pages[j]->filePath,0,j);
 		}
 	tabsMenuNames[maxPages]=NULL;
+}
+
+void buildBMMenu(void)
+{
+	for(int j=0;j<currentBMNum;j++)
+		freeAndNull(&bookmarksMenuNames[j+2]);
+
+	int cnt=2;
+	for(int j=0;j<MAXBOOKMARKS;j++)
+		{
+			if(bookmarks[j].line!=-1)
+				asprintf(&bookmarksMenuNames[cnt++]," Line %i, Page %i ",bookmarks[j].line,bookmarks[j].pageNum);
+		}
 }
 
 

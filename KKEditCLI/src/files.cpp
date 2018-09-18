@@ -274,8 +274,6 @@ void writeCharToFile(char c)
 
 void saveFile(const char *path)
 {
-
-DEBUGFUNC("path=%s",path);
 	int		fh=0;
 	fh=open(tmpEdFilePath,O_WRONLY|O_CREAT|O_TRUNC);
 	if(fh != -1)
@@ -305,13 +303,13 @@ void askSaveIfdirty(void)
 	if(page->dirty==true)
 		{
 			asprintf(&message,"\"%s\"\n\nHas been changed, save?",page->filePath);
+			fflush(NULL);
 			init_dialog(stdin,stdout);
 				status=dialog_yesno("",message,8,strlen(page->filePath)+8);
 			end_dialog();
 			free(message);
 			if(status==0)
 				{
-					dlg_clear();
 					saveFile(page->filePath);
 					refreshScreen();
 					moveCursToTemp(minX,currentY);
@@ -360,12 +358,11 @@ void askSaveFile(void)
 	init_dialog(stdin,stdout);
 		status=dialog_fselect("Save File As ..",page->filePath,rows-14,cols-14);
 	end_dialog();
-	dlg_clear();
+//	dlg_clear();
 	clearScreen();
 	if(status==0)
 		{
 			saveFile(dialog_vars.input_result);
-			DEBUGFUNC("openTheFile(dialog_vars.input_result,hilite)=%s",dialog_vars.input_result);
 			fflush(NULL);
 			unlink(tmpEdFilePath);
 			setTempEdFile(dialog_vars.input_result);
@@ -375,7 +372,6 @@ void askSaveFile(void)
 			printLines();
 		}
 }
-
 
 void clearTagList(void)
 {

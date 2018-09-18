@@ -60,6 +60,11 @@ void initCursesLib(void)
 
 	menuHite=rows-mBarHite;
 //printf("rows=%i cols=%i\n",rows,maxCols);
+	for(int j=0;j<MAXBOOKMARKS;j++)
+		{
+			bookmarks[j].line=-1;
+			bookmarks[j].pageNum=-1;
+		}
 }
 
 void finalizeCursesLib(void)
@@ -92,6 +97,7 @@ void finalizeCursesLib(void)
 		}
 	freeAndNull(&tmpEdFile);
 	freeAndNull(&tmpEdFilePath);
+	end_dialog();
 
 	SETNORMAL;
 }

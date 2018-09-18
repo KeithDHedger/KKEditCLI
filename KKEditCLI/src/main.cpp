@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 	currentY=minY;
 	moveCursToTemp(currentX,currentY);
 	printStatusBar();
-
+//init_dialog(stdin,stdout);
 	eventLoop();
 	finalizeCursesLib();
 	printf("\n");

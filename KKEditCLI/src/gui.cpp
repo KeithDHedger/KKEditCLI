@@ -42,6 +42,35 @@ void drawFilePath(void)
 	free(rp);
 }
 
+void drawBM(void)
+{
+	int	screenline=minY;
+	for(int j=page->topLine; j<page->topLine+maxRows; j++)
+		{
+			if(page->line[j].srcLine==NULL)
+				break;
+			moveCursToTemp(6,screenline);
+			printf(" ");
+			for(int k=0;k<MAXBOOKMARKS;k++)
+				{
+					if(page->line[j].lineNum>0)
+						{
+							if(bookmarks[k].pageNum==page->pageNum)
+								{
+									if(bookmarks[k].line==page->line[j].lineNum)
+										{
+											moveCursToTemp(6,screenline);
+											SETINVERSEON
+											printf("X");
+											SETINVERSEOFF
+										}
+								}
+						}
+				}
+			screenline++;
+		}
+}
+
 void printLines(void)
 {
 	int	screenline=minY;
@@ -65,6 +94,7 @@ void printLines(void)
 
 	printf(CLEARTOEOS);
 	drawFilePath();
+	drawBM();
 	SHOWCURS;
 }
 
@@ -328,16 +358,49 @@ int handleFuncMenu(void)
 	return(menuselect);
 }
 
+int findBM(int line,int pagenum)
+{
+	int	retval=0;
+
+	while(retval!=currentBMNum)
+		{
+			if((bookmarks[retval].line==line) && (bookmarks[retval].pageNum==pagenum))
+				return(retval);
+			retval++;
+		}
+	return(-1);
+}
+
 int handleBMMenu(void)
 {
 	int menuselect;
+	int	findline=page->topLine+currentY-minY;
+	int	bm=-1;
 
-	menuselect=doMenuEvent(bookmarksMenuNames,37,2,true);
+	menuselect=doMenuEvent((const char**)bookmarksMenuNames,37,2,true);
 	switch(menuselect)
 		{
 			case BMREMOVEALL:
 				break;
-			case BMTOGGL:
+			case BMTOGGLE:
+				while(page->line[findline].lineNum==0)
+					findline--;
+				bm=findBM(page->line[findline].lineNum,currentPage);
+				if(bm==-1)
+					{
+						bookmarks[currentBMNum].line=page->line[findline].lineNum;
+						bookmarks[currentBMNum].pageNum=currentPage;
+			//	DEBUGFUNC("bookmarks[currentBMNum].line=%i bookmarks[currentBMNum].pageNum=%i",bookmarks[currentBMNum].line,bookmarks[currentBMNum].pageNum);
+			//	DEBUGFUNC("pageecurrentline=%i page->topLine=%i page->line[page->topLine].lineNum=%i",page->currentLine,page->topLine,page->line[page->topLine].lineNum);
+						currentBMNum++;
+					}
+				else
+					{
+						bookmarks[bm].line=-1;
+						bookmarks[bm].pageNum=-1;
+					}
+				drawBM();
+				buildBMMenu();
 				break;
 		}
 	return(menuselect);

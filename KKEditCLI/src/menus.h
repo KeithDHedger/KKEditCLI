@@ -29,7 +29,7 @@ enum {EDITCUT=1,EDITCOPY,EDITPASTE,EDITCNT};
 enum {VIEWDOC0=1,VIEWDOC1,VIEWDOC2,VIEWCNT};
 enum {NAVEGOTODEF=1,NAVEOPENINC,NAVGOTOLINE,NAVOPENMANPAGE,NAVCNT};
 enum {FUNC0=1,FUNC1,FUNCCNT};
-enum {BMREMOVEALL,BMTOGGL,BMCNT};
+enum {BMREMOVEALL=1,BMTOGGLE,BMCNT};
 enum {TOOLMANAGE=1,TOOLCNT};
 
 extern int			menuStart;
@@ -43,11 +43,12 @@ extern const char	*navMenuNames[];
 extern char			**tabsMenuNames;
 extern funcStruct	**functionData;
 extern char			**functionsMenuNames;
-extern const char	*bookmarksMenuNames[];
+extern char			*bookmarksMenuNames[];
 extern const char	*toolsMenuNames[];
 
 void drawMenuBar(void);
 int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut);
 void buildTabMenu(void);
+void buildBMMenu(void);
 
 #endif

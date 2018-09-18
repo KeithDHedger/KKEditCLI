@@ -30,6 +30,12 @@ struct lineStruct
 	bool			isSplitLine;
 };
 
+struct bookmarkStruct
+{
+	int				line;
+	int				pageNum;
+};
+
 struct pageStruct
 {
 	int				maxLines;
@@ -43,7 +49,6 @@ struct pageStruct
 	int				saveX;
 	int				saveY;
 	int				saveCurrentLine;
-	
 };
 
 struct funcStruct
@@ -53,9 +58,13 @@ struct funcStruct
 	int		line;
 };
 
+#define MAXBOOKMARKS	100
+
 extern char			*wordBuf[1024];
 extern const char	*wordBufPtr;
 extern int			currentPage;
+extern bookmarkStruct bookmarks[MAXBOOKMARKS];
+extern int			currentBMNum;
 
 void initEditor(void);
 void moveCursRite(void);
