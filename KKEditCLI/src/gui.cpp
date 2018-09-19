@@ -168,6 +168,38 @@ int handleEditMenu(void)
 	return(menuselect);
 }
 
+//int handleTabsMenuaa(void)
+//{
+//	int menuselect;
+//	char	*ptr;
+//
+//	if(tabsMenuNames==NULL)
+//		return(CONT);
+//
+//	menuselect=doMenuEvent((const char**)tabsMenuNames,11,2,true);
+//	if(menuselect>CONT)
+//		{
+//			ptr=tabsMenuNames[menuselect-1];
+//			ptr+=strlen(tabsMenuNames[menuselect-1])+1;
+//			page->saveX=currentX;
+//			page->saveY=currentY;
+//			page->saveCurrentLine=page->currentLine;
+//
+//			page=pages[atoi(ptr)];
+//			currentPage=page->pageNum;
+//			setTempEdFile(page->filePath);
+//			currentX=page->saveX;
+//			currentY=page->saveY;
+//			page->currentLine=page->saveCurrentLine;
+//			moveCursToTemp(currentX,currentY);
+//			clearScreen();
+//			printLines();
+//			clearTagList();
+//			adjCursor();
+//		}
+//	return(menuselect);
+//}
+
 int handleTabsMenu(void)
 {
 	int menuselect;
@@ -181,21 +213,7 @@ int handleTabsMenu(void)
 		{
 			ptr=tabsMenuNames[menuselect-1];
 			ptr+=strlen(tabsMenuNames[menuselect-1])+1;
-			page->saveX=currentX;
-			page->saveY=currentY;
-			page->saveCurrentLine=page->currentLine;
-
-			page=pages[atoi(ptr)];
-			currentPage=page->pageNum;
-			setTempEdFile(page->filePath);
-			currentX=page->saveX;
-			currentY=page->saveY;
-			page->currentLine=page->saveCurrentLine;
-			moveCursToTemp(currentX,currentY);
-			clearScreen();
-			printLines();
-			clearTagList();
-			adjCursor();
+			switchPage(atoi(ptr),-1);
 		}
 	return(menuselect);
 }
@@ -291,18 +309,19 @@ int handleNavMenu(void)
 					end_dialog();
 					if(status==0)
 						{
-							int realline=findLineByLineNumber(atoi(dialog_vars.input_result));
-							//page->currentLine=atoi(dialog_vars.input_result)-1;
-							page->currentLine=realline;
-							if(page->currentLine>page->maxLines)
-								page->currentLine=page->maxLines-1;
-							if(page->currentLine<1)
-								page->currentLine=0;
-							
-							page->topLine=page->currentLine;
-							page->lineXCurs=0;
-							currentY=minY;
-							adjCursor();
+							switchPage(-1,atoi(dialog_vars.input_result));
+//							int realline=findLineByLineNumber(atoi(dialog_vars.input_result));
+//							//page->currentLine=atoi(dialog_vars.input_result)-1;
+//							page->currentLine=realline;
+//							if(page->currentLine>page->maxLines)
+//								page->currentLine=page->maxLines-1;
+//							if(page->currentLine<1)
+//								page->currentLine=0;
+//							
+//							page->topLine=page->currentLine;
+//							page->lineXCurs=0;
+//							currentY=minY;
+//							adjCursor();
 						}
 					clearScreen();
 					refreshScreen();
@@ -346,13 +365,14 @@ int handleFuncMenu(void)
 		{
 			menuselect--;
 			line=findLineByLineNumber(functionData[menuselect]->line)+1;
-			page->currentLine=line;
-			page->topLine=line;
-			clearScreen();				 
-			printLines();
-			page->lineXCurs=0;
-			currentY=minY;
-			adjCursor();	
+			switchPage(-1,line);
+//			page->currentLine=line;
+//			page->topLine=line;
+//			clearScreen();				 
+//			printLines();
+//			page->lineXCurs=0;
+//			currentY=minY;
+//			adjCursor();	
 			return(CONT);
 		}
 	return(menuselect);
@@ -376,7 +396,7 @@ int handleBMMenu(void)
 	int menuselect;
 	int	findline=page->topLine+currentY-minY;
 	int	bm=-1;
-	int	freebm;
+
 	menuselect=doMenuEvent((const char**)bookmarksMenuNames,37,2,true);
 
 	if(menuselect<=CONT)
@@ -420,6 +440,9 @@ int handleBMMenu(void)
 				break;
 			default:
 				{
+
+					switchPage(bookmarks[menuselect-3].pageNum,bookmarks[menuselect-3].line);
+#if 0
 					page->saveX=currentX;
 					page->saveY=currentY;
 					page->saveCurrentLine=page->currentLine;
@@ -447,6 +470,7 @@ int handleBMMenu(void)
 					printLines();
 					clearTagList();
 					adjCursor();
+#endif
 				}
 //				DEBUGFUNC("bookmarks[menuselect].line=%i bookmarks[menuselect].pageNum=%i",bookmarks[menuselect-3].line,bookmarks[menuselect-3].pageNum);
 		}

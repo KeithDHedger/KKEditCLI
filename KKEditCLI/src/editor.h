@@ -75,5 +75,6 @@ void closePage(void);
 void adjCursor(void);
 int findLineByLineNumber(int linenumber);
 void findWordUnderCursor(void);
+void switchPage(int newpagenum,int gotoline);
 
 #endif

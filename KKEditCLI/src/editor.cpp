@@ -277,7 +277,44 @@ void findWordUnderCursor(void)
 	snprintf((char*)&wordBuf,endx-startx,"%s",&page->line[page->currentLine].edLine[startx+1]);
 }
 
+void switchPage(int newpagenum,int gotoline)
+{
+	int	realline;
 
+	if(newpagenum>-1)
+		{
+			if(pages[newpagenum]==NULL)
+				return;
+			page->saveX=currentX;
+			page->saveY=currentY;
+			page->saveCurrentLine=page->currentLine;
+
+			page=pages[newpagenum];
+			currentPage=page->pageNum;
+			setTempEdFile(page->filePath);
+			currentX=page->saveX;
+			currentY=page->saveY;
+			page->currentLine=page->saveCurrentLine;
+		}
+
+	if(gotoline>0)
+		{
+			realline=findLineByLineNumber(gotoline);
+			page->currentLine=realline;
+			if(page->currentLine>page->maxLines)
+				page->currentLine=page->maxLines-1;
+			if(page->currentLine<1)
+				page->currentLine=0;
+			page->lineXCurs=0;
+		}
+
+	page->topLine=page->currentLine;
+	currentY=minY;
+	clearScreen();
+	printLines();
+	clearTagList();
+	adjCursor();
+}
 
 
 
