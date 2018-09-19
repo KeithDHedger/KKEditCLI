@@ -237,11 +237,12 @@ int handleNavMenu(void)
 							if(strcmp(wordBufPtr,functionData[cnt]->name)==0)
 								{
 									line=findLineByLineNumber(functionData[cnt]->line)+1;
-									page->currentLine=line;
-									page->topLine=line;
-									page->lineXCurs=0;
-									currentY=minY;
-									adjCursor();
+									switchPage(-1,line+1);
+									//page->currentLine=line;
+									//page->topLine=line;
+									//page->lineXCurs=0;
+									//currentY=minY;
+									//adjCursor();
 									break;
 								}
 							cnt++;
