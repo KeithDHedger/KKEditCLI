@@ -94,6 +94,17 @@ void closePage(void)
 {
 	int	freenum=page->pageNum;
 
+	for(int j=0;j<MAXBOOKMARKS;j++)
+		{
+			if(bookmarks[j].pageNum==freenum)
+				{
+					bookmarks[j].line=bookmarks[j+1].line;
+					bookmarks[j].pageNum=bookmarks[j+1].pageNum;
+					bookmarks[j+1].line=-1;
+					bookmarks[j+1].pageNum=-1;
+				}
+		}
+	buildBMMenu();
 	if(page!=NULL)
 		askSaveIfdirty();
 
