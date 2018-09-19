@@ -32,7 +32,7 @@ const char	*navMenuNames[]={" Goto _Define"," Open _Include"," Goto _Line"," Ope
 char		**tabsMenuNames=NULL;
 funcStruct	**functionData=NULL;
 char		**functionsMenuNames=NULL;
-char		*bookmarksMenuNames[MAXBOOKMARKS]={" _Remove All Marks "," _Toggle BM",NULL};
+char		*bookmarksMenuNames[MAXBOOKMARKS]={" _Remove All Marks"," _Toggle BM",NULL};
 const char	*toolsMenuNames[]={"TODO ..."," _Manage Tools",NULL};
 
 int			menuWidth=0;
@@ -293,8 +293,8 @@ void buildTabMenu(void)
 
 void buildBMMenu(void)
 {
-	for(int j=0;j<currentBMNum;j++)
-		freeAndNull(&bookmarksMenuNames[j+2]);
+	for(int j=2;j<MAXBOOKMARKS;j++)
+		freeAndNull(&bookmarksMenuNames[j]);
 
 	int cnt=2;
 	for(int j=0;j<MAXBOOKMARKS;j++)

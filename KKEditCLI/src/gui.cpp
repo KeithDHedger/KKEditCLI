@@ -362,7 +362,7 @@ int findBM(int line,int pagenum)
 {
 	int	retval=0;
 
-	while(retval!=currentBMNum)
+	while(retval!=MAXBOOKMARKS)
 		{
 			if((bookmarks[retval].line==line) && (bookmarks[retval].pageNum==pagenum))
 				return(retval);
@@ -376,8 +376,12 @@ int handleBMMenu(void)
 	int menuselect;
 	int	findline=page->topLine+currentY-minY;
 	int	bm=-1;
-
+	int	freebm;
 	menuselect=doMenuEvent((const char**)bookmarksMenuNames,37,2,true);
+
+	if(menuselect<=CONT)
+		return(menuselect);
+
 	switch(menuselect)
 		{
 			case BMREMOVEALL:
@@ -388,20 +392,63 @@ int handleBMMenu(void)
 				bm=findBM(page->line[findline].lineNum,currentPage);
 				if(bm==-1)
 					{
-						bookmarks[currentBMNum].line=page->line[findline].lineNum;
-						bookmarks[currentBMNum].pageNum=currentPage;
+						for(int j=0;j<MAXBOOKMARKS;j++)
+							{
+								if(bookmarks[j].line==-1)
+									{
+										bookmarks[j].line=page->line[findline].lineNum;
+										bookmarks[j].pageNum=currentPage;
+										j=MAXBOOKMARKS;
+									}
+							}
 			//	DEBUGFUNC("bookmarks[currentBMNum].line=%i bookmarks[currentBMNum].pageNum=%i",bookmarks[currentBMNum].line,bookmarks[currentBMNum].pageNum);
 			//	DEBUGFUNC("pageecurrentline=%i page->topLine=%i page->line[page->topLine].lineNum=%i",page->currentLine,page->topLine,page->line[page->topLine].lineNum);
-						currentBMNum++;
+						//currentBMNum++;
 					}
 				else
 					{
-						bookmarks[bm].line=-1;
-						bookmarks[bm].pageNum=-1;
+						for(int j=bm;j<MAXBOOKMARKS-1;j++)
+							{
+								bookmarks[j].line=bookmarks[j+1].line;
+								bookmarks[j].pageNum=bookmarks[j+1].pageNum;
+								bookmarks[j+1].line=-1;
+								bookmarks[j+1].pageNum=-1;
+							}
 					}
 				drawBM();
 				buildBMMenu();
 				break;
+			default:
+				{
+					page->saveX=currentX;
+					page->saveY=currentY;
+					page->saveCurrentLine=page->currentLine;
+
+//DEBUGFUNC("menuselect=%i",menuselect);
+//DEBUGFUNC("bookmarks[menuselect-3].line=%i bookmarks[menuselect-3].pageNum=%i",bookmarks[menuselect-3].line,bookmarks[menuselect-3].pageNum);
+					page=pages[bookmarks[menuselect-3].pageNum];
+					currentPage=page->pageNum;
+					setTempEdFile(page->filePath);
+					currentX=page->saveX;
+					currentY=page->saveY;
+					page->currentLine=page->saveCurrentLine;
+
+					int realline=findLineByLineNumber(bookmarks[menuselect-3].line);
+					page->currentLine=realline;
+					if(page->currentLine>page->maxLines)
+						page->currentLine=page->maxLines-1;
+					if(page->currentLine<1)
+						page->currentLine=0;
+
+					page->topLine=page->currentLine;
+					page->lineXCurs=0;
+					currentY=minY;
+					clearScreen();
+					printLines();
+					clearTagList();
+					adjCursor();
+				}
+//				DEBUGFUNC("bookmarks[menuselect].line=%i bookmarks[menuselect].pageNum=%i",bookmarks[menuselect-3].line,bookmarks[menuselect-3].pageNum);
 		}
 	return(menuselect);
 }
