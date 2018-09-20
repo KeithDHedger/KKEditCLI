@@ -1,4 +1,3 @@
-
 /*
  *
  * ©K. D. Hedger. Sun 20 May 14:02:15 BST 2018 keithdhedger@gmail.com
@@ -72,6 +71,8 @@ void makeSrc(const char *path)
 		}
 
 	DEBUGFUNC("inputLang=%s",inputLang.c_str());
+	if(inputLang=="")
+		inputLang="nohilite.lang";
 	sourceHighlight.setStyleFile("esc.style");
 	sourceHighlight.highlight(path,"/dev/shm/src",inputLang);
 }
@@ -94,7 +95,6 @@ void openTheFile(const char *path,bool extsrc)
 
 	if(extsrc==true)
 		makeSrc(path);
-		//oneLiner(true,"source-highlight --infer-lang --style-file=esc.style -f esc --failsafe -i '%s' -o /dev/shm/src 2>/dev/null",path);
 	else
 		oneLiner(true,"cp '%s' /dev/shm/src 2>/dev/null",path);  
 		
@@ -358,7 +358,6 @@ void askSaveFile(void)
 	init_dialog(stdin,stdout);
 		status=dialog_fselect("Save File As ..",page->filePath,rows-14,cols-14);
 	end_dialog();
-//	dlg_clear();
 	clearScreen();
 	if(status==0)
 		{

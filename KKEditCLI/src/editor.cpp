@@ -316,12 +316,3 @@ void switchPage(int newpagenum,int gotoline)
 	adjCursor();
 }
 
-
-
-
-
-
-
-
-
-

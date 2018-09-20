@@ -19,7 +19,9 @@
  */
 
 #include <string.h>
+
 #include "globals.h"
+#include <libgen.h>
 
 int	menuNumber=0;
 
@@ -168,38 +170,6 @@ int handleEditMenu(void)
 	return(menuselect);
 }
 
-//int handleTabsMenuaa(void)
-//{
-//	int menuselect;
-//	char	*ptr;
-//
-//	if(tabsMenuNames==NULL)
-//		return(CONT);
-//
-//	menuselect=doMenuEvent((const char**)tabsMenuNames,11,2,true);
-//	if(menuselect>CONT)
-//		{
-//			ptr=tabsMenuNames[menuselect-1];
-//			ptr+=strlen(tabsMenuNames[menuselect-1])+1;
-//			page->saveX=currentX;
-//			page->saveY=currentY;
-//			page->saveCurrentLine=page->currentLine;
-//
-//			page=pages[atoi(ptr)];
-//			currentPage=page->pageNum;
-//			setTempEdFile(page->filePath);
-//			currentX=page->saveX;
-//			currentY=page->saveY;
-//			page->currentLine=page->saveCurrentLine;
-//			moveCursToTemp(currentX,currentY);
-//			clearScreen();
-//			printLines();
-//			clearTagList();
-//			adjCursor();
-//		}
-//	return(menuselect);
-//}
-
 int handleTabsMenu(void)
 {
 	int menuselect;
@@ -238,11 +208,6 @@ int handleNavMenu(void)
 								{
 									line=findLineByLineNumber(functionData[cnt]->line)+1;
 									switchPage(-1,line+1);
-									//page->currentLine=line;
-									//page->topLine=line;
-									//page->lineXCurs=0;
-									//currentY=minY;
-									//adjCursor();
 									break;
 								}
 							cnt++;
@@ -255,26 +220,42 @@ int handleNavMenu(void)
 
 			case NAVEOPENINC:
 				{
-					char		*filename=NULL;
+					char		*thefilename=NULL;
 					const char	*includepath=".";
+					int			depth=1;
+					char		*basedir=NULL;
 
+					asprintf(&basedir,"%s",page->filePath);
 //check for local includes ("")
-					filename=oneLiner(false,"echo -n '%s'|sed -n 's/^#include.*\"\\(.*\\)\"$/\\1/p'",page->line[page->currentLine].edLine);
-					if(strlen(filename)<2)
+					thefilename=oneLiner(false,"echo -n '%s'|sed -n 's/^#include.*\"\\(.*\\)\"$/\\1/p'",page->line[page->currentLine].edLine);
+					if(strlen(thefilename)<2)
 						{
 //check for local includes (<>)
-							filename=oneLiner(false,"echo -n '%s'|sed -n 's/^#include.*<\\(.*\\)>$/\\1/p'",page->line[page->currentLine].edLine);
-							if(strlen(filename)>2)
+							depth=999;
+							thefilename=oneLiner(false,"echo -n '%s'|sed -n 's/^#include.*<\\(.*\\)>$/\\1/p'",page->line[page->currentLine].edLine);
+							if(strlen(thefilename)>2)
 								includepath="/usr/include";
 						}
+					else
+						{
+							includepath=(const char*)dirname(basedir);
+						}
 
-					if(strlen(filename)>2)
+					if(strlen(thefilename)>2)
 						{
 							char	*command;
 							FILE	*fp;
 							char	line[2048];
 
-							asprintf(&command,"echo -n '%s'|xargs -I[] find '%s' -iname '[]' -exec realpath '{}' \\;",filename,includepath);
+							if(strchr(thefilename,'/')!=NULL)
+								{
+									free(basedir);
+									asprintf(&basedir,"%s",thefilename);
+									free(thefilename);
+									thefilename=basename(basedir);
+								}
+							asprintf(&command,"echo -n '%s'|xargs -I[] find '%s' -type f -maxdepth %i -iname '[]' -exec realpath '{}' \\;",thefilename,includepath,depth);
+//DEBUGFUNC("command=%s",command);
 							fp=popen(command, "r");
 							if(fp!=NULL)
 								{
@@ -296,8 +277,11 @@ int handleNavMenu(void)
 											moveCursToTemp(currentX,currentY);
 										}
 									pclose(fp);
+									free(command);
 								}
 						}
+					free(basedir);
+					//free(thefilename);
 				}
 				break;
 
@@ -311,23 +295,12 @@ int handleNavMenu(void)
 					if(status==0)
 						{
 							switchPage(-1,atoi(dialog_vars.input_result));
-//							int realline=findLineByLineNumber(atoi(dialog_vars.input_result));
-//							//page->currentLine=atoi(dialog_vars.input_result)-1;
-//							page->currentLine=realline;
-//							if(page->currentLine>page->maxLines)
-//								page->currentLine=page->maxLines-1;
-//							if(page->currentLine<1)
-//								page->currentLine=0;
-//							
-//							page->topLine=page->currentLine;
-//							page->lineXCurs=0;
-//							currentY=minY;
-//							adjCursor();
 						}
 					clearScreen();
 					refreshScreen();
 				}
 				break;
+
 			case NAVOPENMANPAGE:
 				{
 					char	*command;
@@ -422,9 +395,6 @@ int handleBMMenu(void)
 										j=MAXBOOKMARKS;
 									}
 							}
-			//	DEBUGFUNC("bookmarks[currentBMNum].line=%i bookmarks[currentBMNum].pageNum=%i",bookmarks[currentBMNum].line,bookmarks[currentBMNum].pageNum);
-			//	DEBUGFUNC("pageecurrentline=%i page->topLine=%i page->line[page->topLine].lineNum=%i",page->currentLine,page->topLine,page->line[page->topLine].lineNum);
-						//currentBMNum++;
 					}
 				else
 					{
@@ -441,39 +411,8 @@ int handleBMMenu(void)
 				break;
 			default:
 				{
-
 					switchPage(bookmarks[menuselect-3].pageNum,bookmarks[menuselect-3].line);
-#if 0
-					page->saveX=currentX;
-					page->saveY=currentY;
-					page->saveCurrentLine=page->currentLine;
-
-//DEBUGFUNC("menuselect=%i",menuselect);
-//DEBUGFUNC("bookmarks[menuselect-3].line=%i bookmarks[menuselect-3].pageNum=%i",bookmarks[menuselect-3].line,bookmarks[menuselect-3].pageNum);
-					page=pages[bookmarks[menuselect-3].pageNum];
-					currentPage=page->pageNum;
-					setTempEdFile(page->filePath);
-					currentX=page->saveX;
-					currentY=page->saveY;
-					page->currentLine=page->saveCurrentLine;
-
-					int realline=findLineByLineNumber(bookmarks[menuselect-3].line);
-					page->currentLine=realline;
-					if(page->currentLine>page->maxLines)
-						page->currentLine=page->maxLines-1;
-					if(page->currentLine<1)
-						page->currentLine=0;
-
-					page->topLine=page->currentLine;
-					page->lineXCurs=0;
-					currentY=minY;
-					clearScreen();
-					printLines();
-					clearTagList();
-					adjCursor();
-#endif
 				}
-//				DEBUGFUNC("bookmarks[menuselect].line=%i bookmarks[menuselect].pageNum=%i",bookmarks[menuselect-3].line,bookmarks[menuselect-3].pageNum);
 		}
 	return(menuselect);
 }
@@ -565,22 +504,17 @@ void eventLoop(void)
 			memset(buf,0,255);
 			charsread=read(STDIN_FILENO,&buf,255);
 			handled=false;
-			//for(int j=0;j<charsread;j++)
-			//	fprintf(stderr,"char %i %c %x ",j,buf[j],buf[j]);
-			//fprintf(stderr,"\n");
-
-			//DEBUGFUNC(">>>>0=%x 0=%c 1=%x 1=%c 2=%x 2=%c 3=%x 3=%c",buf[0],buf[0],buf[1],buf[1],buf[2],buf[2],buf[3],buf[3]);
-				cnt=0;
-				tstr[1]=buf[0]+0x60;
-				while(menuNames[cnt]!=NULL)
-					{
-						if(strcasestr((char*)menuNames[cnt],(char*)&tstr)!=NULL)
-								{
-									menuNumber=cnt;
-									buf[0]=ESCCHAR;
-									buf[1]=0;
-									break;
-								}
+			cnt=0;
+			tstr[1]=buf[0]+0x60;
+			while(menuNames[cnt]!=NULL)
+				{
+					if(strcasestr((char*)menuNames[cnt],(char*)&tstr)!=NULL)
+						{
+							menuNumber=cnt;
+							buf[0]=ESCCHAR;
+							buf[1]=0;
+							break;
+						}
 					cnt++;
 				}
 

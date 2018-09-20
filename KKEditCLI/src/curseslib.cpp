@@ -59,7 +59,6 @@ void initCursesLib(void)
 	endY=startY+maxRows;
 
 	menuHite=rows-mBarHite;
-//printf("rows=%i cols=%i\n",rows,maxCols);
 	for(int j=0;j<MAXBOOKMARKS;j++)
 		{
 			bookmarks[j].line=-1;

@@ -119,7 +119,6 @@ static void freeAndNull(char** ptr)
 	*ptr=NULL;
 }
 
-
 #include "curseslib.h"
 #include "editor.h"
 #include "files.h"

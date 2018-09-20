@@ -303,6 +303,3 @@ void buildBMMenu(void)
 				asprintf(&bookmarksMenuNames[cnt++]," Line %i, Page %i ",bookmarks[j].line,bookmarks[j].pageNum);
 		}
 }
-
-
-
