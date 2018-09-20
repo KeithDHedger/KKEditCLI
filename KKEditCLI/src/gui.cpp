@@ -23,7 +23,8 @@
 #include "globals.h"
 #include <libgen.h>
 
-int	menuNumber=0;
+int			menuNumber=0;
+const char	*chkfname=NULL;
 
 void clearTrough(void)
 {
@@ -188,6 +189,28 @@ int handleTabsMenu(void)
 	return(menuselect);
 }
 
+int openInclude(const char *fpath,const struct stat *sb,int tflag,struct FTW *ftwbuf)
+{
+	if(tflag == FTW_F)
+		{
+			
+			if(strcasecmp(fpath+ftwbuf->base,chkfname)==0)
+				{
+					initEditor();
+					setTempEdFile(fpath);
+					page->filePath=strdup(fpath);
+					oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
+					openTheFile(tmpEdFilePath,hilite);
+					page->topLine=0;
+					page->currentLine=0;
+					currentX=minX;
+					currentY=minY;
+					page->lineXCurs=0;
+				}
+		}
+	return(0);
+}
+
 int handleNavMenu(void)
 {
 	int menuselect;
@@ -222,10 +245,31 @@ int handleNavMenu(void)
 				{
 					char		*thefilename=NULL;
 					const char	*includepath=".";
-					int			depth=1;
 					char		*basedir=NULL;
 
 					asprintf(&basedir,"%s",page->filePath);
+					thefilename=oneLiner(false,"echo -n '%s'|sed -n 's/^#include.*\"\\(.*\\)\"$/\\1/p'",page->line[page->currentLine].edLine);
+					if(strlen(thefilename)<2)
+						{
+							thefilename=oneLiner(false,"echo -n '%s'|sed -n 's/^#include.*<\\(.*\\)>$/\\1/p'",page->line[page->currentLine].edLine);
+							if(strlen(thefilename)>2)
+								includepath="/usr/include";
+						}
+					else
+						includepath=(const char*)dirname(basedir);
+					
+					chkfname=basename(thefilename);
+					//DEBUGFUNC("nftw(%s,display_info,20,flags); chkfname=>%s<",includepath,chkfname);
+					nftw(includepath,openInclude,20,FTW_PHYS);
+					printLines();
+					adjCursor();
+					moveCursToTemp(currentX,currentY);
+
+					free(basedir);
+					free(thefilename);
+					
+#if 0
+
 //check for local includes ("")
 					thefilename=oneLiner(false,"echo -n '%s'|sed -n 's/^#include.*\"\\(.*\\)\"$/\\1/p'",page->line[page->currentLine].edLine);
 					if(strlen(thefilename)<2)
@@ -281,7 +325,7 @@ int handleNavMenu(void)
 								}
 						}
 					free(basedir);
-					//free(thefilename);
+#endif
 				}
 				break;
 

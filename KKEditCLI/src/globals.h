@@ -29,6 +29,8 @@
 #include <fstream>
 #include <sstream>
 
+#include <ftw.h>
+
 #include <srchilite/sourcehighlight.h>
 #include <srchilite/langmap.h>
 #include <srchilite/lineranges.h>
