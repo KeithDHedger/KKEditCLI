@@ -46,6 +46,8 @@ using namespace std;
 using namespace srchilite;
 #define SHDATADIR "/usr/share/source-highlight/"
 
+//oneLiner(true,"source-highlight --infer-lang --style-file=esc.style -f esc --failsafe -i '%s' -o /dev/shm/src 2>/dev/null",path);
+
 void makeSrc(const char *path)
 {
 	LanguageInfer inf;
