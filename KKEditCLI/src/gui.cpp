@@ -191,9 +191,8 @@ int handleTabsMenu(void)
 
 int openInclude(const char *fpath,const struct stat *sb,int tflag,struct FTW *ftwbuf)
 {
-	if(tflag == FTW_F)
+	if(tflag==FTW_F)
 		{
-			
 			if(strcasecmp(fpath+ftwbuf->base,chkfname)==0)
 				{
 					initEditor();
@@ -246,86 +245,37 @@ int handleNavMenu(void)
 					char		*thefilename=NULL;
 					const char	*includepath=".";
 					char		*basedir=NULL;
+					char		*ptr=NULL;
 
-					asprintf(&basedir,"%s",page->filePath);
-					thefilename=oneLiner(false,"echo -n '%s'|sed -n 's/^#include.*\"\\(.*\\)\"$/\\1/p'",page->line[page->currentLine].edLine);
-					if(strlen(thefilename)<2)
+					//save thefilename to free later
+					basedir=strdup(page->filePath);
+					thefilename=strdup(page->line[page->currentLine].edLine);
+					ptr=thefilename;
+					if(strstr(thefilename,"#include")==thefilename)
 						{
-							thefilename=oneLiner(false,"echo -n '%s'|sed -n 's/^#include.*<\\(.*\\)>$/\\1/p'",page->line[page->currentLine].edLine);
-							if(strlen(thefilename)>2)
-								includepath="/usr/include";
+							//local include ""
+							if(strchr(thefilename,'"')!=NULL)
+								{
+									*strrchr(thefilename,'"')=0;
+									thefilename=strchr(thefilename,'"')+1;
+									includepath=(const char*)dirname(basedir);
+								}
+							else if(strchr(thefilename,'<')!=NULL)
+								{
+									//global include <>
+									*strrchr(thefilename,'>')=0;
+									thefilename=strchr(thefilename,'<')+1;
+									includepath="/usr/include";
+								}
 						}
-					else
-						includepath=(const char*)dirname(basedir);
-					
+
 					chkfname=basename(thefilename);
-					//DEBUGFUNC("nftw(%s,display_info,20,flags); chkfname=>%s<",includepath,chkfname);
 					nftw(includepath,openInclude,20,FTW_PHYS);
 					printLines();
 					adjCursor();
 					moveCursToTemp(currentX,currentY);
-
 					free(basedir);
-					free(thefilename);
-					
-#if 0
-
-//check for local includes ("")
-					thefilename=oneLiner(false,"echo -n '%s'|sed -n 's/^#include.*\"\\(.*\\)\"$/\\1/p'",page->line[page->currentLine].edLine);
-					if(strlen(thefilename)<2)
-						{
-//check for local includes (<>)
-							depth=999;
-							thefilename=oneLiner(false,"echo -n '%s'|sed -n 's/^#include.*<\\(.*\\)>$/\\1/p'",page->line[page->currentLine].edLine);
-							if(strlen(thefilename)>2)
-								includepath="/usr/include";
-						}
-					else
-						{
-							includepath=(const char*)dirname(basedir);
-						}
-
-					if(strlen(thefilename)>2)
-						{
-							char	*command;
-							FILE	*fp;
-							char	line[2048];
-
-							if(strchr(thefilename,'/')!=NULL)
-								{
-									free(basedir);
-									asprintf(&basedir,"%s",thefilename);
-									free(thefilename);
-									thefilename=basename(basedir);
-								}
-							asprintf(&command,"echo -n '%s'|xargs -I[] find '%s' -type f -maxdepth %i -iname '[]' -exec realpath '{}' \\;",thefilename,includepath,depth);
-//DEBUGFUNC("command=%s",command);
-							fp=popen(command, "r");
-							if(fp!=NULL)
-								{
-									while(fgets(line,2048,fp))
-										{
-											line[strlen(line)-1]=0;
-											initEditor();
-											setTempEdFile(line);
-											page->filePath=strdup(line);
-											oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
-											openTheFile(tmpEdFilePath,hilite);
-											page->topLine=0;
-											page->currentLine=0;
-											currentX=minX;
-											currentY=minY;
-											page->lineXCurs=0;
-											printLines();
-											adjCursor();
-											moveCursToTemp(currentX,currentY);
-										}
-									pclose(fp);
-									free(command);
-								}
-						}
-					free(basedir);
-#endif
+					free(ptr);
 				}
 				break;
 
