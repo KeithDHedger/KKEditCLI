@@ -159,6 +159,7 @@ void openTheFile(const char *path,bool extsrc)
 					linenum++;
 					len=0;
 				}
+			free(linebuffer);
 			fclose(fp);
 			buildTabMenu();
 		}

@@ -129,34 +129,31 @@ static void freeAndNull(char** ptr)
 #include "gui.h"
 
 //term info
-extern int	cols;
-extern int	rows;
-extern int	minY;
-extern int	minX;
-extern int	currentX;
-extern int	currentY;
-extern int	maxRows;
-extern int	maxCols;
-extern int	forceCols;
+extern int			cols;
+extern int			rows;
+extern int			minY;
+extern int			minX;
+extern int			currentX;
+extern int			currentY;
+extern int			maxRows;
+extern int			maxCols;
+extern int			forceCols;
 
 //file
-extern int	newFileNum;
+extern int			newFileNum;
 
 //gui
-extern int	tabs;
-extern int	startY;
-extern int	endY;
-extern int	lineColour;
-extern int	mBarHite;
-extern int	menuHite;
+extern int			tabs;
+extern int			startY;
+extern int			endY;
+extern int			lineColour;
+extern int			mBarHite;
+extern int			menuHite;
 
 //prefs
-extern int	tabs;
-extern bool	liveUpdate;
-extern bool	hilite;
-
-//utils
-char* oneLiner(bool noreturn,const char* fmt,...);
+extern int			tabs;
+extern bool			liveUpdate;
+extern bool			hilite;
 
 //files
 extern const char	*tmpEdDir;
@@ -167,5 +164,8 @@ extern char			*tmpEdFilePath;
 extern int			maxPages;
 extern pageStruct	**pages;
 extern pageStruct	*page;
+
+//utils
+char* oneLiner(bool noreturn,const char* fmt,...);
 
 #endif

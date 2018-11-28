@@ -25,41 +25,40 @@ using namespace std;
 
 struct bookmarkStruct
 {
-	int				line;
-	int				pageNum;
+	int					line;
+	int					pageNum;
 };
 
 struct pageStruct
 {
-	int				maxLines;
-	int				currentLine;
-	int				topLine;
-	int				lineXCurs;
-	char			*filePath;
-	bool			dirty;
-	int				pageNum;
-	int				saveX;
-	int				saveY;
-	int				saveCurrentLine;
-	vector<string>	editLineArray;
-	vector<string>	printLineArray;
-	vector<int>		lineNumber;
+	int					maxLines;
+	int					currentLine;
+	int					topLine;
+	int					lineXCurs;
+	char				*filePath;
+	bool				dirty;
+	int					pageNum;
+	int					saveX;
+	int					saveY;
+	int					saveCurrentLine;
+	vector<string>		editLineArray;
+	vector<string>		printLineArray;
+	vector<int>			lineNumber;
 };
 
 struct funcStruct
 {
-	char	*name;
-	char	*type;
-	int		line;
+	char				*name;
+	char				*type;
+	int					line;
 };
 
 #define MAXBOOKMARKS	100
 
-extern char			*wordBuf[1024];
-extern const char	*wordBufPtr;
-extern int			currentPage;
-extern bookmarkStruct bookmarks[MAXBOOKMARKS];
-extern int			currentBMNum;
+extern char				*wordBuf[1024];
+extern const char		*wordBufPtr;
+extern int				currentPage;
+extern bookmarkStruct	bookmarks[MAXBOOKMARKS];
 
 void initEditor(void);
 void moveCursRite(void);

@@ -21,30 +21,30 @@
 #include "globals.h"
 
 //term info
-int		cols=0;
-int		rows=0;
-int		minY=4;
-int		minX=9;
-int		currentX=minX;
-int		currentY=minY;
-int		maxRows=0;
-int		maxCols=0;
-int		forceCols=-1;
+int			cols=0;
+int			rows=0;
+int			minY=4;
+int			minX=9;
+int			currentX=minX;
+int			currentY=minY;
+int			maxRows=0;
+int			maxCols=0;
+int			forceCols=-1;
 
 //file
-int		newFileNum=1;
+int			newFileNum=1;
 
 //gui
-int		startY=1;
-int		endY=1;
-int		lineColour=220;
-int		mBarHite=1;
-int		menuHite=1;
+int			startY=1;
+int			endY=1;
+int			lineColour=220;
+int			mBarHite=1;
+int			menuHite=1;
 
 //prefs
-int		tabs=8;
-bool	liveUpdate=true;
-bool	hilite=true;
+int			tabs=8;
+bool		liveUpdate=true;
+bool		hilite=true;
 
 //files
 const char	*tmpEdDir="/dev/shm/";
