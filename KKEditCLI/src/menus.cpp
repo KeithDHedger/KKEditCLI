@@ -173,7 +173,7 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 								case PAGEDOWN:
 									if(maxitems<menuHite)
 										break;								
-									menuStart+=menuHite;
+									menuStart+=menuHite-1;
 									if((menuStart+menuHite)>maxitems)
 										menuStart=maxitems-menuHite+1;
 									drawMenuWindow(menunames,sx,2,selection-1,doshortcut);

@@ -57,7 +57,6 @@ void makeSrc(const char *path)
 
 	sourceHighlight.setDataDir(SHDATADIR);
 
-
 	string lang=langMap.getMappedFileNameFromFileName(path);
 
 	if(lang != "")
@@ -178,8 +177,6 @@ bool deleteCharFromFile(bool back)
 					if(page->currentLine+1==page->editLineArray.size())
 						return(false);
 					page->editLineArray.at(page->currentLine).erase(page->editLineArray.at(page->currentLine).end()-1);
-					fprintf(stderr,">%s<\n",page->editLineArray.at(page->currentLine).c_str());
-					fprintf(stderr,">%s<\n",page->editLineArray.at(page->currentLine+1).c_str());
 					page->editLineArray.at(page->currentLine).append(page->editLineArray.at(page->currentLine+1));
 					page->editLineArray.erase(page->editLineArray.begin()+page->currentLine+1);
 					page->maxLines--;

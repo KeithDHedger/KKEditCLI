@@ -526,7 +526,7 @@ void eventLoop(void)
 									handled=true;
 									break;
 								case CURSEND:
-									page->lineXCurs=page->editLineArray.at(page->currentLine).back();
+									page->lineXCurs=page->editLineArray.at(page->currentLine).length()-1;
 									adjCursor();
 									handled=true;
 									break;
@@ -545,7 +545,7 @@ void eventLoop(void)
 									break;
 								case CURSEND:
 								case CURSENDCONS:
-									page->lineXCurs=page->editLineArray.at(page->currentLine).back();
+									page->lineXCurs=page->editLineArray.at(page->currentLine).length()-1;
 									adjCursor();
 									handled=true;
 									break;

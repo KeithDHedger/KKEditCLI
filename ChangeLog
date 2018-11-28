@@ -1,4 +1,5 @@
 0.1.1
+Fixed page down in menus.
 Fixed passing multiple files on cli.
 Code clean.
 Fixed very short files.

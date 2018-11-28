@@ -126,8 +126,8 @@ void adjCursor(void)
 	HIDECURS;
 	moveCursToTemp(minX,currentY);
 
-	if(page->lineXCurs>page->editLineArray.at(page->currentLine).size()-1)
-		page->lineXCurs=page->editLineArray.at(page->currentLine).size()-1;
+	if(page->lineXCurs>page->editLineArray.at(page->currentLine).length()-1)
+		page->lineXCurs=page->editLineArray.at(page->currentLine).length()-1;
 	if(page->lineXCurs<0)
 		page->lineXCurs=0;
 
