@@ -99,11 +99,15 @@ int main(int argc, char **argv)
 
 	if(optind < argc)
 		{
-			initEditor();
-			setTempEdFile(argv[argc-1]);
-			oneLiner(true,"cp %s %s/%s",argv[argc-1],tmpEdDir,tmpEdFile);
-			page->filePath=strdup(argv[argc-1]);
-			openTheFile(tmpEdFilePath,hilite);
+			while(optind < argc)
+				{
+					initEditor();
+					setTempEdFile(argv[optind]);
+					oneLiner(true,"cp %s %s/%s",argv[optind],tmpEdDir,tmpEdFile);
+					page->filePath=strdup(argv[optind]);
+					openTheFile(tmpEdFilePath,hilite);
+					optind++;
+				}
 		}
 	else
 		{
@@ -114,6 +118,7 @@ int main(int argc, char **argv)
 	currentY=minY;
 	moveCursToTemp(currentX,currentY);
 	printStatusBar();
+
 	eventLoop();
 	finalizeCursesLib();
 	printf("\n");

@@ -72,7 +72,6 @@ void makeSrc(const char *path)
 				}
 		}
 
-	DEBUGFUNC("inputLang=%s",inputLang.c_str());
 	if(inputLang=="")
 		inputLang="nohilite.lang";
 	sourceHighlight.setStyleFile("esc.style");
@@ -81,194 +80,159 @@ void makeSrc(const char *path)
 
 void openTheFile(const char *path,bool extsrc)
 {
-	FILE	*fp;
-	size_t	len=0;
-	ssize_t	read;
-	int		linelen=0;
-	char	*tline=NULL;
-	int		srcchar=0;
-	int		destchar=0;
-	char	*dline=NULL;
-	char	*eline=NULL;
-	int		edest;
-	int		linenumber=1;
-
-	page->maxLines=0;
+	std::string	editline;
+	std::string	printline;
+	FILE		*fp;
+	char		*linebuffer=NULL;
+	size_t		len=0;
+	ssize_t		read;
+	int			srcchar=0;
+	int			linelen=0;
+	int			linenum=1;
+	bool		addlinenumber;
 
 	if(extsrc==true)
 		makeSrc(path);
 	else
 		oneLiner(true,"cp '%s' /dev/shm/src 2>/dev/null",path);  
-		
+
+	page->editLineArray.clear();
+	page->printLineArray.clear();
+	page->lineNumber.clear();
+
 	fp=fopen("/dev/shm/src", "r");
 	if(fp != NULL)
 		{
-			len=0;
-			tline=NULL;
-			page->maxLines=0;
-			int	msize=4096;
-			dline=(char*)malloc(msize);
-			eline=(char*)malloc(msize);
-			while((read=getline(&tline,&len,fp)) != -1)
+			while((read=getline(&linebuffer,&len,fp)) != -1)
 				{
-					if(msize<read+16)
-						{
-							dline=(char*)realloc((void*)dline,read+4096);
-							eline=(char*)realloc((void*)eline,read+4096);
-							msize=read+4096;
-						}
+					editline="";
+					printline="";
 					srcchar=0;
-					destchar=0;
-					edest=0;
 					linelen=0;
-					page->line[page->maxLines].lineNum=linenumber++;
-					page->line[page->maxLines].lineLen=-1;
-					while(srcchar<=read)
+					page->lineNumber.push_back(linenum);
+					addlinenumber=false;
+					while(srcchar<read)
 						{
-							if(tline[srcchar]==0x1b)
+							if(linebuffer[srcchar]==0x1b)
 								{
-									while(tline[srcchar]!='m')
+									while(linebuffer[srcchar]!='m')
 										{
-											dline[destchar]=tline[srcchar];
+											printline.append(1,linebuffer[srcchar]);
 											srcchar++;
-											destchar++;
 										}
-									dline[destchar]=tline[srcchar];
+									printline.append(1,linebuffer[srcchar]);
+									srcchar++;
 								}
 							else
 								{
-									dline[destchar]=tline[srcchar];
-									eline[edest]=tline[srcchar];
-									if(tline[srcchar]=='\t')
+									editline.append(1,linebuffer[srcchar]);
+									printline.append(1,linebuffer[srcchar]);
+									if(linebuffer[srcchar]=='\t')
 										linelen+=tabs;
 									else
 										linelen++;
-									edest++;
+									srcchar++;
 								}
-							destchar++;
-							srcchar++;
 
 							if(linelen>=maxCols)
 								{
-									page->line[page->maxLines].isSplitLine=true;
-									dline[destchar++]='\n';
-									dline[destchar++]=0;
-									page->line[page->maxLines].srcLine=strdup(dline);
-									destchar=0;
-									
-									page->line[page->maxLines].lineLen=edest;
-									eline[edest++]='\n';
-									eline[edest++]=0;
-									page->line[page->maxLines++].edLine=strdup(eline);
-									page->line[page->maxLines].lineNum=-1;
-									edest=0;
+									page->editLineArray.push_back(editline);
+									page->printLineArray.push_back(printline);
+									if(addlinenumber==false)
+										addlinenumber=true;
+									else
+										page->lineNumber.push_back(-1);
+									editline="";
+									printline="";
 									linelen=0;
-									memset(eline,0,strlen(eline));
-									memset(dline,0,strlen(dline));
 								}
 						}
-					dline[destchar]=0;
-					eline[edest]=0;
-					page->line[page->maxLines].isSplitLine=false;
-					page->line[page->maxLines].lineLen=strlen(eline);
-					page->line[page->maxLines].srcLine=strdup(dline);
-					page->line[page->maxLines++].edLine=strdup(eline);
-					memset(eline,0,strlen(eline));
-					memset(dline,0,strlen(dline));
-					freeAndNull(&tline);
+					page->editLineArray.push_back(editline);
+					page->printLineArray.push_back(printline);
+					if(addlinenumber==false)
+						addlinenumber=true;
+					else
+						page->lineNumber.push_back(-1);
+
+					free(linebuffer);
+					linebuffer=NULL;
+					linenum++;
 					len=0;
 				}
-			free(dline);
-			free(eline);
-			free(tline);
 			fclose(fp);
 			buildTabMenu();
 		}
+	page->maxLines=page->editLineArray.size();	
 }
 
 bool deleteCharFromFile(bool back)
 {
 	int		fh=0;
 	char	*newline;
-	bool	retval=false;
-	int		newlinelen=0;
 
 	if(back==false)
 		{
-			if(page->line[page->currentLine].edLine[page->lineXCurs]=='\n')
+			if(page->editLineArray.at(page->currentLine).at(page->lineXCurs)=='\n')
 				{
-					page->line[page->currentLine].edLine[page->lineXCurs]=0;
-					asprintf(&newline,"%s%s",page->line[page->currentLine].edLine,&page->line[page->currentLine+1].edLine[(int)page->line[page->currentLine].isSplitLine]);
-					newlinelen=page->line[page->currentLine+1].lineLen+page->line[page->currentLine].lineLen-1;
-					freeAndNull(&page->line[page->currentLine+1].edLine);
-					freeAndNull(&page->line[page->currentLine].edLine);
-					page->line[page->currentLine].edLine=newline;
-					page->line[page->currentLine].lineLen=newlinelen;
-					retval=true;
+					if(page->currentLine+1==page->editLineArray.size())
+						return(false);
+					page->editLineArray.at(page->currentLine).erase(page->editLineArray.at(page->currentLine).end()-1);
+					fprintf(stderr,">%s<\n",page->editLineArray.at(page->currentLine).c_str());
+					fprintf(stderr,">%s<\n",page->editLineArray.at(page->currentLine+1).c_str());
+					page->editLineArray.at(page->currentLine).append(page->editLineArray.at(page->currentLine+1));
+					page->editLineArray.erase(page->editLineArray.begin()+page->currentLine+1);
+					page->maxLines--;
 				}
 			else
 				{
-					asprintf(&newline,"%.*s%s",page->lineXCurs,page->line[page->currentLine].edLine,&page->line[page->currentLine].edLine[page->lineXCurs+1]);
-					free(page->line[page->currentLine].edLine);
-					page->line[page->currentLine].edLine=newline;
-					page->line[page->currentLine].lineLen--;
+					asprintf(&newline,"%s%s",page->editLineArray.at(page->currentLine).substr(0,page->lineXCurs).c_str(),page->editLineArray.at(page->currentLine).substr(page->lineXCurs+1,page->editLineArray.at(page->currentLine).length()).c_str());
+					page->editLineArray.at(page->currentLine)=newline;
+					free(newline);
 				}
 		}
 	else
 		{
 			if(page->lineXCurs==0)
 				{
-					retval=true;
-					currentY--;
-					currentX=page->line[page->currentLine-1].lineLen;
-					page->lineXCurs=page->line[page->currentLine-1].lineLen;
-					asprintf(&newline,"%.*s%s",page->line[page->currentLine-1].lineLen-1,page->line[page->currentLine-1].edLine,page->line[page->currentLine].edLine);
-					newlinelen=page->line[page->currentLine-1].lineLen+page->line[page->currentLine].lineLen-1;
-					freeAndNull(&page->line[page->currentLine].edLine);
-					freeAndNull(&page->line[page->currentLine-1].edLine);
+					if(page->currentLine==0)
+						return(false);
+					page->lineXCurs=page->editLineArray.at(page->currentLine-1).length();
+					page->editLineArray.at(page->currentLine-1).erase(page->editLineArray.at(page->currentLine-1).end()-1);
+					page->editLineArray.at(page->currentLine-1)+=page->editLineArray.at(page->currentLine);
+					page->editLineArray.erase(page->editLineArray.begin()+page->currentLine);
 					page->currentLine--;
-					page->line[page->currentLine].edLine=newline;
-					page->line[page->currentLine].lineLen=newlinelen;
+					currentY--;
 				}
 			else
 				{
-					asprintf(&newline,"%.*s%s",page->lineXCurs-1,page->line[page->currentLine].edLine,&page->line[page->currentLine].edLine[page->lineXCurs]);
-					free(page->line[page->currentLine].edLine);
-					page->line[page->currentLine].edLine=newline;
-					page->line[page->currentLine].lineLen--;
-					
+					asprintf(&newline,"%s%s",page->editLineArray.at(page->currentLine).substr(0,page->lineXCurs-1).c_str(),page->editLineArray.at(page->currentLine).substr(page->lineXCurs,page->editLineArray.at(page->currentLine).length()-1).c_str());
+					page->editLineArray.at(page->currentLine)=newline;
+					free(newline);
 				}
 		}
 
-	fh=open(tmpEdFilePath,O_WRONLY|O_TRUNC);
+	fh=open(tmpEdFilePath,O_WRONLY|O_CREAT|O_TRUNC);
 	if(fh != -1)
 		{
-			for(int j=0;j<page->maxLines;j++)
-				{
-					if(page->line[j].edLine!=NULL)
-						write(fh,page->line[j].edLine,page->line[j].lineLen);
-				}
+			for(int j=0;j<page->editLineArray.size();j++)
+				write(fh,page->editLineArray.at(j).c_str(),page->editLineArray.at(j).size());
 			close(fh);
 		}
 	page->dirty=true;
-	return(retval);
+	return(true);
 }
 
 void writeCharToFile(char c)
 {
 	int		fh=0;
-	char	*newline;
 
-	asprintf(&newline,"%.*s%c%s",page->lineXCurs,page->line[page->currentLine].edLine,c,&page->line[page->currentLine].edLine[page->lineXCurs]);
-	free(page->line[page->currentLine].edLine);
-	page->line[page->currentLine].edLine=newline;
-	page->line[page->currentLine].lineLen++;
+	page->editLineArray.at(page->currentLine).insert(page->lineXCurs,std::string(1,c));
+
 	fh=open(tmpEdFilePath,O_WRONLY|O_CREAT|O_TRUNC);
 	if(fh != -1)
 		{
-			for(int j=0;j<page->maxLines;j++)
-				write(fh,page->line[j].edLine,page->line[j].lineLen);
-
+			for(int j=0;j<page->editLineArray.size();j++)
+				write(fh,page->editLineArray.at(j).c_str(),page->editLineArray.at(j).size());
 			close(fh);
 		}
 	page->dirty=true;
@@ -280,18 +244,16 @@ void saveFile(const char *path)
 	fh=open(tmpEdFilePath,O_WRONLY|O_CREAT|O_TRUNC);
 	if(fh != -1)
 		{
-			for(int j=0;j<page->maxLines;j++)
-				write(fh,page->line[j].edLine,page->line[j].lineLen);
-
+			for(int j=0;j<page->editLineArray.size();j++)
+				write(fh,page->editLineArray.at(j).c_str(),page->editLineArray.at(j).length());
 			close(fh);
 		}
 
 	fh=open(path,O_WRONLY|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 	if(fh != -1)
 		{
-			for(int j=0;j<page->maxLines;j++)
-				write(fh,page->line[j].edLine,page->line[j].lineLen);
-
+			for(int j=0;j<page->editLineArray.size();j++)
+				write(fh,page->editLineArray.at(j).c_str(),page->editLineArray.at(j).length());
 			close(fh);
 		}
 	page->dirty=false;
@@ -439,7 +401,7 @@ void getTagList(void)
 			ptr2++;
 			ptr=strchr(ptr2,' ');
 			*ptr=0;
-			functionData[cnt]->line=atoi(ptr2)-1;
+			functionData[cnt]->line=atoi(ptr2);
 			asprintf(&functionsMenuNames[cnt]," %s%.4s%s %s",BACKRED,functionData[cnt]->type,BACKBLACK,functionData[cnt]->name);
 			cnt++;
 		}

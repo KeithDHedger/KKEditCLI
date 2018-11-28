@@ -50,17 +50,19 @@ void drawBM(void)
 	int	screenline=minY;
 	for(int j=page->topLine; j<page->topLine+maxRows; j++)
 		{
-			if(page->line[j].srcLine==NULL)
+			if(j>page->editLineArray.size()-1)
 				break;
+
 			moveCursToTemp(6,screenline);
 			printf(" ");
 			for(int k=0;k<MAXBOOKMARKS;k++)
 				{
-					if(page->line[j].lineNum>0)
+					if(page->lineNumber.at(j)>0)
 						{
 							if(bookmarks[k].pageNum==page->pageNum)
 								{
-									if(bookmarks[k].line==page->line[j].lineNum)
+									//if(bookmarks[k].line==page->line[j].lineNum)
+									if(bookmarks[k].line==page->lineNumber.at(j))
 										{
 											moveCursToTemp(6,screenline);
 											SETINVERSEON
@@ -82,19 +84,19 @@ void printLines(void)
 	clearTrough();
 	drawMenuBar();
 
-	for(int j=page->topLine; j<page->topLine+maxRows; j++)
+	for(int j=page->topLine;j<page->topLine+maxRows;j++)
 		{
-			if(page->line[j].srcLine==NULL)
+			if(j>page->editLineArray.size()-1)
 				break;
-			if(page->line[j].lineNum>0)
+
+			if(page->lineNumber.at(j)!=-1)
 				{
 					moveCursToTemp(1,screenline);
-					printf("\e[38;5;%im%.4i\e[m",lineColour,page->line[j].lineNum);
+					printf("\e[38;5;%im%.4i\e[m",lineColour,page->lineNumber.at(j));
 				}
 			moveCursToTemp(minX,screenline++);
-			printf("%s%s",CLEARTOEOL,page->line[j].srcLine);
+			printf("%s%s",CLEARTOEOL,page->printLineArray.at(j).c_str());
 		}
-
 	printf(CLEARTOEOS);
 	drawFilePath();
 	drawBM();
@@ -212,27 +214,41 @@ int openInclude(const char *fpath,const struct stat *sb,int tflag,struct FTW *ft
 
 int handleNavMenu(void)
 {
-	int menuselect;
+	int		menuselect;
+	int		cnt;
+	bool	found;
+	char	*gdef=NULL;
 
 	menuselect=doMenuEvent(navMenuNames,16,2,true);
 	switch(menuselect)
 		{
 			case NAVEGOTODEF:
 				{
-					int	cnt=0;
-					int	line=0;
+					cnt=0;
 					if(functionsMenuNames==NULL)
 						getTagList();
 
+					found=false;
 					while(functionData[cnt]!=NULL)
 						{
 							if(strcmp(wordBufPtr,functionData[cnt]->name)==0)
 								{
-									line=findLineByLineNumber(functionData[cnt]->line)+1;
-									switchPage(-1,line+1);
+									switchPage(-1,functionData[cnt]->line);
+									found=true;
 									break;
 								}
 							cnt++;
+						}
+					if(found==true)
+						DEBUGFUNC("switchPage(-1,functionData[cnt]->line);","");
+					else
+						{
+							char	*basedir;
+							basedir=strdup(page->filePath);
+							char	*dirn=dirname(basedir);
+							gdef=oneLiner(false,"ctags -x %s/*|sort -k 2rb,2rb -k 1b,1b|sed 's@ \\+@ @g'|grep %s|awk '{print $3 \" \" $4}'",dirn,wordBufPtr);
+							DEBUGFUNC("gdef=%s dirn=%s",gdef,dirn);
+							free(gdef);
 						}
 				}
 				clearScreen();
@@ -249,7 +265,7 @@ int handleNavMenu(void)
 
 					//save thefilename to free later
 					basedir=strdup(page->filePath);
-					thefilename=strdup(page->line[page->currentLine].edLine);
+					thefilename=strdup(page->editLineArray.at(page->currentLine).c_str());
 					ptr=thefilename;
 					if(strstr(thefilename,"#include")==thefilename)
 						{
@@ -299,7 +315,7 @@ int handleNavMenu(void)
 				{
 					char	*command;
 
-					asprintf(&command,"MANWIDTH=%i MAN_KEEP_FORMATTING=1 man $(man -w %s) > /tmp/$(basename $(man -w %s))",maxCols,wordBufPtr,wordBufPtr);
+					asprintf(&command,"MANWIDTH=%i MAN_KEEP_FORMATTING=1 /usr/bin/man $(man -w %s) > /tmp/$(basename $(man -w %s))",maxCols,wordBufPtr,wordBufPtr);
 					system(command);
 					free(command);
 					command=oneLiner(false,"echo /tmp/$(basename $(man -w %s))",wordBufPtr);					
@@ -323,26 +339,14 @@ int handleNavMenu(void)
 int handleFuncMenu(void)
 {
 	int menuselect=0;
-	int	line=0;
+	//int	line=0;
 
 	if(functionsMenuNames==NULL)
 		getTagList();
 
 	menuselect=doMenuEvent((const char**)functionsMenuNames,27,2,false);
 	if(menuselect>CONT)
-		{
-			menuselect--;
-			line=findLineByLineNumber(functionData[menuselect]->line)+1;
-			switchPage(-1,line);
-//			page->currentLine=line;
-//			page->topLine=line;
-//			clearScreen();				 
-//			printLines();
-//			page->lineXCurs=0;
-//			currentY=minY;
-//			adjCursor();	
-			return(CONT);
-		}
+		switchPage(-1,functionData[menuselect-1]->line);
 	return(menuselect);
 }
 
@@ -375,16 +379,17 @@ int handleBMMenu(void)
 			case BMREMOVEALL:
 				break;
 			case BMTOGGLE:
-				while(page->line[findline].lineNum==0)
+				while(page->lineNumber.at(findline)==0)
 					findline--;
-				bm=findBM(page->line[findline].lineNum,currentPage);
+
+				bm=findBM(page->lineNumber.at(findline),currentPage);
 				if(bm==-1)
 					{
 						for(int j=0;j<MAXBOOKMARKS;j++)
 							{
 								if(bookmarks[j].line==-1)
 									{
-										bookmarks[j].line=page->line[findline].lineNum;
+										bookmarks[j].line=page->lineNumber[findline];
 										bookmarks[j].pageNum=currentPage;
 										j=MAXBOOKMARKS;
 									}
@@ -469,11 +474,6 @@ int handleAllMenus(void)
 
 void refreshScreen(void)
 {
-	for(int j=0; j<page->maxLines;j++)
-		{
-			freeAndNull(&page->line[j].srcLine);
-			freeAndNull(&page->line[j].edLine);
-		}
 	page->maxLines=0;
 	openTheFile(tmpEdFilePath,hilite);
 	printLines();
@@ -526,7 +526,7 @@ void eventLoop(void)
 									handled=true;
 									break;
 								case CURSEND:
-									page->lineXCurs=page->line[page->currentLine].lineLen;
+									page->lineXCurs=page->editLineArray.at(page->currentLine).back();
 									adjCursor();
 									handled=true;
 									break;
@@ -545,30 +545,33 @@ void eventLoop(void)
 									break;
 								case CURSEND:
 								case CURSENDCONS:
-									page->lineXCurs=page->line[page->currentLine].lineLen;
+									page->lineXCurs=page->editLineArray.at(page->currentLine).back();
 									adjCursor();
 									handled=true;
 									break;
 //keys
 								case PAGEDOWN:
-									if(page->topLine+maxRows>page->maxLines)
+									if(page->topLine+maxRows>=page->editLineArray.size())
 										{
 											currentX=minX;
-											currentY=minY;
-											page->currentLine=page->topLine;
+											currentY=maxRows+minY-1;
+											page->currentLine=page->editLineArray.size()-1;
+											page->topLine=page->editLineArray.size()-maxRows;
 											page->lineXCurs=0;
 										}
 									else
 										{
 											page->topLine+=maxRows;
 											page->currentLine+=maxRows;
+											currentY=minY;
+											if(page->topLine+maxRows>=page->editLineArray.size())
+												{
+													currentY=minY;
+													page->currentLine=page->editLineArray.size()-maxRows;
+													page->topLine=page->editLineArray.size()-maxRows;
+												}
 										}
 									printLines();
-									if(page->currentLine>page->maxLines-1)
-										{
-											page->currentLine=page->maxLines-1;
-											currentY=minY+(page->maxLines-page->topLine-1);
-										}
 									adjCursor();
 									handled=true;
 									break;
@@ -618,25 +621,11 @@ void eventLoop(void)
 								case DELETEKEY:
 										{
 											handled=true;
-											if(deleteCharFromFile(false)==false)
-												{
-													if(liveUpdate==true)
-														{
-															dorefresh=true;
-														}
-													else
-														{
-															dorefresh=false;
-															moveCursToTemp(minX,currentY);
-															printf("%.*s%s",page->line[page->currentLine].lineLen-(int)(!page->line[page->currentLine].isSplitLine),page->line[page->currentLine].edLine,CLEARTOEOL);
-															moveCursToTemp(currentX,currentY);
-															needsrefresh=true;
-														}
-												}
-											else
+											if(deleteCharFromFile(false)==true)
 												{
 													dorefresh=true;
 													needsrefresh=true;
+													adjCursor();
 												}
 										}
 									break;
@@ -657,6 +646,8 @@ void eventLoop(void)
 								page->currentLine++;
 								page->lineXCurs=0;
 								dorefresh=true;
+								needsrefresh=true;
+								handled=true;
 								break;
 							case ESCCHAR:
 								menuStart=0;
@@ -668,24 +659,10 @@ void eventLoop(void)
 								if(deleteCharFromFile(true)==true)
 									{
 										dorefresh=true;
+										needsrefresh=true;
+										page->lineXCurs--;
+										adjCursor();
 									}
-								else
-									{
-										if(liveUpdate==true)
-											{
-												dorefresh=true;
-											}
-										else
-											{
-												dorefresh=false;
-												moveCursToTemp(minX,currentY);
-												printf("%.*s%s",page->line[page->currentLine].lineLen-(int)(!page->line[page->currentLine].isSplitLine),page->line[page->currentLine].edLine,CLEARTOEOL);
-											}
-									}
-								needsrefresh=true;
-								page->lineXCurs--;
-								currentX--;
-								adjCursor();
 								break;
 
 							case TABKEY:
@@ -732,7 +709,7 @@ void eventLoop(void)
 										needsrefresh=true;
 										moveCursToTemp(minX,currentY);
 										if(totallinelen<2)
-											printf("%s",page->line[page->currentLine].edLine);
+											printf("%s",page->editLineArray.at(page->currentLine).c_str());
 										currentX++;
 										moveCursRite();
 									}
@@ -749,11 +726,6 @@ void eventLoop(void)
 			if(dorefresh==true)
 				{
 					dorefresh=false;
-					for(int j=0; j<page->maxLines;j++)
-						{
-							freeAndNull(&page->line[j].srcLine);
-							freeAndNull(&page->line[j].edLine);
-						}
 					page->maxLines=0;
 					openTheFile(tmpEdFilePath,hilite);
 					printLines();

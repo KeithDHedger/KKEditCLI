@@ -1,3 +1,12 @@
+0.1.1
+Fixed passing multiple files on cli.
+Code clean.
+Fixed very short files.
+Fixed navigation.
+Fixed line==max cols.
+Code clean.
+Switched to vectors instead of c arrays.
+
 0.1.0
 Improved 'open Include' search.
 Done bookmarks.

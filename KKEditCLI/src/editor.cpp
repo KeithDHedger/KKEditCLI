@@ -20,13 +20,11 @@
 
 #include "globals.h"
 
-int				pageNumber=0;
 int				currentPage=0;
 int				totalPages=0;
 char			*wordBuf[1024]={0,};
 const char		*wordBufPtr=(const char*)wordBuf;
 bookmarkStruct	bookmarks[MAXBOOKMARKS];
-int				currentBMNum=0;
 
 void initEditor(void)
 {
@@ -43,11 +41,11 @@ void initEditor(void)
 	page->currentLine=0;
 	page->lineXCurs=0;
 	page->dirty=false;
-	for(int j=0;j<MAXLINES;j++)
-		{
-			page->line[j].edLine=NULL;
-			page->line[j].srcLine=NULL;
-		}
+
+	page->editLineArray.clear();
+	page->printLineArray.clear();
+	page->lineNumber.clear();
+
 	clearTagList();
 	currentX=minX;
 	currentY=minY;
@@ -108,11 +106,9 @@ void closePage(void)
 	if(page!=NULL)
 		askSaveIfdirty();
 
-	for(int j=0;j<page->maxLines;j++)
-		{
-			free(page->line[j].srcLine);
-			free(page->line[j].edLine);
-		}
+	page->editLineArray.clear();
+	page->printLineArray.clear();
+	page->lineNumber.clear();
 
 	free(page->filePath);
 	delete page;
@@ -130,13 +126,14 @@ void adjCursor(void)
 	HIDECURS;
 	moveCursToTemp(minX,currentY);
 
-	if(page->lineXCurs>page->line[page->currentLine].lineLen-1)
-		page->lineXCurs=page->line[page->currentLine].lineLen-1;
+	if(page->lineXCurs>page->editLineArray.at(page->currentLine).size()-1)
+		page->lineXCurs=page->editLineArray.at(page->currentLine).size()-1;
 	if(page->lineXCurs<0)
 		page->lineXCurs=0;
+
 	for(int j=0;j<page->lineXCurs;j++)
 		{
-			switch(page->line[page->currentLine].edLine[j])
+			switch(page->editLineArray.at(page->currentLine).at(j))
 				{
 					case '\t':
 						printf(TABCHAR);
@@ -178,7 +175,7 @@ void moveCursLeft(void)
 		{
 			page->currentLine--;
 			currentY--;
-			page->lineXCurs=page->line[page->currentLine].lineLen-1;
+			page->lineXCurs=page->editLineArray.at(page->currentLine).size()-1;
 		}
 
 	adjCursor();
@@ -186,7 +183,7 @@ void moveCursLeft(void)
 
 void moveCursRite(void)
 {
-	if(page->line[page->currentLine].edLine[page->lineXCurs]=='\n')
+	if(page->editLineArray.at(page->currentLine).at(page->lineXCurs)=='\n')
 		{
 			if(page->currentLine+1==page->maxLines)
 				return;
@@ -247,9 +244,9 @@ int findLineByLineNumber(int linenumber)
 	
 	if(linenumber<=0)
 		return(0);
-	while(page->line[cnt].edLine!=NULL)
+	for(int j=0;j<page->lineNumber.size();j++)
 		{
-			if(page->line[cnt].lineNum==linenumber)
+			if(page->lineNumber.at(cnt)==linenumber)
 				return(cnt);
 			cnt++;
 		}
@@ -261,20 +258,23 @@ void findWordUnderCursor(void)
 	int	startx;
 	int	endx;
 
-	wordBuf[0]=0;
-	if(!isalnum(page->line[page->currentLine].edLine[page->lineXCurs]))
-		return;
+	if(!isalnum(page->editLineArray.at(page->currentLine)[page->lineXCurs]))
+		{
+			//sprintf((char*)&wordBuf,"");
+			wordBuf[0]=0;
+			return;
+		}
 
 	startx=page->lineXCurs;
-	endx=startx;
-
-	while(((isalnum(page->line[page->currentLine].edLine[startx])) || (page->line[page->currentLine].edLine[startx]=='_')) && (startx>=0))
+	endx=page->lineXCurs;
+	while(((isalnum(page->editLineArray.at(page->currentLine)[startx])) || (page->editLineArray.at(page->currentLine)[startx]=='_')) && (startx>0))
 		startx--;
-
-	while(((isalnum(page->line[page->currentLine].edLine[endx])) || (page->line[page->currentLine].edLine[endx]=='_')) && (endx<=page->line[page->currentLine].lineLen))
+	while(((isalnum(page->editLineArray.at(page->currentLine)[endx])) || (page->editLineArray.at(page->currentLine)[endx]=='_')) && (endx<page->editLineArray.at(page->currentLine).length()))
 		endx++;
 
-	snprintf((char*)&wordBuf,endx-startx,"%s",&page->line[page->currentLine].edLine[startx+1]);
+	if(startx!=0)
+		startx++;
+	sprintf((char*)&wordBuf,"%s",page->editLineArray.at(page->currentLine).substr(startx,endx-startx).c_str());
 }
 
 void switchPage(int newpagenum,int gotoline)

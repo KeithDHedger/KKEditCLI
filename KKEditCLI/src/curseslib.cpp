@@ -47,7 +47,7 @@ void initCursesLib(void)
     ioctl(STDOUT_FILENO,TIOCGWINSZ,&w);
 
 	if(forceCols==-1)
-		cols=w.ws_col-1;
+		cols=w.ws_col;
 	else
 		cols=forceCols;
 

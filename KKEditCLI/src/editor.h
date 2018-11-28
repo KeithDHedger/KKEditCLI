@@ -21,14 +21,7 @@
 #ifndef _EDITOR_
 #define _EDITOR_
 
-struct lineStruct
-{
-	char			*edLine;
-	char			*srcLine;
-	int				lineNum;
-	int				lineLen;
-	bool			isSplitLine;
-};
+using namespace std;
 
 struct bookmarkStruct
 {
@@ -42,13 +35,15 @@ struct pageStruct
 	int				currentLine;
 	int				topLine;
 	int				lineXCurs;
-	lineStruct		line[MAXLINES];
 	char			*filePath;
 	bool			dirty;
 	int				pageNum;
 	int				saveX;
 	int				saveY;
 	int				saveCurrentLine;
+	vector<string>	editLineArray;
+	vector<string>	printLineArray;
+	vector<int>		lineNumber;
 };
 
 struct funcStruct

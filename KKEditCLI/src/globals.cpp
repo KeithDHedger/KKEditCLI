@@ -32,8 +32,6 @@ int		maxCols=0;
 int		forceCols=-1;
 
 //file
-char	*currentFilePath=NULL;
-char	*currentTmpFilePath=NULL;
 int		newFileNum=1;
 
 //gui
@@ -41,12 +39,11 @@ int		startY=1;
 int		endY=1;
 int		lineColour=220;
 int		mBarHite=1;
-int		statusBarHite=1;
 int		menuHite=1;
 
 //prefs
 int		tabs=8;
-bool	liveUpdate=false;
+bool	liveUpdate=true;
 bool	hilite=true;
 
 //files

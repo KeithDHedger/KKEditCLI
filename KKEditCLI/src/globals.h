@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <vector>
 
 #include <fstream>
 #include <sstream>
@@ -139,8 +140,6 @@ extern int	maxCols;
 extern int	forceCols;
 
 //file
-extern char	*currentFilePath;
-extern char	*currentTmpFilePath;
 extern int	newFileNum;
 
 //gui
@@ -149,7 +148,6 @@ extern int	startY;
 extern int	endY;
 extern int	lineColour;
 extern int	mBarHite;
-extern int	statusBarHite;
 extern int	menuHite;
 
 //prefs
