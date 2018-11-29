@@ -376,7 +376,15 @@ int handleBMMenu(void)
 	switch(menuselect)
 		{
 			case BMREMOVEALL:
-				//TODO//
+				//for(int j=2;j<MAXBOOKMARKS;j++)
+				//	freeAndNull(&bookmarksMenuNames[j]);
+				for(int j=0;j<MAXBOOKMARKS;j++)
+					{
+						bookmarks[j].line=-1;
+						bookmarks[j].pageNum=-1;
+					}
+				buildBMMenu();
+				drawBM();
 				break;
 			case BMTOGGLE:
 				while(page->lineNumber.at(findline)==0)
