@@ -48,9 +48,9 @@ void drawFilePath(void)
 void drawBM(void)
 {
 	int	screenline=minY;
-	for(int j=page->topLine; j<page->topLine+maxRows; j++)
+	for(int j=page->topLine;j<page->topLine+(int)maxRows;j++)
 		{
-			if(j>page->editLineArray.size()-1)
+			if(j>(int)page->editLineArray.size()-1)
 				break;
 
 			moveCursToTemp(6,screenline);
@@ -61,7 +61,6 @@ void drawBM(void)
 						{
 							if(bookmarks[k].pageNum==page->pageNum)
 								{
-									//if(bookmarks[k].line==page->line[j].lineNum)
 									if(bookmarks[k].line==page->lineNumber.at(j))
 										{
 											moveCursToTemp(6,screenline);
@@ -84,9 +83,9 @@ void printLines(void)
 	clearTrough();
 	drawMenuBar();
 
-	for(int j=page->topLine;j<page->topLine+maxRows;j++)
+	for(int j=page->topLine;j<page->topLine+(int)maxRows;j++)
 		{
-			if(j>page->editLineArray.size()-1)
+			if(j>(int)page->editLineArray.size()-1)
 				break;
 
 			if(page->lineNumber.at(j)!=-1)
@@ -377,6 +376,7 @@ int handleBMMenu(void)
 	switch(menuselect)
 		{
 			case BMREMOVEALL:
+				//TODO//
 				break;
 			case BMTOGGLE:
 				while(page->lineNumber.at(findline)==0)

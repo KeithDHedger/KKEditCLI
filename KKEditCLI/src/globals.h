@@ -114,7 +114,7 @@ static void debugFunc(const char *file,const char *func,int line,const char *fmt
 #endif
 #endif
 
-static void freeAndNull(char** ptr)
+static inline void freeAndNull(char** ptr)
 {
 	if(*ptr!=NULL)
 		free(*ptr);
@@ -135,7 +135,7 @@ extern int			minY;
 extern int			minX;
 extern int			currentX;
 extern int			currentY;
-extern int			maxRows;
+extern unsigned		maxRows;
 extern int			maxCols;
 extern int			forceCols;
 

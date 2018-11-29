@@ -27,7 +27,7 @@ int			minY=4;
 int			minX=9;
 int			currentX=minX;
 int			currentY=minY;
-int			maxRows=0;
+unsigned	maxRows=0;
 int			maxCols=0;
 int			forceCols=-1;
 

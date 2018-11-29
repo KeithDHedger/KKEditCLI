@@ -32,10 +32,10 @@ const char	*navMenuNames[]={" Goto _Define"," Open _Include"," Goto _Line"," Ope
 char		**tabsMenuNames=NULL;
 funcStruct	**functionData=NULL;
 char		**functionsMenuNames=NULL;
-char		*bookmarksMenuNames[MAXBOOKMARKS]={" _Remove All Marks"," _Toggle BM",NULL};
+char		*bookmarksMenuNames[MAXBOOKMARKS]={strdup(" _Remove All Marks"),strdup(" _Toggle BM"),NULL};
 const char	*toolsMenuNames[]={"TODO ..."," _Manage Tools",NULL};
 
-int			menuWidth=0;
+unsigned	menuWidth=0;
 int			menuStart=0;
 
 void drawMenuStyle(const char **menulist,int menunum,int x,int y,int style,bool doshortcut,bool dopad)

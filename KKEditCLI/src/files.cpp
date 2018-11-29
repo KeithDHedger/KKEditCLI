@@ -174,7 +174,7 @@ bool deleteCharFromFile(bool back)
 		{
 			if(page->editLineArray.at(page->currentLine).at(page->lineXCurs)=='\n')
 				{
-					if(page->currentLine+1==page->editLineArray.size())
+					if(page->currentLine+1==(int)page->editLineArray.size())
 						return(false);
 					page->editLineArray.at(page->currentLine).erase(page->editLineArray.at(page->currentLine).end()-1);
 					page->editLineArray.at(page->currentLine).append(page->editLineArray.at(page->currentLine+1));
@@ -212,7 +212,7 @@ bool deleteCharFromFile(bool back)
 	fh=open(tmpEdFilePath,O_WRONLY|O_CREAT|O_TRUNC);
 	if(fh != -1)
 		{
-			for(int j=0;j<page->editLineArray.size();j++)
+			for(unsigned j=0;j<page->editLineArray.size();j++)
 				write(fh,page->editLineArray.at(j).c_str(),page->editLineArray.at(j).size());
 			close(fh);
 		}
@@ -229,7 +229,7 @@ void writeCharToFile(char c)
 	fh=open(tmpEdFilePath,O_WRONLY|O_CREAT|O_TRUNC);
 	if(fh != -1)
 		{
-			for(int j=0;j<page->editLineArray.size();j++)
+			for(unsigned j=0;j<page->editLineArray.size();j++)
 				write(fh,page->editLineArray.at(j).c_str(),page->editLineArray.at(j).size());
 			close(fh);
 		}
@@ -242,7 +242,7 @@ void saveFile(const char *path)
 	fh=open(tmpEdFilePath,O_WRONLY|O_CREAT|O_TRUNC);
 	if(fh != -1)
 		{
-			for(int j=0;j<page->editLineArray.size();j++)
+			for(unsigned j=0;j<page->editLineArray.size();j++)
 				write(fh,page->editLineArray.at(j).c_str(),page->editLineArray.at(j).length());
 			close(fh);
 		}
@@ -250,7 +250,7 @@ void saveFile(const char *path)
 	fh=open(path,O_WRONLY|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 	if(fh != -1)
 		{
-			for(int j=0;j<page->editLineArray.size();j++)
+			for(unsigned j=0;j<page->editLineArray.size();j++)
 				write(fh,page->editLineArray.at(j).c_str(),page->editLineArray.at(j).length());
 			close(fh);
 		}

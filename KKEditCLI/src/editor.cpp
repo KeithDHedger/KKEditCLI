@@ -126,7 +126,7 @@ void adjCursor(void)
 	HIDECURS;
 	moveCursToTemp(minX,currentY);
 
-	if(page->lineXCurs>page->editLineArray.at(page->currentLine).length()-1)
+	if(page->lineXCurs>(int)page->editLineArray.at(page->currentLine).length()-1)
 		page->lineXCurs=page->editLineArray.at(page->currentLine).length()-1;
 	if(page->lineXCurs<0)
 		page->lineXCurs=0;
@@ -244,7 +244,7 @@ int findLineByLineNumber(int linenumber)
 	
 	if(linenumber<=0)
 		return(0);
-	for(int j=0;j<page->lineNumber.size();j++)
+	for(unsigned j=0;j<page->lineNumber.size();j++)
 		{
 			if(page->lineNumber.at(cnt)==linenumber)
 				return(cnt);
@@ -255,12 +255,11 @@ int findLineByLineNumber(int linenumber)
 
 void findWordUnderCursor(void)
 {
-	int	startx;
-	int	endx;
+	unsigned	startx;
+	unsigned	endx;
 
 	if(!isalnum(page->editLineArray.at(page->currentLine)[page->lineXCurs]))
 		{
-			//sprintf((char*)&wordBuf,"");
 			wordBuf[0]=0;
 			return;
 		}
