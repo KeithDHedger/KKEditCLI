@@ -376,8 +376,6 @@ int handleBMMenu(void)
 	switch(menuselect)
 		{
 			case BMREMOVEALL:
-				//for(int j=2;j<MAXBOOKMARKS;j++)
-				//	freeAndNull(&bookmarksMenuNames[j]);
 				for(int j=0;j<MAXBOOKMARKS;j++)
 					{
 						bookmarks[j].line=-1;
