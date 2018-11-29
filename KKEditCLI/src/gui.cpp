@@ -551,6 +551,12 @@ void eventLoop(void)
 									break;
 //keys
 								case PAGEDOWN:
+									if(page->editLineArray.size()<maxRows)
+										{
+											SHOWCURS;
+											handled=true;
+											break;;
+										}
 									if(page->topLine+maxRows>=page->editLineArray.size())
 										{
 											currentX=minX;
