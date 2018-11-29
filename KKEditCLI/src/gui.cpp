@@ -555,7 +555,7 @@ void eventLoop(void)
 										{
 											SHOWCURS;
 											handled=true;
-											break;;
+											break;
 										}
 									if(page->topLine+maxRows>=page->editLineArray.size())
 										{
@@ -569,7 +569,7 @@ void eventLoop(void)
 										{
 											page->topLine+=maxRows;
 											page->currentLine+=maxRows;
-											currentY=minY;
+											//currentY=minY;
 											if(page->topLine+maxRows>=page->editLineArray.size())
 												{
 													currentY=minY;
