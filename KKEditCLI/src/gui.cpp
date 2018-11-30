@@ -165,37 +165,27 @@ int handleEditMenu(void)
 				freeAndNull(&cutBuffer);
 				cutBuffer=strdup(wordBufPtr);
 				page->editLineArray.at(page->currentLine).erase(wordStart,wordLen);
-//				fprintf(stderr,"wb=>%s<\n",wordBufPtr);
-//				fprintf(stderr,"line=>>%s<<\n",page->editLineArray.at(page->currentLine).c_str());
-//				fprintf(stderr,"cutbuffer=>%s<\n",cutBuffer);
 				return(MENUREFRESH);
 				break;
 			case EDITCOPYW:
 				freeAndNull(&cutBuffer);
 				cutBuffer=strdup(wordBufPtr);
-			//	fprintf(stderr,"cutbuffer=>%s<\n",cutBuffer);
-				//fprintf(stdin,"
 				break;
-			case EDITPASTEW:
+			case EDITPASTE:
 				page->editLineArray.at(page->currentLine).insert(page->lineXCurs,cutBuffer,strlen(cutBuffer));
 				return(MENUREFRESH);
 				break;			
 			case EDITCUTL:
-				//freeAndNull(&cutBuffer);
-				//cutBuffer=strdup(wordBufPtr);
+				freeAndNull(&cutBuffer);
+				cutBuffer=strdup(page->editLineArray.at(page->currentLine).c_str());
 				page->editLineArray.erase(page->editLineArray.begin()+page->currentLine);
 				return(MENUREFRESH);
 				break;
 			case EDITCOPYL:
 				freeAndNull(&cutBuffer);
-				cutBuffer=strdup(wordBufPtr);
-			case EDITPASTEL:
-				freeAndNull(&cutBuffer);
-				cutBuffer=strdup(wordBufPtr);
-				page->editLineArray.at(page->currentLine).erase(wordStart,wordLen);
-				return(MENUREFRESH);
+				cutBuffer=strdup(page->editLineArray.at(page->currentLine).c_str());
 				break;
-	}
+		}
 	return(menuselect);
 }
 

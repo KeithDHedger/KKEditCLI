@@ -25,7 +25,7 @@
 //static menus
 const char	*menuNames[]={"_File","_Edit","_Tabs","_Navigation","F_unctions","_Bookmarks","T_ools",NULL};
 const char	*fileMenuNames[]={" _New"," _Open"," _Save"," Save _As"," _Close"," _Quit",NULL};
-const char	*editMenuNames[]={" _CutW"," Cop_yW"," _PasteW"," _CutL"," Cop_yL"," _PasteL",NULL};
+const char	*editMenuNames[]={" _Cut Word"," Cop_y Word"," Cut _Line"," Copy L_ine"," _Paste",NULL};
 const char	*navMenuNames[]={" Goto _Define"," Open _Include"," Goto _Line"," Open _Manpage",NULL};
 
 //dynamic menus
