@@ -161,7 +161,7 @@ int handleEditMenu(void)
 	menuselect=doMenuEvent(editMenuNames,6,2,true);
 	switch(menuselect)
 		{
-			case EDITCUT:
+			case EDITCUTW:
 				freeAndNull(&cutBuffer);
 				cutBuffer=strdup(wordBufPtr);
 				page->editLineArray.at(page->currentLine).erase(wordStart,wordLen);
@@ -170,17 +170,32 @@ int handleEditMenu(void)
 //				fprintf(stderr,"cutbuffer=>%s<\n",cutBuffer);
 				return(MENUREFRESH);
 				break;
-			case EDITCOPY:
+			case EDITCOPYW:
 				freeAndNull(&cutBuffer);
 				cutBuffer=strdup(wordBufPtr);
 			//	fprintf(stderr,"cutbuffer=>%s<\n",cutBuffer);
 				//fprintf(stdin,"
 				break;
-			case EDITPASTE:
+			case EDITPASTEW:
 				page->editLineArray.at(page->currentLine).insert(page->lineXCurs,cutBuffer,strlen(cutBuffer));
 				return(MENUREFRESH);
+				break;			
+			case EDITCUTL:
+				//freeAndNull(&cutBuffer);
+				//cutBuffer=strdup(wordBufPtr);
+				page->editLineArray.erase(page->editLineArray.begin()+page->currentLine);
+				return(MENUREFRESH);
 				break;
-		}
+			case EDITCOPYL:
+				freeAndNull(&cutBuffer);
+				cutBuffer=strdup(wordBufPtr);
+			case EDITPASTEL:
+				freeAndNull(&cutBuffer);
+				cutBuffer=strdup(wordBufPtr);
+				page->editLineArray.at(page->currentLine).erase(wordStart,wordLen);
+				return(MENUREFRESH);
+				break;
+	}
 	return(menuselect);
 }
 
