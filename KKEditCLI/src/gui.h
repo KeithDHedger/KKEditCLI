@@ -51,6 +51,7 @@
 #define BRAKE -1
 #define MENURITE -2
 #define MENULEFT -3
+#define MENUREFRESH -4
 
 //mouse
 #define BUTTON1DOWN ' '

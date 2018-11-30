@@ -236,6 +236,21 @@ void writeCharToFile(char c)
 	page->dirty=true;
 }
 
+void writeFile(void)
+{
+	int		fh=0;
+
+	fh=open(tmpEdFilePath,O_WRONLY|O_CREAT|O_TRUNC);
+	if(fh != -1)
+		{
+			for(unsigned j=0;j<page->editLineArray.size();j++)
+				write(fh,page->editLineArray.at(j).c_str(),page->editLineArray.at(j).size());
+			close(fh);
+		}
+	page->dirty=true;
+}
+
+
 void saveFile(const char *path)
 {
 	int		fh=0;

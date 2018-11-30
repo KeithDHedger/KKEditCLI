@@ -28,6 +28,7 @@ extern int	dispLineData[];
 void openTheFile(const char *path,bool extsrc);
 void writeCharToFile(char c);
 bool deleteCharFromFile(bool back);
+void writeFile(void);
 
 int getDispLineData(int start,int dne);
 void saveFile(const char *path);

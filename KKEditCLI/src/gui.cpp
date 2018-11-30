@@ -162,11 +162,23 @@ int handleEditMenu(void)
 	switch(menuselect)
 		{
 			case EDITCUT:
+				freeAndNull(&cutBuffer);
+				cutBuffer=strdup(wordBufPtr);
+				page->editLineArray.at(page->currentLine).erase(wordStart,wordLen);
+//				fprintf(stderr,"wb=>%s<\n",wordBufPtr);
+//				fprintf(stderr,"line=>>%s<<\n",page->editLineArray.at(page->currentLine).c_str());
+//				fprintf(stderr,"cutbuffer=>%s<\n",cutBuffer);
+				return(MENUREFRESH);
 				break;
 			case EDITCOPY:
+				freeAndNull(&cutBuffer);
+				cutBuffer=strdup(wordBufPtr);
+			//	fprintf(stderr,"cutbuffer=>%s<\n",cutBuffer);
 				//fprintf(stdin,"
 				break;
 			case EDITPASTE:
+				page->editLineArray.at(page->currentLine).insert(page->lineXCurs,cutBuffer,strlen(cutBuffer));
+				return(MENUREFRESH);
 				break;
 		}
 	return(menuselect);
@@ -457,6 +469,8 @@ int handleAllMenus(void)
 						break;
 					case EDITMENU:
 						retval=handleEditMenu();
+						if(retval==MENUREFRESH)
+							return(retval);
 						break;
 					case TABSMENU:
 						retval=handleTabsMenu();
@@ -662,10 +676,23 @@ void eventLoop(void)
 								handled=true;
 								break;
 							case ESCCHAR:
-								menuStart=0;
-								if(handleAllMenus()==BRAKE)
-									return;
-								continue;
+								{
+									int retval;
+									menuStart=0;
+									retval=handleAllMenus();
+									if(retval==BRAKE)
+										return;
+									if(retval==MENUREFRESH)
+										{
+											writeFile();
+											dorefresh=true;
+											needsrefresh=true;
+											break;
+										}
+
+									//if(handleAllMenus()==CONT)
+										continue;
+								}
 								break;
 							case BACKSPACE:
 								if(deleteCharFromFile(true)==true)
@@ -718,7 +745,8 @@ void eventLoop(void)
 									}
 								else
 									{
-										needsrefresh=true;
+										if(liveUpdate==true)
+											needsrefresh=true;
 										moveCursToTemp(minX,currentY);
 										if(totallinelen<2)
 											printf("%s",page->editLineArray.at(page->currentLine).c_str());
@@ -728,7 +756,7 @@ void eventLoop(void)
 								break;
 						}
 				}
-
+//fprintf(stderr,"needs refresh=%i\n",needsrefresh);
 			if((handled==true) && (needsrefresh==true))
 				{
 					dorefresh=true;

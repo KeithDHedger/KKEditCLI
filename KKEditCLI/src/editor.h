@@ -57,6 +57,11 @@ struct funcStruct
 
 extern char				*wordBuf[1024];
 extern const char		*wordBufPtr;
+extern unsigned			wordStart;
+extern unsigned			wordEnd;
+extern unsigned			wordLen;
+extern char				*cutBuffer;
+
 extern int				currentPage;
 extern bookmarkStruct	bookmarks[MAXBOOKMARKS];
 

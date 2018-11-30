@@ -24,6 +24,11 @@ int				currentPage=0;
 int				totalPages=0;
 char			*wordBuf[1024]={0,};
 const char		*wordBufPtr=(const char*)wordBuf;
+unsigned		wordStart=0;
+unsigned		wordEnd=0;
+unsigned		wordLen=0;
+char			*cutBuffer=NULL;
+
 bookmarkStruct	bookmarks[MAXBOOKMARKS];
 
 void initEditor(void)
@@ -273,6 +278,10 @@ void findWordUnderCursor(void)
 
 	if(startx!=0)
 		startx++;
+
+	wordStart=startx;
+	wordEnd=endx;
+	wordLen=endx-startx;
 	sprintf((char*)&wordBuf,"%s",page->editLineArray.at(page->currentLine).substr(startx,endx-startx).c_str());
 }
 
