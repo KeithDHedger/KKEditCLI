@@ -28,6 +28,8 @@ unsigned		wordStart=0;
 unsigned		wordEnd=0;
 unsigned		wordLen=0;
 char			*cutBuffer=NULL;
+int				searchStartX;
+int				searchStartY;
 
 bookmarkStruct	bookmarks[MAXBOOKMARKS];
 
@@ -323,4 +325,57 @@ void switchPage(int newpagenum,int gotoline)
 	clearTagList();
 	adjCursor();
 }
+
+void search(void)
+{
+fprintf(stderr,"search\n");
+	string needle;
+	std::size_t found;
+	int	status=-1;
+	const char	*initstr="";
+
+	if(strlen(wordBufPtr)>0)
+		initstr=wordBufPtr;
+	else if((cutBuffer!=NULL) && (strlen(cutBuffer)>0))
+		initstr=cutBuffer;
+		
+	init_dialog(stdin,stdout);
+		dialog_vars.default_button=-1;
+		status=dialog_inputbox("","Find?",0,0,initstr,false);
+	end_dialog();
+
+	if(status==0)
+		{
+//						switchPage(-1,atoi(dialog_vars.input_result));
+	//					}
+//						clearScreen();
+//						refreshScreen();
+
+			needle=dialog_vars.input_result;
+			searchStartY=page->currentLine;
+			searchStartX=page->lineXCurs;
+			for(unsigned j=searchStartY;j<page->editLineArray.size()-1;j++)
+				{
+					found=page->editLineArray.at(j).find(needle);
+					if(found!=-1)
+						{
+							fprintf(stderr,"found\n");
+							fprintf(stderr,"line=%i pos=%i\n",j,found);
+							//switchPage(-1,j-1);
+							page->currentLine=j;
+							page->topLine=j;
+							currentY=minY;
+							page->lineXCurs=found;
+							adjCursor();
+							clearScreen();
+							return;
+						}
+				}
+		}
+	return;
+}
+
+
+
+
 

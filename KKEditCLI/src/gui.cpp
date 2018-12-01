@@ -238,6 +238,13 @@ int handleNavMenu(void)
 	menuselect=doMenuEvent(navMenuNames,16,2,true);
 	switch(menuselect)
 		{
+			case NAVFIND:
+				search();
+				clearScreen();
+				refreshScreen();
+				return(CONT);
+				//return(MENUREFRESH);
+				break;
 			case NAVEGOTODEF:
 				{
 					cnt=0;
@@ -485,6 +492,8 @@ int handleAllMenus(void)
 						break;
 					case FUNCTIONSMENU:
 						retval=handleFuncMenu();
+						if(retval==MENUREFRESH)
+							return(retval);
 						break;
 					case BOOKMARKSMENU:
 						retval=handleBMMenu();
@@ -682,7 +691,7 @@ void eventLoop(void)
 								break;
 							case ESCCHAR:
 								{
-									int retval;
+									int retval=BRAKE;
 									menuStart=0;
 									retval=handleAllMenus();
 									if(retval==BRAKE)
@@ -692,6 +701,7 @@ void eventLoop(void)
 											writeFile();
 											dorefresh=true;
 											needsrefresh=true;
+											//handled=true;
 											break;
 										}
 

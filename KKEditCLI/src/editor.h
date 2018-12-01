@@ -61,6 +61,9 @@ extern unsigned			wordStart;
 extern unsigned			wordEnd;
 extern unsigned			wordLen;
 extern char				*cutBuffer;
+extern int				searchStart;
+//e//xtern int				searchStartX;
+//extern int				searchStartY;
 
 extern int				currentPage;
 extern bookmarkStruct	bookmarks[MAXBOOKMARKS];
@@ -75,5 +78,6 @@ void adjCursor(void);
 int findLineByLineNumber(int linenumber);
 void findWordUnderCursor(void);
 void switchPage(int newpagenum,int gotoline);
+void search(void);
 
 #endif
