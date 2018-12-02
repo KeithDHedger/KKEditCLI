@@ -30,6 +30,7 @@ unsigned		wordLen=0;
 char			*cutBuffer=NULL;
 int				searchStartX;
 int				searchStartY;
+string			needle;
 
 bookmarkStruct	bookmarks[MAXBOOKMARKS];
 
@@ -326,48 +327,61 @@ void switchPage(int newpagenum,int gotoline)
 	adjCursor();
 }
 
-void search(void)
+void search(bool again)
 {
-fprintf(stderr,"search\n");
-	string needle;
-	std::size_t found;
-	int	status=-1;
+	std::size_t	found;
+	int			status=-1;
 	const char	*initstr="";
 
-	if(strlen(wordBufPtr)>0)
-		initstr=wordBufPtr;
-	else if((cutBuffer!=NULL) && (strlen(cutBuffer)>0))
-		initstr=cutBuffer;
-		
-	init_dialog(stdin,stdout);
-		dialog_vars.default_button=-1;
-		status=dialog_inputbox("","Find?",0,0,initstr,false);
-	end_dialog();
-
-	if(status==0)
+	if(again==false)
 		{
-//						switchPage(-1,atoi(dialog_vars.input_result));
-	//					}
-//						clearScreen();
-//						refreshScreen();
+			if(strlen(wordBufPtr)>0)
+				initstr=wordBufPtr;
+			else if((cutBuffer!=NULL) && (strlen(cutBuffer)>0))
+				initstr=cutBuffer;
+		
+			init_dialog(stdin,stdout);
+				dialog_vars.default_button=-1;
+				status=dialog_inputbox("","Find?",0,0,initstr,false);
+			end_dialog();
 
-			needle=dialog_vars.input_result;
-			searchStartY=page->currentLine;
-			searchStartX=page->lineXCurs;
-			for(unsigned j=searchStartY;j<page->editLineArray.size()-1;j++)
+			if(status==0)
+				{
+					needle=dialog_vars.input_result;
+					searchStartY=page->currentLine;
+					searchStartX=page->lineXCurs;
+				}
+		}
+
+	for(unsigned j=searchStartY;j<page->editLineArray.size()-1;j++)
+		{
+			found=page->editLineArray.at(j).find(needle);
+			if(found!=-1)
+				{
+					page->currentLine=j;
+					page->topLine=j;
+					currentY=minY;
+					page->lineXCurs=found;
+					adjCursor();
+					clearScreen();
+					searchStartY=j+1;
+					return;
+				}
+		}
+	if(searchStartY>0)
+		{
+			for(unsigned j=0;j<searchStartY-1;j++)
 				{
 					found=page->editLineArray.at(j).find(needle);
 					if(found!=-1)
 						{
-							fprintf(stderr,"found\n");
-							fprintf(stderr,"line=%i pos=%i\n",j,found);
-							//switchPage(-1,j-1);
 							page->currentLine=j;
 							page->topLine=j;
 							currentY=minY;
 							page->lineXCurs=found;
 							adjCursor();
 							clearScreen();
+							searchStartY=j+1;
 							return;
 						}
 				}

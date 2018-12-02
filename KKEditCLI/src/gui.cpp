@@ -239,9 +239,15 @@ int handleNavMenu(void)
 	switch(menuselect)
 		{
 			case NAVFIND:
-				search();
+			case NAVFINDAGAIN:
+				if(menuselect==NAVFIND)
+					search(false);
+				else
+					search(true);
 				clearScreen();
 				refreshScreen();
+				moveCursToTemp(currentX,currentY);
+				printf(INVERTON "%s" INVERTOFF,needle.c_str());
 				return(CONT);
 				//return(MENUREFRESH);
 				break;
@@ -603,7 +609,6 @@ void eventLoop(void)
 										{
 											page->topLine+=maxRows;
 											page->currentLine+=maxRows;
-											//currentY=minY;
 											if(page->topLine+maxRows>=page->editLineArray.size())
 												{
 													currentY=minY;
@@ -615,8 +620,11 @@ void eventLoop(void)
 									adjCursor();
 									handled=true;
 									break;
+
 								case PAGEUP:
-									if(page->currentLine-maxRows<0)
+									page->currentLine-=maxRows;
+									page->topLine-=maxRows;
+									if(page->currentLine<0)
 										{
 											page->topLine=0;
 											page->currentLine=0;
@@ -626,19 +634,17 @@ void eventLoop(void)
 										}
 									else
 										{
-											page->currentLine-=maxRows;
-											page->topLine-=maxRows;
 											if(page->topLine<0)
 												{
-													page->topLine=0;
-													page->currentLine=maxRows-1;
+													currentY=minY;
+													page->topLine=page->currentLine;
 												}
 										}
 									printLines();
 									adjCursor();
 									handled=true;
 									break;
-//TODO//
+
 								case KEYUP:
 									moveCursUp();
 									adjCursor();

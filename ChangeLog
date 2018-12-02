@@ -1,4 +1,7 @@
 0.1.1
+Find now wraps.
+Fixed pageup.
+Added find again.
 Started Find/Replace.
 Done edit->cut/copy/paste current line.
 Done edit->cut/copy/paste word under cursor.
