@@ -24,10 +24,12 @@
 //menus
 //static menus
 const char	*menuNames[]={"_File","_Edit","_Tabs","_Navigation","F_unctions","_Bookmarks","T_ools",NULL};
-const char	*fileMenuNames[]={" _New     Ctrl+N"," _Open    Ctrl+O"," _Save    Ctrl+V"," Save _As Ctrl+A"," _Close   Ctlr+L"," _Quit    Ctrl+X",NULL};
-const char	fileMenuShortcuts[FILECNT]={'n','o','v','a','l','x'};
-const char	*editMenuNames[]={" _Cut Word"," Cop_y Word"," Cut _Line"," Copy L_ine"," _Paste",NULL};
-const char	*navMenuNames[]={" Goto _Define"," Open _Include"," Goto _Line"," Open _Manpage"," _Find"," Find _Again",NULL};
+const char	*fileMenuNames[]={" _New     Ctrl+N"," _Open    Ctrl+O"," _Save    Ctrl+E"," Save _As Ctrl+A"," _Close   Ctrl+L"," _Quit    Ctrl+P",NULL};
+const char	fileMenuShortcuts[FILECNT]={'n','o','e','a','l','p'};
+const char	*editMenuNames[]={" Cop_y Word Ctrl+Y"," _Cut Word  Ctrl+X"," Copy L_ine Ctrl+I"," Cut _Line  Ctrl+Z"," _Paste     Ctrl+V",NULL};
+const char	editMenuShortcuts[EDITCNT]={'y','x','i','z','v'};
+const char	*navMenuNames[]={" Goto _Define   Ctrl+D"," Open _Include  Ctrl+U"," Goto _Line     Ctrl+J"," Open _Manpage  Ctrl+M"," _Find          Ctrl+F"," Find _Again    Ctrl+G",NULL};
+const char	navMenuShortcuts[NAVCNT]={'d','u','j','m','f','g'};
 
 //dynamic menus
 char		**tabsMenuNames=NULL;

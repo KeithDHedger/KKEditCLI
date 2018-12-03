@@ -158,11 +158,16 @@ int handleFileMenu(bool doevent=true,int ms=0)
 	return(menuselect);
 }
 
-int handleEditMenu(void)
+int handleEditMenu(bool doevent=true,int ms=0)
 {
 	int menuselect;
 
-	menuselect=doMenuEvent(editMenuNames,6,2,true);
+	if(doevent==true)
+		menuselect=doMenuEvent(editMenuNames,6,2,true);
+	else
+		menuselect=ms;
+
+//	menuselect=doMenuEvent(editMenuNames,6,2,true);
 	switch(menuselect)
 		{
 			case EDITCUTW:
@@ -558,46 +563,71 @@ void eventLoop(void)
 //				}
 //fprintf(stderr,">>>>>>>>>%c=%x - %c=%x %c=%x>>>%c=%x>>>%c=%x>>>\n",buf[0],buf[0],buf[1],buf[1],buf[0]+32,buf[0],'a','a','A','A');
 
-if(buf[0]!=ESCCHAR)
-{
+	if(buf[0]!=ESCCHAR)
+		{	
+			int retval=BRAKE;
+
 //cnt=0;
 //tstr[0]=' ';
 //tstr[1]='_';
 //tstr[2]=toupper(buf[0]);
 //tstr[3]=0;
 //fprintf(stderr,"--->>%s<<----\n",tstr);
-for(int j=0;j<FILECNT-1;j++)
-{
-fprintf(stderr,"j=%i,sort=%c buf=%c\n",j,fileMenuShortcuts[j],buf[0]+0x60);
-	if(buf[0]+0x60==fileMenuShortcuts[j])
+	for(int j=0;j<FILECNT-1;j++)
 		{
-			int retval=BRAKE;
-	fprintf(stderr,">>>>>>>>>j=%i,sort=%c\n",j,fileMenuShortcuts[j]);
-	menuNumber=FILEMENU;
-	retval=handleFileMenu(false,j+1);
+//fprintf(stderr,"j=%i,sort=%c buf=%c\n",j,fileMenuShortcuts[j],buf[0]+0x60);
+			if(buf[0]+0x60==fileMenuShortcuts[j])
+				{
+					retval=BRAKE;
+					fprintf(stderr,">>>>>>>>>j=%i,short=%c\n",j,fileMenuShortcuts[j]);
+					menuNumber=FILEMENU;
+					retval=handleFileMenu(false,j+1);
+				}
+		}
 
-//									menuStart=0;
-//									retval=handleAllMenus();
-									if(retval==BRAKE)
-										return;
-									if(retval==MENUREFRESH)
-										{
-											writeFile();
-											dorefresh=true;
-											needsrefresh=true;
-											//handled=true;
-											break;
-										}
+	for(int j=0;j<EDITCNT-1;j++)
+		{
+			if(buf[0]+0x60==editMenuShortcuts[j])
+				{
+					retval=BRAKE;
+					fprintf(stderr,">>>>>>>>>j=%i,short=%c\n",j,editMenuShortcuts[j]);
+					menuNumber=EDITMENU;
+					retval=handleEditMenu(false,j+1);
+//					if(retval==BRAKE)
+//						return;
+//					if(retval==MENUREFRESH)
+//						{
+//							writeFile();
+//							dorefresh=true;
+//							needsrefresh=true;
+//							break;
+//						}
+//
+//					buf[0]=0;
+//					handled=true;
+//					needsrefresh=false;
+//					break;
+				}
+		}
 
-									//if(handleAllMenus()==CONT)
-										//continue;
-
-			buf[0]=0;
+	buf[0]=0;
+//	if(retval==BRAKE)
+//		return;
+	if(retval==MENUREFRESH)
+		{
+			writeFile();
+			dorefresh=true;
+			needsrefresh=true;
+			//break;
+		}
+	else
+		{
 			handled=true;
 			needsrefresh=false;
-			break;
 		}
-}
+	//break;
+		//}
+
 //fprintf(stderr,"j=%i,fileMenuNames[j]=>>%s<<>>%s<<\n",j,fileMenuNames[j],(char*)&tstr);
 ////tstr[1]=buf[0]+0x60;
 ////fprintf(stderr,">%s - %s %c<\n",fileMenuNames[cnt],(char*)&tstr,buf[0]+0x60);

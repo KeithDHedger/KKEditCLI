@@ -25,7 +25,7 @@ enum {FLATNORM=0,FLATINVERT};
 
 enum {FILEMENU=0,EDITMENU,TABSMENU,NAVIGATIONMENU,FUNCTIONSMENU,BOOKMARKSMENU,TOOLSMENU,MAXMENUS};
 enum {FILENEW=1,FILEOPEN,FILESAVE,FILESAVEAS,FILECLOSE,FILEQUIT,FILECNT};
-enum {EDITCUTW=1,EDITCOPYW,EDITCUTL,EDITCOPYL,EDITPASTE,EDITCNT};
+enum {EDITCOPYW=1,EDITCUTW,EDITCOPYL,EDITCUTL,EDITPASTE,EDITCNT};
 enum {VIEWDOC0=1,VIEWDOC1,VIEWDOC2,VIEWCNT};
 enum {NAVEGOTODEF=1,NAVEOPENINC,NAVGOTOLINE,NAVOPENMANPAGE,NAVFIND,NAVFINDAGAIN,NAVCNT};
 enum {FUNC0=1,FUNC1,FUNCCNT};
@@ -39,7 +39,10 @@ extern const char	*menuNames[];
 extern const char	*fileMenuNames[];
 extern const char	fileMenuShortcuts[];
 extern const char	*editMenuNames[];
+extern const char	editMenuShortcuts[];
 extern const char	*navMenuNames[];
+extern const char	navMenuShortcuts[];
+
 //dynamic menus
 extern char			**tabsMenuNames;
 extern funcStruct	**functionData;
