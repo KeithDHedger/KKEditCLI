@@ -24,7 +24,8 @@
 //menus
 //static menus
 const char	*menuNames[]={"_File","_Edit","_Tabs","_Navigation","F_unctions","_Bookmarks","T_ools",NULL};
-const char	*fileMenuNames[]={" _New"," _Open"," _Save"," Save _As"," _Close"," _Quit",NULL};
+const char	*fileMenuNames[]={" _New     Ctrl+N"," _Open    Ctrl+O"," _Save    Ctrl+V"," Save _As Ctrl+A"," _Close   Ctlr+L"," _Quit    Ctrl+X",NULL};
+const char	fileMenuShortcuts[FILECNT]={'n','o','v','a','l','x'};
 const char	*editMenuNames[]={" _Cut Word"," Cop_y Word"," Cut _Line"," Copy L_ine"," _Paste",NULL};
 const char	*navMenuNames[]={" Goto _Define"," Open _Include"," Goto _Line"," Open _Manpage"," _Find"," Find _Again",NULL};
 
@@ -106,6 +107,9 @@ int drawMenuWindow(const char **menulist,int sx,int sy,int prelight,bool doshort
 				menuWidth=strlen(menulist[maxitems])+1;
 			maxitems++;
 		}
+
+	if(doshortcut==true)
+		menuWidth--;
 
 	cnt=0;
 	while((menulist[cnt+menuStart]!=NULL) && (y<menuHite+mBarHite))

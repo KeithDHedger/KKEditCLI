@@ -37,6 +37,7 @@ extern int			menuStart;
 //static menus
 extern const char	*menuNames[];
 extern const char	*fileMenuNames[];
+extern const char	fileMenuShortcuts[];
 extern const char	*editMenuNames[];
 extern const char	*navMenuNames[];
 //dynamic menus
