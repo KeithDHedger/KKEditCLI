@@ -24,11 +24,11 @@
 //menus
 //static menus
 const char	*menuNames[]={"_File","_Edit","_Tabs","_Navigation","F_unctions","_Bookmarks","T_ools",NULL};
-const char	*fileMenuNames[]={" _New     Ctrl+N"," _Open    Ctrl+O"," _Save    Ctrl+E"," Save _As Ctrl+A"," _Close   Ctrl+L"," _Quit    Ctrl+P",NULL};
-const char	fileMenuShortcuts[FILECNT]={'n','o','e','a','l','p'};
-const char	*editMenuNames[]={" Cop_y Word Ctrl+Y"," _Cut Word  Ctrl+X"," Copy L_ine Ctrl+I"," Cut _Line  Ctrl+Z"," _Paste     Ctrl+V",NULL};
-const char	editMenuShortcuts[EDITCNT]={'y','x','i','z','v'};
-const char	*navMenuNames[]={" Goto _Define   Ctrl+D"," Open _Include  Ctrl+U"," Goto _Line     Ctrl+J"," Open _Manpage  Ctrl+M"," _Find          Ctrl+F"," Find _Again    Ctrl+G",NULL};
+const char	*fileMenuNames[]={" _New     Ctrl+N"," _Open    Ctrl+O"," _Save    Ctrl+S"," Save _As Ctrl+A"," _Close   Ctrl+W"," _Quit    Ctrl+Q",NULL};
+const char	fileMenuShortcuts[FILECNT]={'n','o','s','a','w','q'};
+const char	*editMenuNames[]={" Cop_y Word Ctrl+Y"," _Cut Word  Ctrl+X"," Copy L_ine Ctrl+L"," Cut _Line  Ctrl+Z"," _Paste     Ctrl+V",NULL};
+const char	editMenuShortcuts[EDITCNT]={'y','x','l','z','v'};
+const char	*navMenuNames[]={" Goto _Define   Ctrl+D"," Open _Include  Ctrl+U"," Goto _Line     Ctrl+J"," Open _Manpage  Ctrl+M"," _Find          Ctrl+F"," Find _Next     Ctrl+G",NULL};
 const char	navMenuShortcuts[NAVCNT]={'d','u','j','m','f','g'};
 
 //dynamic menus
@@ -135,6 +135,7 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 	int		cnt=0;
 	char	tstr[3]={'_',0,0};
 
+
 	if(menunames!=NULL)
 		maxitems=drawMenuWindow(menunames,sx,sy,-1,doshortcut);
 	HIDECURS;
@@ -142,8 +143,140 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 	while(loop==true)
 		{
 			memset(buf,0,16);
-			read(STDIN_FILENO,&buf,15);
-			//DEBUGFUNC("0=%x 1=%x 2=%x 3=%x",buf[0],buf[1],buf[2],buf[3]);
+//			read(STDIN_FILENO,&buf,15);
+//			DEBUGFUNC("0=%x 1=%x 2=%x 3=%x",buf[0],buf[1],buf[2],buf[3]);
+			ret=termkey_waitkey(tk,&key);
+			termkey_strfkey(tk, buffer, 50, &key, format);
+			fprintf(stderr,">>>>Key from lib doMenuEvent %s mods=%i\n", buffer,key.modifiers);
+
+			switch(key.type)
+				{
+					case TERMKEY_TYPE_KEYSYM:
+						{
+							switch(key.code.sym)
+								{
+									case TERMKEY_SYM_ESCAPE:
+										loop=false;
+										selection=CONT;
+										continue;
+										break;
+									case TERMKEY_SYM_UP:
+										fprintf(stderr,"Up key\n");
+										selection--;
+										if(selection<1)
+											{
+												selection=1;
+												if(menuStart>0)
+													menuStart--;
+											}
+										drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
+										break;
+									case TERMKEY_SYM_DOWN:
+										fprintf(stderr,"----Down key\n");
+										selection++;
+										if((selection>maxitems) || (selection>menuHite))
+											selection=menuHite-mBarHite;
+										if(selection>maxitems)
+											selection=maxitems;
+
+										if(selection+menuStart<=maxitems)
+											{
+												if(selection>menuHite-mBarHite)
+													{
+														selection=menuHite-mBarHite;
+														menuStart++;
+													}
+											}
+										else
+											selection--;
+										drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
+										break;
+									case TERMKEY_SYM_LEFT:
+										fprintf(stderr,"Left key\n");
+										menuStart=0;
+										selection=MENULEFT;
+										loop=false;
+										continue;
+										break;
+									case TERMKEY_SYM_RIGHT:
+										fprintf(stderr,"Right key\n");
+										menuStart=0;
+										selection=MENURITE;									
+										loop=false;
+										continue;
+										break;
+									case TERMKEY_SYM_HOME:
+										selection=1;
+										menuStart=0;
+										drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
+										break;
+									case TERMKEY_SYM_END:
+										if(maxitems>rows-2)
+											{
+												selection=rows-2;
+												menuStart=maxitems-rows+2;
+												if((menuStart+rows-2)>maxitems)
+													menuStart=maxitems-rows+2;
+											}
+										else
+											selection=maxitems;
+										drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
+										break;
+									case TERMKEY_SYM_PAGEUP:
+										menuStart-=menuHite;
+										if(menuStart<0)
+											menuStart=0;
+										drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
+										break;
+									case TERMKEY_SYM_PAGEDOWN:
+										if(maxitems<menuHite)
+											break;								
+										menuStart+=menuHite-1;
+										if((menuStart+menuHite)>maxitems)
+											menuStart=maxitems-menuHite+1;
+										drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
+										break;
+									case TERMKEY_SYM_ENTER:
+										SETNORMAL;
+										SHOWCURS;
+										printLines();
+										moveCursToTemp(currentX,currentY);
+										return(selection+menuStart);
+										break;
+									default:
+										break;
+								}
+						}
+					case TERMKEY_TYPE_UNICODE:
+						tstr[1]=toupper(key.code.codepoint);
+						cnt=0;
+						while(menunames[cnt]!=NULL)
+							{
+								if(strcasestr((char*)menunames[cnt],(char*)&tstr)!=NULL)
+									{
+										SETNORMAL;
+										SHOWCURS;
+										printLines();
+										moveCursToTemp(currentX,currentY);
+										return(cnt+1);
+									}
+								cnt++;
+							}
+						break;
+					default:
+						break;
+				}
+				
+		}
+	SETNORMAL;
+	clearScreen();
+	printLines();
+	moveCursToTemp(currentX,currentY);
+	SHOWCURS;
+
+
+return(selection);
+#if 0
 			if(buf[0]==ESCCHAR)
 				{
 					switch(buf[1])
@@ -173,6 +306,7 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 							break;
 //cursor keys
 						case '[':
+							fprintf(stderr,"[[[[[[[[[[[\n");
 							switch(buf[2])
 								{
 //keys
@@ -220,12 +354,14 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 									drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
 									break;
 								case KEYLEFT:
+								fprintf(stderr,">>>>>>>>>>>>>>>>>>>\n");
 									menuStart=0;
 									selection=MENULEFT;
 									loop=false;
 									continue;
 									break;
 								case KEYRITE:
+								fprintf(stderr,">>>>>>>>>>>>>>>>>>>\n");
 									menuStart=0;
 									selection=MENURITE;									
 									loop=false;
@@ -274,6 +410,7 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 	moveCursToTemp(currentX,currentY);
 	SHOWCURS;
 	return(selection);
+#endif
 }
 
 void buildTabMenu(void)

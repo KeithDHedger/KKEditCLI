@@ -38,6 +38,7 @@
 #include <srchilite/languageinfer.h>
 
 #include <dialog.h>
+#include <termkey.h>
 
 #include "config.h"
 
@@ -127,6 +128,13 @@ static inline void freeAndNull(char** ptr)
 #include "files.h"
 #include "menus.h"
 #include "gui.h"
+
+//termkey
+extern char buffer[];
+extern TermKey *tk;
+extern TermKeyResult ret;
+extern TermKeyKey key;
+extern TermKeyFormat format;
 
 //term info
 extern int			cols;

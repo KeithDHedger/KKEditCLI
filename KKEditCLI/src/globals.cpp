@@ -31,6 +31,13 @@ unsigned	maxRows=0;
 int			maxCols=0;
 int			forceCols=-1;
 
+//termkey
+char buffer[50];
+TermKey *tk;
+TermKeyResult ret;
+TermKeyKey key;
+TermKeyFormat format = TERMKEY_FORMAT_VIM;
+
 //file
 int			newFileNum=1;
 

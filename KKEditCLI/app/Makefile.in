@@ -233,6 +233,7 @@ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = $(SOURCEHILITE_LIBS) \
+		$(TERMKEY_LIBS) \
 		$(DIALOG_LIBS)
 
 LTLIBOBJS = @LTLIBOBJS@
@@ -255,6 +256,8 @@ SHELL = @SHELL@
 SOURCEHILITE_CFLAGS = @SOURCEHILITE_CFLAGS@
 SOURCEHILITE_LIBS = @SOURCEHILITE_LIBS@
 STRIP = @STRIP@
+TERMKEY_CFLAGS = @TERMKEY_CFLAGS@
+TERMKEY_LIBS = @TERMKEY_LIBS@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -306,6 +309,7 @@ AM_CPPFLAGS = -I$(top_srcdir) \
 			-DSYSCONFDIR=\""${sysconfdir}/${PACKAGE}"\" \
 			-DLIBDIR=\""${libdir}/${PACKAGE}"\" \
 			$(SOURCEHILITE_CFLAGS) \
+			$(TERMKEY_CFLAGS) \
 			$(DIALOG_CFLAGS)
 
 COMMONSRC = ../src/curseslib.cpp ../src/editor.cpp ../src/files.cpp ../src/globals.cpp ../src/gui.cpp ../src/main.cpp ../src/menus.cpp
