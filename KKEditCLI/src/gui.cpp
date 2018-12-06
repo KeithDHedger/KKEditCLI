@@ -152,7 +152,7 @@ int handleFileMenu(bool doevent=true,int ms=0)
 							}
 					}
 			case FILEQUIT:
-			fprintf(stderr,"case FILEQUIT:\n");
+			//fprintf(stderr,"case FILEQUIT:\n");
 				return(BRAKE);
 				break;
 		}
@@ -594,7 +594,7 @@ void eventLoop(void)
 										dorefresh=true;
 										needsrefresh=true;
 										handled=true;
-										fprintf(stderr,"ENTER key\n");
+										//fprintf(stderr,"ENTER key\n");
 										break;
 									case TERMKEY_SYM_ESCAPE:
 										{
@@ -721,7 +721,7 @@ void eventLoop(void)
 										moveCursRite();
 										break;
 									default:
-										fprintf(stderr,"unchecked key %i\n",key.code.sym);
+										//fprintf(stderr,"unchecked key %i\n",key.code.sym);
 										break;
 								}
 						}
@@ -780,14 +780,19 @@ void eventLoop(void)
 										break;
 
 									default:
-										fprintf(stderr,"Key==%s = %x\n",key.utf8,key.code.sym);
+										{
+//										fprintf(stderr,"Key==%s = %x\n",key.utf8,key.code.sym);
 										totallinelen=0;
 										writeCharToFile(key.code.codepoint);
 										page->lineXCurs++;
-										totallinelen++;
+										//dorefresh=true;
+
+										while(termkey_getkey(tk,&key)!=TERMKEY_RES_NONE)
+											{
+												writeCharToFile(key.code.codepoint);
+												page->lineXCurs++;
+											}
 										page->lineXCurs--;
-										if(totallinelen>1)
-											dorefresh=true;
 
 										if(currentX==cols-1)
 											{
@@ -810,6 +815,7 @@ void eventLoop(void)
 												currentX++;
 												moveCursRite();
 											}
+										}
 									}
 							}
 							break;

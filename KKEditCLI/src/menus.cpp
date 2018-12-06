@@ -147,7 +147,7 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 //			DEBUGFUNC("0=%x 1=%x 2=%x 3=%x",buf[0],buf[1],buf[2],buf[3]);
 			ret=termkey_waitkey(tk,&key);
 			termkey_strfkey(tk, buffer, 50, &key, format);
-			fprintf(stderr,">>>>Key from lib doMenuEvent %s mods=%i\n", buffer,key.modifiers);
+//			fprintf(stderr,">>>>Key from lib doMenuEvent %s mods=%i\n", buffer,key.modifiers);
 
 			switch(key.type)
 				{
@@ -161,7 +161,7 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 										continue;
 										break;
 									case TERMKEY_SYM_UP:
-										fprintf(stderr,"Up key\n");
+										//fprintf(stderr,"Up key\n");
 										selection--;
 										if(selection<1)
 											{
@@ -172,7 +172,7 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 										drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
 										break;
 									case TERMKEY_SYM_DOWN:
-										fprintf(stderr,"----Down key\n");
+										//fprintf(stderr,"----Down key\n");
 										selection++;
 										if((selection>maxitems) || (selection>menuHite))
 											selection=menuHite-mBarHite;
@@ -192,14 +192,14 @@ int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut)
 										drawMenuWindow(menunames,sx,2,selection-1,doshortcut);
 										break;
 									case TERMKEY_SYM_LEFT:
-										fprintf(stderr,"Left key\n");
+										//fprintf(stderr,"Left key\n");
 										menuStart=0;
 										selection=MENULEFT;
 										loop=false;
 										continue;
 										break;
 									case TERMKEY_SYM_RIGHT:
-										fprintf(stderr,"Right key\n");
+										//fprintf(stderr,"Right key\n");
 										menuStart=0;
 										selection=MENURITE;									
 										loop=false;
