@@ -182,8 +182,11 @@ int handleEditMenu(bool doevent=true,int ms=0)
 				cutBuffer=strdup(wordBufPtr);
 				break;
 			case EDITPASTE:
-				page->editLineArray.at(page->currentLine).insert(page->lineXCurs,cutBuffer,strlen(cutBuffer));
-				return(MENUREFRESH);
+				if(cutBuffer!=NULL)
+					{
+						page->editLineArray.at(page->currentLine).insert(page->lineXCurs,cutBuffer,strlen(cutBuffer));
+						return(MENUREFRESH);
+					}
 				break;			
 			case EDITCUTL:
 				freeAndNull(&cutBuffer);
@@ -726,10 +729,8 @@ void eventLoop(void)
 								{
 									case TERMKEY_KEYMOD_CTRL:
 										retval=CONT;
-#if 1
 										if(key.code.codepoint=='t')
 											{
-											fprintf(stderr,"......\n");
 												menuNumber=BOOKMARKSMENU;
 												retval=handleBMMenu(false,BMTOGGLE);
 												break;
@@ -763,7 +764,7 @@ void eventLoop(void)
 														break;
 													}
 											}
-#endif
+
 										if(retval==BRAKE)
 											return;
 
