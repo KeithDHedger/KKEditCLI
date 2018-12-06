@@ -19,11 +19,16 @@ Menus:
 Press 'ESC' to open menus, left/right to switch menu, UP/DOWN/PAGEUP/PAGEDOWN/HOME/END to navigate to sub menu, 'RETURN' to select menu item or 'ESC' to close menu with no selection.
 Long menus will scroll up or down as you navigate.
 
+Temporarily removed -->
 Main menus can be selected via 'CNTRL+key' where 'key' is the shortcut key ( underscored or highlighted ), eg to open 'FILE' menu 'CNTRL+f'.
+<-- Temporarily removed
+
 Menu items in static menus can bew select by just pressing the shortcut key while the menu is open, ie to save a file press: 'CNTRL+f' then 's'.
 
 Edit Menu:
-TODO.
+Copy/Cut word under cursor.
+Copy/Cut line under cursor.
+Paste/
 
 Tabs Menu:
 Select tab.
@@ -33,18 +38,21 @@ Goto Define - Place cursor over word and select to goto the definition of the fu
 Open Include - Place cursor anywhere on the line with a 'c' type include directive and select to search and open matching files, ( "" open's local include, <> open's global includes from /usr/include ).
 Goto Line - Guess!
 Open Manpage - place cursor over word and attempt to open the relevent manpage if available in a new tab.
+Find - Guess!
+Find Next - Find next and wrap to beigining of file if needed.
 
 Function Menu:
 ... - Dynamic menu containg functions, variable defs etc in the current file, select to goto the define.
 
 Bookmarks:
-Remove All Marks - TODO.
+Remove All Marks - Remove all bookmarks.
 Toggle BM - Toggles a bookmark at the current line.
 ... - Select a bookmark, to go to that tab and line, closing a tab also deletes the bookmarks for that tab.
 
 Tools:
 TODO.
 
+Most static menus now have a Ctrl+key shortcut.
 
 
 
