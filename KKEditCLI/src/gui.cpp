@@ -532,21 +532,14 @@ void refreshScreen(void)
 	printLines();
 }
 
-#if 1
 void eventLoop(void)
 {
 	bool			handled=false;
 	bool			dorefresh=false;
 	bool			needsrefresh=false;
-//	unsigned char	buf[256]={0,};
-//	int				charsread;
-//	bool			donereadbuffer=true;
 	int				totallinelen=0;
-//	int				cnt;
-//	char			tstr[4]={'_',0,0};
 	int				retval;
 
-//	tk = termkey_new(0, TERMKEY_FLAG_SPACESYMBOL|TERMKEY_FLAG_CTRLC);
 	tk = termkey_new(0,TERMKEY_FLAG_CTRLC);
 
 	if(!tk)
@@ -557,11 +550,7 @@ void eventLoop(void)
 
 	while(true)
 		{
-//			buf[0]=0;
 			printStatusBar();
-//			fflush(NULL);
-//			memset(buf,0,255);
-//			charsread=read(STDIN_FILENO,&buf,255);
 			handled=false;
 			SHOWCURS;
 			fflush(NULL);
@@ -610,8 +599,7 @@ void eventLoop(void)
 													needsrefresh=true;
 													break;
 												}
-											//if(handleAllMenus()==CONT)
-												continue;
+											continue;
 										}
 										//fprintf(stderr,"Escape key\n");
 										break;
@@ -780,16 +768,32 @@ void eventLoop(void)
 										break;
 
 									default:
-										{
 //										fprintf(stderr,"Key==%s = %x\n",key.utf8,key.code.sym);
 										totallinelen=0;
 										writeCharToFile(key.code.codepoint);
 										page->lineXCurs++;
-										//dorefresh=true;
 
 										while(termkey_getkey(tk,&key)!=TERMKEY_RES_NONE)
 											{
-												writeCharToFile(key.code.codepoint);
+												if(key.type==TERMKEY_TYPE_KEYSYM)
+													{
+														switch(key.code.sym)
+															{
+																case TERMKEY_SYM_TAB:
+																	writeCharToFile('\t');
+																	break;
+																case TERMKEY_SYM_ENTER:
+																	{
+																		dorefresh=true;
+																		writeCharToFile('\n');
+																	}
+																	break;
+																default:
+																	break;
+															}
+													}
+												else
+													writeCharToFile(key.code.codepoint);
 												page->lineXCurs++;
 											}
 										page->lineXCurs--;
@@ -815,7 +819,7 @@ void eventLoop(void)
 												currentX++;
 												moveCursRite();
 											}
-										}
+										break;
 									}
 							}
 							break;
@@ -841,333 +845,6 @@ void eventLoop(void)
 		}
 }
 
-#else
-
-void eventLoop(void)
-{
-	bool			handled=false;
-	bool			dorefresh=false;
-	bool			needsrefresh=false;
-	unsigned char	buf[256]={0,};
-	int				charsread;
-	bool			donereadbuffer=true;
-	int				totallinelen=0;
-	int				cnt;
-	char			tstr[4]={'_',0,0};
-	int				retval;
-
-	while(true)
-		{
-			printStatusBar();
-			SHOWCURS
-			fflush(NULL);
-			fflush(STDIN_FILENO);
-
-			fflush(NULL);
-			memset(buf,0,255);
-			charsread=read(STDIN_FILENO,&buf,255);
-			handled=false;
-//			cnt=0;
-//			tstr[1]=buf[0]+0x60;
-//			while(menuNames[cnt]!=NULL)
-//				{
-//				//fprintf(stderr,">%s<\n",menuNames[cnt]);
-//					if(strcasestr((char*)menuNames[cnt],(char*)&tstr)!=NULL)
-//						{
-//							menuNumber=cnt;
-//							buf[0]=ESCCHAR;
-//							buf[1]=0;
-//							break;
-//						}
-//					cnt++;
-//				}
-//fprintf(stderr,">>>>>>>>>%c=%x - %c=%x %c=%x>>>%c=%x>>>%c=%x>>>\n",buf[0],buf[0],buf[1],buf[1],buf[0]+32,buf[0],'a','a','A','A');
-#if 0
-			if(buf[0]!=ESCCHAR)
-				{	
-					retval=BRAKE;
-					for(int j=0;j<FILECNT-1;j++)
-						{
-							if(buf[0]+0x60==fileMenuShortcuts[j])
-								{
-									retval=BRAKE;
-									menuNumber=FILEMENU;
-									retval=handleFileMenu(false,j+1);
-								}
-						}
-
-					for(int j=0;j<EDITCNT-1;j++)
-						{
-							if(buf[0]+0x60==editMenuShortcuts[j])
-								{
-									retval=BRAKE;
-									menuNumber=EDITMENU;
-									retval=handleEditMenu(false,j+1);
-								}
-						}
-
-					if(retval==MENUREFRESH)
-						{
-							buf[0]=0;
-							writeFile();
-							dorefresh=true;
-							needsrefresh=true;
-						}
-					if(retval!=BRAKE)
-						{
-							buf[0]=0;
-							handled=true;
-							needsrefresh=false;
-						}
-				}
-#endif
-			if(buf[0]==ESCCHAR)
-				{
-					switch(buf[1])
-						{
-//cursor home and end
-						case 'O':
-							switch(buf[2])
-								{
-								case CURSHOME:
-									page->lineXCurs=0;
-									adjCursor();
-									handled=true;
-									break;
-								case CURSEND:
-									page->lineXCurs=page->editLineArray.at(page->currentLine).length()-1;
-									adjCursor();
-									handled=true;
-									break;
-								}
-							break;
-//cursor keys
-						case '[':
-							switch(buf[2])
-								{
-//console keys
-									case CURSHOME:
-									case CURSHOMECONS:
-									page->lineXCurs=0;
-									adjCursor();
-									handled=true;
-									break;
-								case CURSEND:
-								case CURSENDCONS:
-									page->lineXCurs=page->editLineArray.at(page->currentLine).length()-1;
-									adjCursor();
-									handled=true;
-									break;
-//keys
-								case PAGEDOWN:
-									if(page->editLineArray.size()<maxRows)
-										{
-											SHOWCURS;
-											handled=true;
-											break;
-										}
-									if(page->topLine+maxRows>=page->editLineArray.size())
-										{
-											currentX=minX;
-											currentY=maxRows+minY-1;
-											page->currentLine=page->editLineArray.size()-1;
-											page->topLine=page->editLineArray.size()-maxRows;
-											page->lineXCurs=0;
-										}
-									else
-										{
-											page->topLine+=maxRows;
-											page->currentLine+=maxRows;
-											if(page->topLine+maxRows>=page->editLineArray.size())
-												{
-													currentY=minY;
-													page->currentLine=page->editLineArray.size()-maxRows;
-													page->topLine=page->editLineArray.size()-maxRows;
-												}
-										}
-									printLines();
-									adjCursor();
-									handled=true;
-									break;
-
-								case PAGEUP:
-									page->currentLine-=maxRows;
-									page->topLine-=maxRows;
-									if(page->currentLine<0)
-										{
-											page->topLine=0;
-											page->currentLine=0;
-											currentX=minX;
-											currentY=minY;
-											page->lineXCurs=0;
-										}
-									else
-										{
-											if(page->topLine<0)
-												{
-													currentY=minY;
-													page->topLine=page->currentLine;
-												}
-										}
-									printLines();
-									adjCursor();
-									handled=true;
-									break;
-
-								case KEYUP:
-									moveCursUp();
-									adjCursor();
-									handled=true;
-									break;
-								case KEYDOWN:
-									moveCursDown();
-									adjCursor();
-									handled=true;
-									break;
-								case KEYLEFT:
-									moveCursLeft();
-									handled=true;
-									break;
-								case KEYRITE:
-									moveCursRite();
-									handled=true;
-									break;
-//TODO needs tidying
-								case DELETEKEY:
-										{
-											handled=true;
-											if(deleteCharFromFile(false)==true)
-												{
-													dorefresh=true;
-													needsrefresh=true;
-													adjCursor();
-												}
-										}
-									break;
-								}
-							break;
-						}
-//end esc char
-				}
-
-			if(handled==false)
-				{
-					switch(buf[0])
-						{
-							case RETURNKEY:
-								writeCharToFile(RETURNKEY);
-								currentX=minX;
-								currentY++;
-								page->currentLine++;
-								page->lineXCurs=0;
-								dorefresh=true;
-								needsrefresh=true;
-								handled=true;
-								break;
-							case ESCCHAR:
-								{
-									int retval=BRAKE;
-									menuStart=0;
-									retval=handleAllMenus();
-									if(retval==BRAKE)
-										return;
-									if(retval==MENUREFRESH)
-										{
-											writeFile();
-											dorefresh=true;
-											needsrefresh=true;
-											//handled=true;
-											break;
-										}
-
-									//if(handleAllMenus()==CONT)
-										continue;
-								}
-								break;
-							case BACKSPACE:
-								if(deleteCharFromFile(true)==true)
-									{
-										dorefresh=true;
-										needsrefresh=true;
-										page->lineXCurs--;
-										adjCursor();
-									}
-								break;
-
-							case TABKEY:
-								if(charsread==1)
-								{	
-									writeCharToFile(buf[0]);
-									refreshScreen();
-									moveCursRite();
-									break;
-								}
-							default:
-								totallinelen=0;
-								donereadbuffer=false;
-								while(donereadbuffer==false)
-									{
-										for(int j=0;j<charsread;j++)
-											{
-												writeCharToFile(buf[j]);
-												page->lineXCurs++;
-												totallinelen++;
-											}
-										if(charsread<15)
-											break;
-										charsread=read(STDIN_FILENO,&buf,15);
-									}
-								page->lineXCurs--;
-								fflush(NULL);
-								if(totallinelen>1)
-									dorefresh=true;
-
-								if(currentX==cols-1)
-									{
-										currentY++;
-										currentX=minX;
-										page->lineXCurs=0;
-										page->currentLine++;
-										moveCursToTemp(currentX,currentY);
-										refreshScreen();
-										moveCursRite();
-										continue;
-									}
-								else
-									{
-										if(liveUpdate==true)
-											needsrefresh=true;
-										moveCursToTemp(minX,currentY);
-										if(totallinelen<2)
-											printf("%s",page->editLineArray.at(page->currentLine).c_str());
-										currentX++;
-										moveCursRite();
-									}
-								break;
-						}
-				}
-//fprintf(stderr,"needs refresh=%i\n",needsrefresh);
-			if((handled==true) && (needsrefresh==true))
-				{
-					dorefresh=true;
-					needsrefresh=false;
-				}
-
-			if(dorefresh==true)
-				{
-					dorefresh=false;
-					page->maxLines=0;
-					openTheFile(tmpEdFilePath,hilite);
-					printLines();
-					adjCursor();
-					continue;
-				}
-			SHOWCURS
-			fflush(NULL);
-			fflush(STDIN_FILENO);
-		}
-}
-#endif
 void printStatusBar(void)
 {
 	findWordUnderCursor();
