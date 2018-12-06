@@ -786,7 +786,6 @@ void eventLoop(void)
 																	{
 																		dorefresh=true;
 																		writeCharToFile('\n');
-																		
 																	}
 																	break;
 																default:
