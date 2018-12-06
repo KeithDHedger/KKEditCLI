@@ -1,4 +1,5 @@
 0.1.2
+Fixes spaces/tabs being swallowed.
 Redone events to use termkey.
 Added termkey as dep.
 

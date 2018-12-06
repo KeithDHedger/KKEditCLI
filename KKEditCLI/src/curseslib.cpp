@@ -70,6 +70,7 @@ void finalizeCursesLib(void)
 {
 	int	cnt=0;
 
+	termkey_destroy(tk);
 	termConfig.c_lflag |= (ICANON | ECHO);
 	tcsetattr(STDIN_FILENO,TCSANOW,&termConfig);
 	unlink("/dev/shm/src");
