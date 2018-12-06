@@ -35,7 +35,7 @@ const char	navMenuShortcuts[NAVCNT]={'d','u','j','p','f','g'};
 char		**tabsMenuNames=NULL;
 funcStruct	**functionData=NULL;
 char		**functionsMenuNames=NULL;
-char		*bookmarksMenuNames[MAXBOOKMARKS]={strdup(" _Remove All Marks"),strdup(" _Toggle BM"),NULL};
+char		*bookmarksMenuNames[MAXBOOKMARKS]={strdup(" _Remove All Marks"),strdup(" _Toggle BM Ctrl+T"),NULL};
 const char	*toolsMenuNames[]={"TODO ..."," _Manage Tools",NULL};
 
 unsigned	menuWidth=0;

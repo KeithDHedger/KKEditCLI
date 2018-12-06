@@ -405,13 +405,18 @@ int findBM(int line,int pagenum)
 	return(-1);
 }
 
-int handleBMMenu(void)
+int handleBMMenu(bool doevent=true,int ms=0)
 {
 	int menuselect;
 	int	findline=page->topLine+currentY-minY;
 	int	bm=-1;
 
-	menuselect=doMenuEvent((const char**)bookmarksMenuNames,37,2,true);
+	if(doevent==true)
+		menuselect=doMenuEvent((const char**)bookmarksMenuNames,37,2,true);
+	else
+		menuselect=ms;
+
+//	menuselect=doMenuEvent((const char**)bookmarksMenuNames,37,2,true);
 
 	if(menuselect<=CONT)
 		return(menuselect);
@@ -721,6 +726,15 @@ void eventLoop(void)
 								{
 									case TERMKEY_KEYMOD_CTRL:
 										retval=CONT;
+#if 1
+										if(key.code.codepoint=='t')
+											{
+											fprintf(stderr,"......\n");
+												menuNumber=BOOKMARKSMENU;
+												retval=handleBMMenu(false,BMTOGGLE);
+												break;
+											}
+
 										for(int j=0;j<FILECNT-1;j++)
 											{
 											//fprintf(stderr,"-----j=%i key.code.codepoint=%c fileMenuShortcuts[j]=%c-----\n",j,key.code.codepoint,fileMenuShortcuts[j]);
@@ -749,7 +763,7 @@ void eventLoop(void)
 														break;
 													}
 											}
-
+#endif
 										if(retval==BRAKE)
 											return;
 
@@ -768,6 +782,7 @@ void eventLoop(void)
 										break;
 
 									default:
+										//fprintf(stderr,"buf remain=%i\n",termkey_get_buffer_remaining(tk));
 //										fprintf(stderr,"Key==%s = %x\n",key.utf8,key.code.sym);
 										totallinelen=0;
 										writeCharToFile(key.code.codepoint);
@@ -775,6 +790,7 @@ void eventLoop(void)
 
 										while(termkey_getkey(tk,&key)!=TERMKEY_RES_NONE)
 											{
+										//fprintf(stderr,"buf remain=%i\n",termkey_get_buffer_remaining(tk));
 												if(key.type==TERMKEY_TYPE_KEYSYM)
 													{
 														switch(key.code.sym)
