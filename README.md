@@ -26,7 +26,6 @@ Main menus can be selected via 'CNTRL+key' where 'key' is the shortcut key ( und
 
 <-- Temporarily removed
 
-
 Menu items in static menus can bew select by just pressing the shortcut key while the menu is open, ie to save a file press: 'CNTRL+f' then 's'.
 
 
