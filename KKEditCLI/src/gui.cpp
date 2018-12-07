@@ -256,13 +256,14 @@ int handleNavMenu(bool doevent=true,int ms=0)
 			case NAVFIND:
 			case NAVFINDAGAIN:
 				if(menuselect==NAVFIND)
-					search(false);
+					found=search(false);
 				else
-					search(true);
+					found=search(true);
 				clearScreen();
 				refreshScreen();
 				moveCursToTemp(currentX,currentY);
-				printf(INVERTON "%s" INVERTOFF,needle.c_str());
+				if(found==true)
+					printf(INVERTON "%s" INVERTOFF,needle.c_str());
 				return(CONT);
 				break;
 			case NAVEGOTODEF:

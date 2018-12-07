@@ -327,7 +327,7 @@ void switchPage(int newpagenum,int gotoline)
 	adjCursor();
 }
 
-void search(bool again)
+bool search(bool again)
 {
 	std::size_t	found;
 	int			status=-1;
@@ -351,12 +351,14 @@ void search(bool again)
 					searchStartY=page->currentLine;
 					searchStartX=page->lineXCurs;
 				}
+			else
+				return(false);
 		}
 
 	for(unsigned j=searchStartY;j<page->editLineArray.size()-1;j++)
 		{
 			found=page->editLineArray.at(j).find(needle);
-			if(found!=-1)
+			if(found!=string::npos)
 				{
 					page->currentLine=j;
 					page->topLine=j;
@@ -365,15 +367,15 @@ void search(bool again)
 					adjCursor();
 					clearScreen();
 					searchStartY=j+1;
-					return;
+					return(true);
 				}
 		}
 	if(searchStartY>0)
 		{
-			for(unsigned j=0;j<searchStartY-1;j++)
+			for(int j=0;j<searchStartY-1;j++)
 				{
 					found=page->editLineArray.at(j).find(needle);
-					if(found!=-1)
+					if(found!=string::npos)
 						{
 							page->currentLine=j;
 							page->topLine=j;
@@ -382,11 +384,11 @@ void search(bool again)
 							adjCursor();
 							clearScreen();
 							searchStartY=j+1;
-							return;
+							return(true);
 						}
 				}
 		}
-	return;
+	return(false);
 }
 
 
