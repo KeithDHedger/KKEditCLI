@@ -152,7 +152,6 @@ int handleFileMenu(bool doevent=true,int ms=0)
 							}
 					}
 			case FILEQUIT:
-			//fprintf(stderr,"case FILEQUIT:\n");
 				return(BRAKE);
 				break;
 		}
@@ -168,7 +167,6 @@ int handleEditMenu(bool doevent=true,int ms=0)
 	else
 		menuselect=ms;
 
-//	menuselect=doMenuEvent(editMenuNames,6,2,true);
 	switch(menuselect)
 		{
 			case EDITCUTW:
@@ -727,6 +725,38 @@ void eventLoop(void)
 						{
 							switch(key.modifiers)
 								{
+									case TERMKEY_KEYMOD_ALT:
+										{
+											char tstr[3]={'_',0,0};
+											int retval=BRAKE;
+											for(int j=0;j<MAXMENUS;j++)
+												{
+													tstr[1]=toupper(key.code.codepoint);
+													if(strcasestr((char*)menuNames[j],(char*)&tstr)!=NULL)
+														{
+															menuNumber=j;
+															menuStart=0;
+															retval=handleAllMenus();
+															if(retval==BRAKE)
+																return;
+															if(retval==MENUREFRESH)
+																{
+																	writeFile();
+																	dorefresh=true;
+																	needsrefresh=true;
+																	break;
+																}
+															break;
+														}
+												}
+														
+//						{
+//							menuNumber=cnt;
+//							buf[0]=ESCCHAR;
+//							buf[1]=0;
+//							break;
+											}
+										break;
 									case TERMKEY_KEYMOD_CTRL:
 										retval=CONT;
 										if(key.code.codepoint=='t')
