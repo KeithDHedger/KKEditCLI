@@ -21,6 +21,13 @@
 #ifndef _MENUS_
 #define _MENUS_
 
+struct shortCuts
+{
+	const char	key;
+	int			menuNum;
+	int			menuItem;
+};
+
 enum {FLATNORM=0,FLATINVERT};
 
 enum {FILEMENU=0,EDITMENU,TABSMENU,NAVIGATIONMENU,FUNCTIONSMENU,BOOKMARKSMENU,TOOLSMENU,MAXMENUS};
@@ -37,11 +44,8 @@ extern int			menuStart;
 //static menus
 extern const char	*menuNames[];
 extern const char	*fileMenuNames[];
-extern const char	fileMenuShortcuts[];
 extern const char	*editMenuNames[];
-extern const char	editMenuShortcuts[];
 extern const char	*navMenuNames[];
-extern const char	navMenuShortcuts[];
 
 //dynamic menus
 extern char			**tabsMenuNames;
@@ -49,6 +53,8 @@ extern funcStruct	**functionData;
 extern char			**functionsMenuNames;
 extern char			*bookmarksMenuNames[];
 extern const char	*toolsMenuNames[];
+
+extern shortCuts scs[];
 
 void drawMenuBar(void);
 int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut);

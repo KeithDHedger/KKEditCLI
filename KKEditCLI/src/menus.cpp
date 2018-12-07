@@ -25,11 +25,8 @@
 //static menus
 const char	*menuNames[]={"_File","_Edit","_Tabs","_Navigation","F_unctions","_Bookmarks","T_ools",NULL};
 const char	*fileMenuNames[]={" _New     Ctrl+N"," _Open    Ctrl+O"," _Save    Ctrl+S"," Save _As Ctrl+A"," _Close   Ctrl+W"," _Quit    Ctrl+Q",NULL};
-const char	fileMenuShortcuts[FILECNT]={'n','o','s','a','w','q'};
 const char	*editMenuNames[]={" _Copy Word Ctrl+C"," C_ut Word  Ctrl+X"," Copy _Line Ctrl+L"," Cut L_ine  Ctrl+Z"," _Paste     Ctrl+V",NULL};
-const char	editMenuShortcuts[EDITCNT]={'c','x','l','z','v'};
 const char	*navMenuNames[]={" Goto _Define   Ctrl+D"," _Open Include  Ctrl+U"," _Goto Line     Ctrl+J"," Open _Manpage  Ctrl+P"," _Find          Ctrl+F"," Find _Next     Ctrl+G",NULL};
-const char	navMenuShortcuts[NAVCNT]={'d','u','j','p','f','g'};
 
 //dynamic menus
 char		**tabsMenuNames=NULL;
@@ -37,6 +34,34 @@ funcStruct	**functionData=NULL;
 char		**functionsMenuNames=NULL;
 char		*bookmarksMenuNames[MAXBOOKMARKS]={strdup(" _Remove All Marks"),strdup(" _Toggle BM Ctrl+T"),NULL};
 const char	*toolsMenuNames[]={"TODO ..."," _Manage Tools",NULL};
+
+
+shortCuts scs[]={
+//file menu
+{'n',FILEMENU,1},
+{'o',FILEMENU,2},
+{'s',FILEMENU,3},
+{'a',FILEMENU,4},
+{'w',FILEMENU,5},
+{'q',FILEMENU,6},
+//edit menu
+{'c',EDITMENU,1},
+{'x',EDITMENU,2},
+{'l',EDITMENU,3},
+{'z',EDITMENU,4},
+{'v',EDITMENU,5},
+//nav menu
+{'d',NAVIGATIONMENU,1},
+{'u',NAVIGATIONMENU,2},
+{'j',NAVIGATIONMENU,3},
+{'p',NAVIGATIONMENU,4},
+{'f',NAVIGATIONMENU,5},
+{'g',NAVIGATIONMENU,6},
+//bm menu
+{'t',BOOKMARKSMENU,2},
+//end marker
+{0,-1,-1}
+};
 
 unsigned	menuWidth=0;
 int			menuStart=0;

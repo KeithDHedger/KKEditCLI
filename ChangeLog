@@ -1,4 +1,5 @@
 0.1.2
+Cleaned shortcut code.
 Fixed segfault when nothing to paste.
 Added toggle bm shortcut.
 Fixed pasting tabs/returns.

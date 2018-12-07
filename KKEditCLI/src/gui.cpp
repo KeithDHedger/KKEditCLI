@@ -545,6 +545,7 @@ void eventLoop(void)
 	bool			needsrefresh=false;
 	int				totallinelen=0;
 	int				retval;
+	int				shcnum;
 
 	tk = termkey_new(0,TERMKEY_FLAG_CTRLC);
 
@@ -749,50 +750,36 @@ void eventLoop(void)
 															break;
 														}
 												}
-														
-//						{
-//							menuNumber=cnt;
-//							buf[0]=ESCCHAR;
-//							buf[1]=0;
-//							break;
 											}
 										break;
 									case TERMKEY_KEYMOD_CTRL:
 										retval=CONT;
-										if(key.code.codepoint=='t')
+										shcnum=0;
+										while(scs[shcnum].key!=0)
 											{
-												menuNumber=BOOKMARKSMENU;
-												retval=handleBMMenu(false,BMTOGGLE);
-												break;
-											}
-
-										for(int j=0;j<FILECNT-1;j++)
-											{
-											//fprintf(stderr,"-----j=%i key.code.codepoint=%c fileMenuShortcuts[j]=%c-----\n",j,key.code.codepoint,fileMenuShortcuts[j]);
-												if(key.code.codepoint==fileMenuShortcuts[j])
+												if(key.code.codepoint==scs[shcnum].key)
 													{
-														menuNumber=FILEMENU;
-														retval=handleFileMenu(false,j+1);
+														menuNumber=scs[shcnum].menuNum;
+														switch(scs[shcnum].menuNum)
+															{
+																case FILEMENU:
+																	retval=handleFileMenu(false,scs[shcnum].menuItem);
+																	break;
+																case EDITMENU:
+																	retval=handleEditMenu(false,scs[shcnum].menuItem);
+																	break;
+																case NAVIGATIONMENU:
+																	retval=handleNavMenu(false,scs[shcnum].menuItem);
+																	break;
+																case BOOKMARKSMENU:
+																	retval=handleBMMenu(false,scs[shcnum].menuItem);
+																	break;
+																default:
+																	break;
+															}
 														break;
 													}
-											}
-										for(int j=0;j<EDITCNT-1;j++)
-											{
-												if(key.code.codepoint==editMenuShortcuts[j])
-													{
-														menuNumber=EDITMENU;
-														retval=handleEditMenu(false,j+1);
-														break;
-													}
-											}
-										for(int j=0;j<NAVCNT-1;j++)
-											{
-												if(key.code.codepoint==navMenuShortcuts[j])
-													{
-														menuNumber=NAVIGATIONMENU;
-														retval=handleNavMenu(false,j+1);
-														break;
-													}
+												shcnum++;
 											}
 
 										if(retval==BRAKE)
