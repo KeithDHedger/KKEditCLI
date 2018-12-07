@@ -357,10 +357,13 @@ int handleNavMenu(bool doevent=true,int ms=0)
 			case NAVOPENMANPAGE:
 				{
 					char	*command;
+					int		ret;
 
-					asprintf(&command,"MANWIDTH=%i MAN_KEEP_FORMATTING=1 /usr/bin/man $(man -w %s) > /tmp/$(basename $(man -w %s))",maxCols,wordBufPtr,wordBufPtr);
-					system(command);
+					asprintf(&command,"MANWIDTH=%i MAN_KEEP_FORMATTING=1 /usr/bin/man $(man -w %s 2>/dev/null) 2>/dev/null > /tmp/$(basename $(man -w %s) 2>/dev/null)",maxCols,wordBufPtr,wordBufPtr);
+					ret=system(command);
 					free(command);
+					if(ret!=0)
+						break;
 					command=oneLiner(false,"echo /tmp/$(basename $(man -w %s))",wordBufPtr);					
 					page->saveX=currentX;
 					page->saveY=currentY;
@@ -373,6 +376,7 @@ int handleNavMenu(bool doevent=true,int ms=0)
 					clearScreen();
 					refreshScreen();
 					moveCursToTemp(currentX,currentY);
+					
 				}
 				break;
 		}
