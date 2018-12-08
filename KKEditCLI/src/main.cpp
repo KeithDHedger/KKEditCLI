@@ -122,6 +122,8 @@ int main(int argc, char **argv)
 	eventLoop();
 	finalizeCursesLib();
 	printf("\n");
+//	system("/usr/bin/reset");
+	system("stty sane");
 	return 0;
 }
 

@@ -276,11 +276,12 @@ void findWordUnderCursor(void)
 	endx=page->lineXCurs;
 	while(((isalnum(page->editLineArray.at(page->currentLine)[startx])) || (page->editLineArray.at(page->currentLine)[startx]=='_')) && (startx>0))
 		startx--;
+
+	if(isalnum(page->editLineArray.at(page->currentLine)[startx])==false)
+		startx++;
+
 	while(((isalnum(page->editLineArray.at(page->currentLine)[endx])) || (page->editLineArray.at(page->currentLine)[endx]=='_')) && (endx<page->editLineArray.at(page->currentLine).length()))
 		endx++;
-
-	if(startx!=0)
-		startx++;
 
 	wordStart=startx;
 	wordEnd=endx;

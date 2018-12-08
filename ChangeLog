@@ -1,4 +1,6 @@
 0.1.2
+Changed cut line shortcut.
+Better word under cursor search.
 Fixed ui glitch when search term not found.
 Fixed crash when trying to open non-existant manpage.
 Cleaned shortcut code.

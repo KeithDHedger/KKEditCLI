@@ -275,23 +275,41 @@ int handleNavMenu(bool doevent=true,int ms=0)
 					found=false;
 					while(functionData[cnt]!=NULL)
 						{
+							fprintf(stderr,"wordBufPtr=>>%s<<,functionData[cnt]->name=>>%s<<\n",wordBufPtr,functionData[cnt]->name);
 							if(strcmp(wordBufPtr,functionData[cnt]->name)==0)
 								{
-									switchPage(-1,functionData[cnt]->line);
+						DEBUGFUNC(">>>switchPage(-1,functionData[cnt]->line)=%i;",functionData[cnt]->line);
 									found=true;
+									switchPage(-1,functionData[cnt]->line);
 									break;
 								}
 							cnt++;
 						}
-					if(found==true)
-						DEBUGFUNC("switchPage(-1,functionData[cnt]->line);","");
-					else
+					if(found==false)
+//						DEBUGFUNC("switchPage(-1,functionData[cnt]->line);","");
+//					else
 						{
+						fprintf(stderr,">>>>>>>>>>>\n");
 							char	*basedir;
+							int		line;
+							char	*fpath;
+							char	*dirn;
+
 							basedir=strdup(page->filePath);
-							char	*dirn=dirname(basedir);
+							dirn=dirname(basedir);
 							gdef=oneLiner(false,"ctags -x %s/*|sort -k 2rb,2rb -k 1b,1b|sed 's@ \\+@ @g'|grep %s|awk '{print $3 \" \" $4}'",dirn,wordBufPtr);
-							DEBUGFUNC("gdef=%s dirn=%s",gdef,dirn);
+							//DEBUGFUNC("gdef=%s dirn=%s",gdef,dirn);
+							line=atoi(gdef);
+							fpath=strstr(gdef,"/");
+							//DEBUGFUNC("line=%i fpath=%s",line,fpath);
+							initEditor();
+							setTempEdFile(fpath);
+							page->filePath=strdup(fpath);
+							oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
+							openTheFile(tmpEdFilePath,hilite);
+							currentX=minX;
+							currentY=minY;
+							switchPage(-1,line);
 							free(gdef);
 						}
 				}

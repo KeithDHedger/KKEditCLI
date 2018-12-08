@@ -73,6 +73,7 @@ void finalizeCursesLib(void)
 	termkey_destroy(tk);
 	termConfig.c_lflag |= (ICANON | ECHO);
 	tcsetattr(STDIN_FILENO,TCSANOW,&termConfig);
+
 	unlink("/dev/shm/src");
 	system("/usr/bin/tabs -8 2>&1");
 
@@ -97,7 +98,6 @@ void finalizeCursesLib(void)
 		}
 	freeAndNull(&tmpEdFile);
 	freeAndNull(&tmpEdFilePath);
-	end_dialog();
 
 	SETNORMAL;
 }

@@ -332,10 +332,14 @@ void askOpenFile(void)
 void askSaveFile(void)
 {
 	int	status=-100;
+	clearScreen();
+	dialog_vars.dlg_clear_screen=true;
 	init_dialog(stdin,stdout);
 		status=dialog_fselect("Save File As ..",page->filePath,rows-14,cols-14);
 	end_dialog();
 	clearScreen();
+//endwin(); 
+
 	if(status==0)
 		{
 			saveFile(dialog_vars.input_result);

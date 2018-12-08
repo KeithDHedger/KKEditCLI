@@ -48,7 +48,7 @@ shortCuts scs[]={
 {'c',EDITMENU,1},
 {'x',EDITMENU,2},
 {'l',EDITMENU,3},
-{'z',EDITMENU,4},
+{'y',EDITMENU,4},
 {'v',EDITMENU,5},
 //nav menu
 {'d',NAVIGATIONMENU,1},
