@@ -266,6 +266,8 @@ void findWordUnderCursor(void)
 	unsigned	startx;
 	unsigned	endx;
 
+	if(page->editLineArray.size()==0)
+		return;
 	if(!isalnum(page->editLineArray.at(page->currentLine)[page->lineXCurs]))
 		{
 			wordBuf[0]=0;
@@ -331,8 +333,9 @@ void switchPage(int newpagenum,int gotoline)
 bool search(bool again)
 {
 	std::size_t	found;
-	int			status=-1;
 	const char	*initstr="";
+	char		*retstr=NULL;
+	CDKSCREEN	*cdkscreen;
 
 	if(again==false)
 		{
@@ -341,14 +344,15 @@ bool search(bool again)
 			else if((cutBuffer!=NULL) && (strlen(cutBuffer)>0))
 				initstr=cutBuffer;
 		
-			init_dialog(stdin,stdout);
-				dialog_vars.default_button=-1;
-				status=dialog_inputbox("","Find?",0,0,initstr,false);
-			end_dialog();
+			cdkscreen=initCDKScreen(NULL);
+			retstr=getString(cdkscreen,"Find String ...","",initstr);
+			destroyCDKScreen(cdkscreen);
+			endCDK ();
 
-			if(status==0)
+			if(retstr!=NULL)
 				{
-					needle=dialog_vars.input_result;
+					needle=retstr;
+					free(retstr);
 					searchStartY=page->currentLine;
 					searchStartX=page->lineXCurs;
 				}

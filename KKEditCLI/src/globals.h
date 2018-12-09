@@ -39,6 +39,7 @@
 
 #include <dialog.h>
 #include <termkey.h>
+#include <cdk.h>
 
 #include "config.h"
 

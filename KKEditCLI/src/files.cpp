@@ -162,7 +162,14 @@ void openTheFile(const char *path,bool extsrc)
 			fclose(fp);
 			buildTabMenu();
 		}
-	page->maxLines=page->editLineArray.size();	
+	if(page->editLineArray.size()==0)
+		{
+			page->editLineArray.push_back("\n");
+			page->printLineArray.push_back("\n");
+			page->lineNumber.push_back(1);
+			page->lineXCurs=0;
+		}
+	page->maxLines=page->editLineArray.size();
 }
 
 bool deleteCharFromFile(bool back)
@@ -272,19 +279,47 @@ void saveFile(const char *path)
 	page->dirty=false;
 }
 
+char *getFile(const char *msg)
+{
+	char		*filename;
+	CDKSCREEN	*cdkscreen;
+
+	cdkscreen=initCDKScreen(NULL);
+	initCDKColor ();
+
+	filename=selectFile(cdkscreen,msg);
+	destroyCDKScreen(cdkscreen);
+	endCDK ();
+
+	return(filename);
+}
+
+int askSaveDialog(const char **msg)
+{
+	CDKSCREEN	*cdkscreen=0;
+	int			ret=1;
+	const char	*buttons[]={" Ok "," Cancel "};
+
+	cdkscreen=initCDKScreen(NULL);
+  
+	ret=popupDialog(cdkscreen,(char**)msg,2,(char**)buttons,2);
+	destroyCDKScreen (cdkscreen);
+	endCDK ();
+	return(ret);
+}
+
 void askSaveIfdirty(void)
 {
-	char	*message=NULL;
 	int		status;
-
+	char	*body[2];
 	if(page->dirty==true)
 		{
-			asprintf(&message,"\"%s\"\n\nHas been changed, save?",page->filePath);
+			asprintf(&body[0],"\"%s\"",page->filePath);
+			asprintf(&body[1],"<C>Has been changed, save?");
 			fflush(NULL);
-			init_dialog(stdin,stdout);
-				status=dialog_yesno("",message,8,strlen(page->filePath)+8);
-			end_dialog();
-			free(message);
+			status=askSaveDialog((const char**)&body);
+			free(body[0]);
+			free(body[1]);
 			if(status==0)
 				{
 					saveFile(page->filePath);
@@ -308,18 +343,16 @@ void makeNewFile(void)
 
 void askOpenFile(void)
 {
-	int	status=-100;
+	char	*retstr=NULL;
 
-	init_dialog(stdin,stdout);
-		status=dialog_fselect("Open File ...",page->filePath,rows-14,cols-14);
-	end_dialog();
-	dlg_clear();
-	clearScreen();
-	if(status==0)
+	retstr=getFile("Select File To Open ...");
+	if(retstr!=NULL)
 		{
+			if(access(retstr,F_OK)!=0)
+				oneLiner(true,"touch \"%s\"",retstr);
 			initEditor();
-			setTempEdFile(dialog_vars.input_result);
-			page->filePath=strdup(dialog_vars.input_result);
+			setTempEdFile(retstr);
+			page->filePath=retstr;
 			oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
 			openTheFile(tmpEdFilePath,hilite);
 			currentX=minX;
@@ -331,22 +364,16 @@ void askOpenFile(void)
 
 void askSaveFile(void)
 {
-	int	status=-100;
-	clearScreen();
-	dialog_vars.dlg_clear_screen=true;
-	init_dialog(stdin,stdout);
-		status=dialog_fselect("Save File As ..",page->filePath,rows-14,cols-14);
-	end_dialog();
-	clearScreen();
-//endwin(); 
+	char	*retstr=NULL;
 
-	if(status==0)
+	retstr=getFile("Select Save File ...");
+	if(retstr!=NULL)
 		{
-			saveFile(dialog_vars.input_result);
+			saveFile(retstr);
 			fflush(NULL);
 			unlink(tmpEdFilePath);
-			setTempEdFile(dialog_vars.input_result);
-			page->filePath=strdup(dialog_vars.input_result);
+			setTempEdFile(retstr);
+			page->filePath=retstr;
 			oneLiner(true,"cp %s %s/%s",page->filePath,tmpEdDir,tmpEdFile);
 			openTheFile(tmpEdFilePath,hilite);
 			printLines();

@@ -1,6 +1,6 @@
 #
 #
-AC_INIT([KKEditCLI],[0.1.2],[PROJ],[KKEditCLI])
+AC_INIT([KKEditCLI],[0.1.3],[PROJ],[KKEditCLI])
 
 AC_CONFIG_HEADER([config.h])
 AC_PROG_CXX
@@ -29,16 +29,21 @@ PKG_CHECK_MODULES(TERMKEY, $TERMKEY_MODULES)
 AC_SUBST(TERMKEY_CFLAGS)
 AC_SUBST(TERMKEY_LIBS)
 
-AC_CHECK_PROG(DIALOG, dialog-config ,true,false)
-if test $DIALOG = false; then
-	AC_MSG_NOTICE([No dialog program found!])
-	AC_MSG_NOTICE([You can download it from here:])
-	AC_MSG_NOTICE([https://invisible-island.net/dialog/])
-	exit 0
-else
-	DIALOG_CFLAGS=`/usr/bin/dialog-config --cflags`
-	DIALOG_LIBS=`/usr/bin/dialog-config --libs`
-fi
+CDK_MODULES="cdk >= 6.1.4"
+PKG_CHECK_MODULES(CDK, $CDK_MODULES)
+AC_SUBST(CDK_CFLAGS)
+AC_SUBST(CDK_LIBS)
+
+#AC_CHECK_PROG(DIALOG, dialog-config ,true,false)
+#if test $DIALOG = false; then
+#	AC_MSG_NOTICE([No dialog program found!])
+#	AC_MSG_NOTICE([You can download it from here:])
+#	AC_MSG_NOTICE([https://invisible-island.net/dialog/])
+#	exit 0
+#else
+#	DIALOG_CFLAGS=`/usr/bin/dialog-config --cflags`
+#	DIALOG_LIBS=`/usr/bin/dialog-config --libs`
+#fi
 
 AC_CHECK_PROG(CTAGS, ctags ,true,false)
 if test $CTAGS = false; then
