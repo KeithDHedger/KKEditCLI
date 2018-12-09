@@ -359,7 +359,8 @@ int handleNavMenu(bool doevent=true,int ms=0)
 					char		*retstr=NULL;
 					CDKSCREEN	*cdkscreen;
 					cdkscreen=initCDKScreen(NULL);
-					retstr=getString(cdkscreen,"Goto Line?","","");
+					initCDKColor ();
+					retstr=getString(cdkscreen,"</5/B>Goto Line?","","");
 					destroyCDKScreen(cdkscreen);
 					endCDK ();
 

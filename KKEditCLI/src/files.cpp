@@ -298,10 +298,11 @@ int askSaveDialog(const char **msg)
 {
 	CDKSCREEN	*cdkscreen=0;
 	int			ret=1;
-	const char	*buttons[]={" Ok "," Cancel "};
+	const char	*buttons[]={"<#LT> Ok "," Cancel "};
 
 	cdkscreen=initCDKScreen(NULL);
-  
+  //	initCDKColor ();
+
 	ret=popupDialog(cdkscreen,(char**)msg,2,(char**)buttons,2);
 	destroyCDKScreen (cdkscreen);
 	endCDK ();
@@ -315,7 +316,7 @@ void askSaveIfdirty(void)
 	if(page->dirty==true)
 		{
 			asprintf(&body[0],"\"%s\"",page->filePath);
-			asprintf(&body[1],"<C>Has been changed, save?");
+			asprintf(&body[1],"<C></1/B>Has been changed, save?");
 			fflush(NULL);
 			status=askSaveDialog((const char**)&body);
 			free(body[0]);
