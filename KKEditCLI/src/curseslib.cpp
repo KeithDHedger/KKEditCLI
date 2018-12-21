@@ -74,7 +74,7 @@ void finalizeCursesLib(void)
 	termConfig.c_lflag |= (ICANON | ECHO);
 	tcsetattr(STDIN_FILENO,TCSANOW,&termConfig);
 
-	unlink("/dev/shm/src");
+	unlink(srcPath);
 	system("/usr/bin/tabs -8 2>&1");
 
 	clearTagList();

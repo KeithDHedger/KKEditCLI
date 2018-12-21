@@ -57,6 +57,7 @@ bool		hilite=true;
 const char	*tmpEdDir="/dev/shm/";
 char		*tmpEdFile=NULL;
 char		*tmpEdFilePath=NULL;
+char		*srcPath=NULL;
 
 //pages
 int			maxPages=0;

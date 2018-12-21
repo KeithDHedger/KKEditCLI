@@ -74,7 +74,7 @@ void makeSrc(const char *path)
 	if(inputLang=="")
 		inputLang="nohilite.lang";
 	sourceHighlight.setStyleFile("esc.style");
-	sourceHighlight.highlight(path,"/dev/shm/src",inputLang);
+	sourceHighlight.highlight(path,srcPath,inputLang);
 }
 
 void openTheFile(const char *path,bool extsrc)
@@ -93,13 +93,13 @@ void openTheFile(const char *path,bool extsrc)
 	if(extsrc==true)
 		makeSrc(path);
 	else
-		oneLiner(true,"cp '%s' /dev/shm/src 2>/dev/null",path);  
+		oneLiner(true,"cp '%s' %s 2>/dev/null",path,srcPath);  
 
 	page->editLineArray.clear();
 	page->printLineArray.clear();
 	page->lineNumber.clear();
 
-	fp=fopen("/dev/shm/src", "r");
+	fp=fopen(srcPath,"r");
 	if(fp != NULL)
 		{
 			while((read=getline(&linebuffer,&len,fp)) != -1)
@@ -298,10 +298,10 @@ int askSaveDialog(const char **msg)
 {
 	CDKSCREEN	*cdkscreen=0;
 	int			ret=1;
-	const char	*buttons[]={"<#LT> Ok "," Cancel "};
+	const char	*buttons[]={" Ok "," Cancel "};
 
 	cdkscreen=initCDKScreen(NULL);
-  //	initCDKColor ();
+  	initCDKColor ();
 
 	ret=popupDialog(cdkscreen,(char**)msg,2,(char**)buttons,2);
 	destroyCDKScreen (cdkscreen);
@@ -315,8 +315,8 @@ void askSaveIfdirty(void)
 	char	*body[2];
 	if(page->dirty==true)
 		{
-			asprintf(&body[0],"\"%s\"",page->filePath);
-			asprintf(&body[1],"<C></1/B>Has been changed, save?");
+			asprintf(&body[0],"<C>\"%s\"",page->filePath);
+			asprintf(&body[1],"<C></2/B>Has been changed, save?");
 			fflush(NULL);
 			status=askSaveDialog((const char**)&body);
 			free(body[0]);

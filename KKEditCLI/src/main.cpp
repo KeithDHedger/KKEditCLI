@@ -54,8 +54,12 @@ printf("kkeditcli %s\n"
 
 int main(int argc, char **argv)
 {
-	int c;
-	int option_index=0;
+	int		c;
+	int		option_index=0;
+	char	tmpfoldertemplate[]="/dev/shm/KKEditCLI-XXXXXX";
+
+	tmpEdDir=mkdtemp(tmpfoldertemplate);
+	asprintf(&srcPath,"%s/src",tmpEdDir);
 
 	while (1)
 		{
@@ -101,6 +105,16 @@ int main(int argc, char **argv)
 		{
 			while(optind < argc)
 				{
+					if(access(argv[optind],F_OK)!=F_OK)
+						{
+							oneLiner(true,"touch \"%s\" &>/dev/null",argv[optind]);
+							if(access(argv[optind],F_OK)!=F_OK)
+								{
+									makeNewFile();
+									optind++;
+									continue;
+								}
+						}
 					initEditor();
 					setTempEdFile(argv[optind]);
 					oneLiner(true,"cp %s %s/%s",argv[optind],tmpEdDir,tmpEdFile);
@@ -113,6 +127,7 @@ int main(int argc, char **argv)
 		{
 			makeNewFile();
 		}
+
 	printLines();
 	currentX=minX;
 	currentY=minY;
@@ -121,8 +136,10 @@ int main(int argc, char **argv)
 
 	eventLoop();
 	finalizeCursesLib();
+	free(srcPath);
+	unlink(srcPath);
+	rmdir(tmpEdDir);
 	printf("\n");
-//	system("/usr/bin/reset");
 	system("stty sane");
 	return 0;
 }

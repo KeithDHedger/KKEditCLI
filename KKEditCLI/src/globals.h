@@ -168,6 +168,7 @@ extern bool			hilite;
 extern const char	*tmpEdDir;
 extern char			*tmpEdFile;
 extern char			*tmpEdFilePath;
+extern char			*srcPath;
 
 //pages
 extern int			maxPages;

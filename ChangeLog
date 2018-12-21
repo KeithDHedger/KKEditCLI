@@ -1,4 +1,7 @@
 0.1.3
+Fixed opening empty/nonexistant file from command line.
+Added using temp dir in /dev/shm.
+Fixed save changed file dialog.
 Fixed crashes when searching for non existant define.
 Removed dialog code.
 Switched to cdk for dialogs.
