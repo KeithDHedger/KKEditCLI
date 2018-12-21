@@ -595,7 +595,8 @@ void eventLoop(void)
 						{
 							switch(key.code.sym)
 								{
-									case  TERMKEY_SYM_BACKSPACE:
+									case TERMKEY_SYM_BACKSPACE:
+									case TERMKEY_SYM_DEL:
 										if(deleteCharFromFile(true)==true)
 											{
 												dorefresh=true;
