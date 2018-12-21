@@ -587,8 +587,8 @@ void eventLoop(void)
 			fflush(NULL);
 			fflush(STDIN_FILENO);
 			ret=termkey_waitkey(tk,&key);
-		//	termkey_strfkey(tk, buffer, 50, &key, format);
-		//	fprintf(stderr,"Key from lib %s mods=%i\n", buffer,key.modifiers);
+			termkey_strfkey(tk, buffer, 50, &key, format);
+			fprintf(stderr,"Key from lib %s mods=%i\n", buffer,key.modifiers);
 			switch(key.type)
 				{
 					case TERMKEY_TYPE_KEYSYM:
