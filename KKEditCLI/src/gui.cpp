@@ -520,20 +520,16 @@ int handleHelpMenu(bool doevent=true,int ms=0)
 	switch(menuselect)
 		{
 			case HELPHELP:
-				fprintf(stderr,DATADIR "/help/help\n");
 				initEditor();
 				setTempEdFile(DATADIR "/help/help");
-				fprintf(stderr,">>%s/%s<<\n",tmpEdDir,tmpEdFile);
 				oneLiner(true,"cp %s/help/help %s/%s",DATADIR,tmpEdDir,tmpEdFile);
 				page->filePath=strdup(DATADIR "/help/help");
 				openTheFile(tmpEdFilePath,false);
 				refreshScreen();
 				break;
 			case HELPABOUT:
-				fprintf(stderr,DATADIR "/help/about\n");
 				initEditor();
 				setTempEdFile(DATADIR "/help/about");
-				fprintf(stderr,">>%s/%s<<\n",tmpEdDir,tmpEdFile);
 				oneLiner(true,"cp %s/help/about %s/%s",DATADIR,tmpEdDir,tmpEdFile);
 				page->filePath=strdup(DATADIR "/help/about");
 				openTheFile(tmpEdFilePath,false);
