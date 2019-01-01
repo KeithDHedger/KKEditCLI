@@ -508,6 +508,41 @@ int handleToolMenu(void)
 	return(menuselect);
 }
 
+int handleHelpMenu(bool doevent=true,int ms=0)
+{
+	int menuselect;
+
+	if(doevent==true)
+		menuselect=doMenuEvent(helpMenuNames,53,2,true);
+	else
+		menuselect=ms;
+
+	switch(menuselect)
+		{
+			case HELPHELP:
+				fprintf(stderr,DATADIR "/help/help\n");
+				initEditor();
+				setTempEdFile(DATADIR "/help/help");
+				fprintf(stderr,">>%s/%s<<\n",tmpEdDir,tmpEdFile);
+				oneLiner(true,"cp %s/help/help %s/%s",DATADIR,tmpEdDir,tmpEdFile);
+				page->filePath=strdup(DATADIR "/help/help");
+				openTheFile(tmpEdFilePath,false);
+				refreshScreen();
+				break;
+			case HELPABOUT:
+				fprintf(stderr,DATADIR "/help/about\n");
+				initEditor();
+				setTempEdFile(DATADIR "/help/about");
+				fprintf(stderr,">>%s/%s<<\n",tmpEdDir,tmpEdFile);
+				oneLiner(true,"cp %s/help/about %s/%s",DATADIR,tmpEdDir,tmpEdFile);
+				page->filePath=strdup(DATADIR "/help/about");
+				openTheFile(tmpEdFilePath,false);
+				refreshScreen();
+				break;
+		}
+	return(menuselect);
+}
+
 int handleAllMenus(void)
 {
 	int	retval=-1000;
@@ -550,6 +585,9 @@ int handleAllMenus(void)
 					case TOOLSMENU:
 						retval=handleToolMenu();
 						break;
+					case HELPMENU:
+						retval=handleHelpMenu();
+						break;
 				}
 		}
 	return(retval);
@@ -561,7 +599,73 @@ void refreshScreen(void)
 	openTheFile(tmpEdFilePath,hilite);
 	printLines();
 }
+#include <poll.h>
+    int btn1=0;
+  //  int middle=0;
+   // int right=0;
+    int fd, bytes;
+bool loop=true;
+bool pollmouse(void)
+{
+    int fd, bytes;
+    unsigned char data[3];
 
+    const char *pDevice = "/dev/input/mice";
+
+    // Open Mouse
+    fd = open(pDevice, O_RDWR);
+    if(fd == -1)
+    {
+        printf("ERROR Opening %s\n", pDevice);
+        return -1;
+    }
+btn1=1;
+data[0]=1;
+data[1]=1;
+data[2]=1;
+data[3]=1;
+int oldbtn=0;
+
+//write(fd,data,4);
+fprintf(stderr,"<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
+    signed char x, y;
+    while(1)
+    {
+           if(btn1==0)
+            {
+            	loop=false;
+           	return(true);
+           	}
+        //if(btn1==0 && oldbtn==1)
+      // Read Mouse     
+        bytes = read(fd, data, sizeof(data));
+
+        if(bytes > 0)
+        {
+            btn1 = data[0] & 0x1;
+        //if(btn1 != oldbtn)
+           // right = data[0] & 0x2;
+           // middle = data[0] & 0x4;
+
+            x += data[1];
+            y += data[2];
+           //fprintf(stderr,"x=%d, y=%d, left=%d, oldbtn=%d, right=%d						\r", x, y, btn1, oldbtn, btn1);
+       // if(btn1 != oldbtn)
+        //if(btn1==0 && oldbtn==1)
+        //	return(true);
+             //if(btn1==0)
+            //	return(true);
+            if(btn1==1)
+            	oldbtn=1;
+         }   
+           fprintf(stderr,"x=%d, y=%d, left=%d, oldbtn=%d, right=%d						\n", x, y, btn1, oldbtn, btn1);
+    }
+    
+    
+ //   return 0;
+  return(false);
+}
+#include <termkey.h>
 void eventLoop(void)
 {
 	bool			handled=false;
@@ -570,15 +674,20 @@ void eventLoop(void)
 	int				totallinelen=0;
 	int				retval;
 	int				shcnum;
+	int				flip;
+//const char *pDevice = "/dev/input/mice";
+ //   fd = open(pDevice, O_RDWR);
 
 	tk = termkey_new(0,TERMKEY_FLAG_CTRLC);
-
+	//fprintf(stderr,"mouse0=%p\n",tk->);
 	if(!tk)
 		{
 			fprintf(stderr, "Cannot allocate termkey instance\n");
 			exit(1);
 		}
+//	int mouse = 100;
 
+//printf("\033[?%dhMouse mode active\n", 1000);
 	while(true)
 		{
 			printStatusBar();
@@ -587,10 +696,177 @@ void eventLoop(void)
 			fflush(NULL);
 			fflush(STDIN_FILENO);
 			ret=termkey_waitkey(tk,&key);
+
+//char bufferm[50];
+//							int line, col;
+//termkey_strfkey(tk, buffer, sizeof bufferm, &key, format);
+//fprintf(stderr,"%s at line=%d, col=%d\n", buffer, line, col);
+	//				if(key.type == TERMKEY_TYPE_MOUSE)
+		//				{
+			//				termkey_interpret_mouse(tk, &key, NULL, NULL, &line, &col);
+				///			fprintf(stderr,"%s at line=%d, col=%d\n", buffer, line, col);
+					//	}
+
+
+
 			//termkey_strfkey(tk, buffer, 50, &key, format);
 			//fprintf(stderr,"Key from lib %s mods=%i\n", buffer,key.modifiers);
 			switch(key.type)
 				{
+#if 0
+					case TERMKEY_TYPE_MOUSE:
+						{ 
+						loop=true;
+						int nextwait = 10;
+						int line, col;
+						  struct pollfd fd;
+
+
+  char buffer[50];
+ // termkey_strfkey(tk, buffer, sizeof buffer, key, TERMKEY_FORMAT_VIM);
+  //printf(">>%s<<\n", buffer);
+  
+ // int line, col, btn;
+ int btn=-1;
+ int oldbtn=-1;
+							TermKeyMouseEvent ev;
+							termkey_interpret_mouse(tk, &key, &ev, &oldbtn, &line, &col);
+//							fprintf(stderr,"\n\n\n%s button here no=%i is=%i at line=%d, col=%d\n\n\n",buffer, btn,ev,flip, col);
+flip=btn;
+//if(oldbtn==0)
+//	break;
+
+
+  fd.fd = 0; /* the file descriptor we passed to termkey_new() */
+  fd.events = POLLIN;
+
+//						printf("\033[?%dl\n", 1000);
+//bool loop=true;
+						while(loop==true)
+						{
+//						fprintf(stderr,"mouse0=%i %i %i %i\n",key.code.mouse[0],key.code.mouse[1],key.code.mouse[2],key.code.mouse[3]);
+							termkey_interpret_mouse(tk, &key, &ev, &btn, &line, &col);
+							//fprintf(stderr,"%s button no=%i is=%i at line=%d, col=%d\n",buffer, btn,ev,flip, col);
+						//	if(btn
+						//if(oldbtn!=btn)
+						//	break;
+						//if(flip!=btn)
+						if(btn==0 && oldbtn==1)
+						{
+						loop=false;
+							break;
+							}
+						//if(flip==btn)
+						//	flip=-1;
+						//else
+						//	{
+						//		fprintf(stderr,"\n\n\here\n\n");
+						//		//break;
+						//	}
+						fprintf(stderr,">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+						    if(poll(&fd, 1, nextwait) == 0)
+    {
+      // Timed out
+      if(termkey_getkey_force(tk, &key) == TERMKEY_RES_KEY)
+       if (pollmouse()==true)
+       {
+     	loop=false;
+     	break;
+     	}
+     // on_key(tk, &key);
+     	// pollmouse();
+    //  	loop=false;
+    }
+//printf("\033[?%dhMouse mode active\n", 1000);
+    if(fd.revents & (POLLIN|POLLHUP|POLLERR))
+      termkey_advisereadable(tk);
+
+    while(((ret = termkey_getkey(tk, &key)) == TERMKEY_RES_KEY) && loop==true)
+    {
+     // on_key(tk, &key);
+     if (pollmouse()==true)
+     {
+     	loop=false;
+     	break;
+     	}
+     //pollmouse();
+//if(key.type == TERMKEY_TYPE_MOUSE)
+//{
+//	loop=false;
+//	break;
+//}
+//      if(key.type == TERMKEY_TYPE_UNICODE &&
+//         key.modifiers & TERMKEY_KEYMOD_CTRL &&
+//         (key.code.codepoint == 'C' || key.code.codepoint == 'c'))
+//        break;
+    }
+
+  //  if(ret == TERMKEY_RES_AGAIN)
+   //   nextwait = termkey_get_waittime(tk);
+    //else
+      nextwait = 100;
+
+						
+						
+						
+						
+						//fflush(NULL);
+						//	pollmouse();
+						//termkey_getkey(tk, &key);
+						//fprintf(stderr,"mouse0=%i %i %i %i\r",key.code.mouse[0],key.code.mouse[1],key.code.mouse[2],key.code.mouse[3]);
+//						  struct pollfd fd;
+//
+//						  fd.fd = 0; /* the file descriptor we passed to termkey_new() */
+//						  fd.events = POLLIN;
+//						if(poll(&fd, 1, nextwait) == 0)
+//						{
+//      // Timed out
+//					      if(termkey_getkey_force(tk, &key) == TERMKEY_RES_KEY)
+//					      	{
+//					      		fprintf(stderr,"%s at line=%d, col=%d key=%i\r", buffer, line, col,key.type);
+//					      	}
+//					    if(fd.revents & (POLLIN|POLLHUP|POLLERR))
+//					      termkey_advisereadable(tk);
+//
+//					    while((ret = termkey_getkey(tk, &key)) == TERMKEY_RES_KEY)
+//					    {
+//					      //on_key(tk, &key);
+//							fprintf(stderr,"%s at line=%d, col=%d key=%i\r", buffer, line, col,key.type);
+//					     // if(key.type == TERMKEY_TYPE_UNICODE && key.modifiers & TERMKEY_KEYMOD_CTRL && (key.code.codepoint == 'C' || key.code.codepoint == 'c'))
+//        					if(key.type == TERMKEY_TYPE_MOUSE)
+//	        					break;;
+//    					}
+//
+//  					  if(ret == TERMKEY_RES_AGAIN)
+//					      nextwait = termkey_get_waittime(tk);
+//					   else
+//					      nextwait = -1;
+////					     	 //exit(0);
+//					     	 
+//					     	    if(ret == TERMKEY_RES_AGAIN)
+//							      nextwait = termkey_get_waittime(tk);
+//    							else
+//     							 nextwait = -1;
+//
+//					      }
+//							//termkey_getkey(tk,&key);
+//							
+//						//
+//							//fprintf(stderr,">>>>>>>>>>>>>>>\n");
+//							int line, col;
+//							termkey_interpret_mouse(tk, &key, NULL, NULL, &line, &col);
+//							fprintf(stderr,"%s at line=%d, col=%d key=%i\r", buffer, line, col,key.type);
+//							
+//							//termkey_advisereadable(tk);
+//							//if(termkey_getkey(tk,&key)==TERMKEY_RES_NONE)
+//							//	break;
+//							}
+						}
+						fprintf(stderr,"\n\n------------------------------------------------------------------------------------>\n");
+						break;
+						}
+						 break;
+#endif
 					case TERMKEY_TYPE_KEYSYM:
 						{
 							switch(key.code.sym)
@@ -798,6 +1074,9 @@ void eventLoop(void)
 																	break;
 																case BOOKMARKSMENU:
 																	retval=handleBMMenu(false,scs[shcnum].menuItem);
+																	break;
+																case HELPMENU:
+																	retval=handleHelpMenu(false,scs[shcnum].menuItem);
 																	break;
 																default:
 																	break;

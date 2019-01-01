@@ -40,7 +40,7 @@ struct option long_options[] =
 
 void printhelp(void)
 {
-printf("kkeditcli %s\n"
+	printf("kkeditcli %s\n"
 	"Usage: kkeditcli [OPTION]\n"
 	" -l, --no-liveupdate	Don't update source highlighting as you type.\n"
 	" -n, --no-hilite	No source highlighting.\n"
@@ -100,6 +100,8 @@ int main(int argc, char **argv)
 
 	clearScreen();
 	initCursesLib();
+//	int mouse = 0;
+////////////////////printf("\033[?%dh",1000);
 
 	if(optind < argc)
 		{
@@ -141,6 +143,7 @@ int main(int argc, char **argv)
 	rmdir(tmpEdDir);
 	printf("\n");
 	system("stty sane");
+	printf("\033[?%dl\n", 1000);
 	return 0;
 }
 

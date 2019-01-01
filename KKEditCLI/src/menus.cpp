@@ -23,10 +23,11 @@
 
 //menus
 //static menus
-const char	*menuNames[]={"_File","_Edit","_Tabs","_Navigation","F_unctions","_Bookmarks","T_ools",NULL};
+const char	*menuNames[]={"_File","_Edit","_Tabs","_Navigation","F_unctions","_Bookmarks","T_ools","_Help",NULL};
 const char	*fileMenuNames[]={" _New     Ctrl+N"," _Open    Ctrl+O"," _Save    Ctrl+S"," Save _As Ctrl+A"," _Close   Ctrl+W"," _Quit    Ctrl+Q",NULL};
 const char	*editMenuNames[]={" _Copy Word Ctrl+C"," C_ut Word  Ctrl+X"," Copy _Line Ctrl+L"," Cut L_ine  Ctrl+Z"," _Paste     Ctrl+V",NULL};
 const char	*navMenuNames[]={" Goto _Define   Ctrl+D"," _Open Include  Ctrl+U"," _Goto Line     Ctrl+J"," Open _Manpage  Ctrl+P"," _Find          Ctrl+F"," Find _Next     Ctrl+G",NULL};
+const char	*helpMenuNames[]={"_Help  Ctrl+H","A_bout Ctrl+B",NULL};
 
 //dynamic menus
 char		**tabsMenuNames=NULL;
@@ -59,6 +60,10 @@ shortCuts scs[]={
 {'g',NAVIGATIONMENU,6},
 //bm menu
 {'t',BOOKMARKSMENU,2},
+//help menu
+{'h',HELPMENU,1},
+{'b',HELPMENU,2},
+
 //end marker
 {0,-1,-1}
 };

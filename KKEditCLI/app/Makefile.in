@@ -15,6 +15,7 @@
 @SET_MAKE@
 
 
+
 VPATH = @srcdir@
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
@@ -99,7 +100,7 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(scriptfilesdir)" \
-	"$(DESTDIR)$(man1dir)"
+	"$(DESTDIR)$(man1dir)" "$(DESTDIR)$(helpfilesdir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_1 = ../src/curseslib.$(OBJEXT) ../src/editor.$(OBJEXT) \
@@ -176,6 +177,7 @@ am__can_run_installinfo = \
 man1dir = $(mandir)/man1
 NROFF = nroff
 MANS = $(man1_MANS)
+DATA = $(helpfiles_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -317,6 +319,8 @@ kkeditcli_SOURCES = $(COMMONSRC)
 kkeditcli_CFLAGS = -O3
 scriptfilesdir = $(pkgdatadir)/scripts
 scriptfiles_SCRIPTS = ../resources/scripts/*
+helpfilesdir = $(pkgdatadir)/help
+helpfiles_DATA = ../resources/help/*
 man1_MANS = ../resources/man/kkeditcli.1
 all: all-am
 
@@ -525,6 +529,27 @@ uninstall-man1:
 	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^1][0-9a-z]*$$,1,;x' \
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
 	dir='$(DESTDIR)$(man1dir)'; $(am__uninstall_files_from_dir)
+install-helpfilesDATA: $(helpfiles_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(helpfiles_DATA)'; test -n "$(helpfilesdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(helpfilesdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(helpfilesdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(helpfilesdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(helpfilesdir)" || exit $$?; \
+	done
+
+uninstall-helpfilesDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(helpfiles_DATA)'; test -n "$(helpfilesdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(helpfilesdir)'; $(am__uninstall_files_from_dir)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -610,9 +635,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS) $(SCRIPTS) $(MANS)
+all-am: Makefile $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(scriptfilesdir)" "$(DESTDIR)$(man1dir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(scriptfilesdir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(helpfilesdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -669,7 +694,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-man install-scriptfilesSCRIPTS
+install-data-am: install-helpfilesDATA install-man \
+	install-scriptfilesSCRIPTS
 
 install-dvi: install-dvi-am
 
@@ -714,8 +740,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS uninstall-man \
-	uninstall-scriptfilesSCRIPTS
+uninstall-am: uninstall-binPROGRAMS uninstall-helpfilesDATA \
+	uninstall-man uninstall-scriptfilesSCRIPTS
 
 uninstall-man: uninstall-man1
 
@@ -727,14 +753,15 @@ uninstall-man: uninstall-man1
 	distdir dvi dvi-am html html-am info info-am install \
 	install-am install-binPROGRAMS install-data install-data-am \
 	install-dvi install-dvi-am install-exec install-exec-am \
-	install-html install-html-am install-info install-info-am \
-	install-man install-man1 install-pdf install-pdf-am install-ps \
-	install-ps-am install-scriptfilesSCRIPTS install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
+	install-helpfilesDATA install-html install-html-am \
+	install-info install-info-am install-man install-man1 \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-scriptfilesSCRIPTS install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am uninstall-binPROGRAMS uninstall-man \
-	uninstall-man1 uninstall-scriptfilesSCRIPTS
+	uninstall-am uninstall-binPROGRAMS uninstall-helpfilesDATA \
+	uninstall-man uninstall-man1 uninstall-scriptfilesSCRIPTS
 
 .PRECIOUS: Makefile
 

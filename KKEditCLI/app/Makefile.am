@@ -11,6 +11,9 @@ kkeditcli_CFLAGS = -O3
 scriptfilesdir = $(pkgdatadir)/scripts
 scriptfiles_SCRIPTS = ../resources/scripts/*
 
+helpfilesdir = $(pkgdatadir)/help
+helpfiles_DATA = ../resources/help/*
+
 man1_MANS = ../resources/man/kkeditcli.1
 
 bin_PROGRAMS = kkeditcli
