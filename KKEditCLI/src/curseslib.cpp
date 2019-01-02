@@ -115,13 +115,12 @@ void clearToEOL(void)
 void infoDialog(const char **msg,int numlines)
 {
 	CDKSCREEN	*cdkscreen=0;
-	int			ret=1;
 	const char	*buttons[]={" Ok "};
 
 	cdkscreen=initCDKScreen(NULL);
   	initCDKColor ();
 
-	ret=popupDialog(cdkscreen,(char**)msg,numlines,(char**)buttons,1);
+	popupDialog(cdkscreen,(char**)msg,numlines,(char**)buttons,1);
 	destroyCDKScreen (cdkscreen);
 	endCDK ();
 }

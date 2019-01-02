@@ -679,7 +679,7 @@ void eventLoop(void)
 	int				totallinelen=0;
 	int				retval;
 	int				shcnum;
-	int				flip;
+//	int				flip;
 //const char *pDevice = "/dev/input/mice";
  //   fd = open(pDevice, O_RDWR);
 
