@@ -40,6 +40,7 @@ struct pageStruct
 	int					pageNum;
 	int					saveX;
 	int					saveY;
+	bool				writable;
 	int					saveCurrentLine;
 	vector<string>		editLineArray;
 	vector<string>		printLineArray;

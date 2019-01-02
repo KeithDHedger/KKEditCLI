@@ -41,7 +41,10 @@ void drawFilePath(void)
 	moveCursToTemp(1,2);
 	printf(CLEARTOEOL);
 	moveCursToTemp((cols/2)-(strlen(rp)/2),mBarHite+1);
-	printf(BACKRED FOREWHITE "%s" NORMAL,rp);
+	if(page->writable==true)
+		printf(BACKGREEN FOREBLACK "%s" NORMAL,rp);
+	else
+		printf(BACKRED FOREWHITE "%s" NORMAL,rp);
 	free(rp);
 }
 
@@ -123,6 +126,12 @@ int handleFileMenu(bool doevent=true,int ms=0)
 				askOpenFile();
 				break;
 			case FILESAVE:
+				if(page->writable==false)
+					{
+						const char *msgb="<C></2>File is read only, can't save ...";
+						infoDialog((const char**)&msgb,1);
+						break;
+					}
 				saveFile(page->filePath);
 				clearScreen();				 
 				printLines();

@@ -95,6 +95,11 @@ void openTheFile(const char *path,bool extsrc)
 	else
 		oneLiner(true,"cp '%s' %s 2>/dev/null",path,srcPath);  
 
+	if(access(page->filePath,W_OK)==0)
+		page->writable=true;
+	else
+		page->writable=false;
+
 	page->editLineArray.clear();
 	page->printLineArray.clear();
 	page->lineNumber.clear();

@@ -1,4 +1,5 @@
 0.1.3
+Added file read only colours and dialog.
 Added Help menu.
 Fixed backspace over ssh.
 Fixed opening empty/nonexistant file from command line.

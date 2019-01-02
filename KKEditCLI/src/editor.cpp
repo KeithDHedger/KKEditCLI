@@ -49,6 +49,7 @@ void initEditor(void)
 	page->currentLine=0;
 	page->lineXCurs=0;
 	page->dirty=false;
+	page->writable=true;
 
 	page->editLineArray.clear();
 	page->printLineArray.clear();

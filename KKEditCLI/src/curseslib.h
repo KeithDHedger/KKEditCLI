@@ -87,5 +87,7 @@ void moveCursToTemp(int x,int y);
 void clearScreen(void);
 void clearSrcLines(void);
 
+void infoDialog(const char **msg,int numlines);
+
 #endif
 
