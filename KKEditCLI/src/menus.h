@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Tue  5 Jun 15:53:40 BST 2018 keithdhedger@gmail.com
+ * ©K. D. Hedger. Mon  6 May 17:15:38 BST 2019 keithdhedger@gmail.com
 
  * This file (menus.h) is part of KKEditCLI.
 
@@ -21,46 +21,23 @@
 #ifndef _MENUS_
 #define _MENUS_
 
-struct shortCuts
-{
-	const char	key;
-	int			menuNum;
-	int			menuItem;
-};
+#include "globals.h"
 
-enum {FLATNORM=0,FLATINVERT};
+enum {FILEMENU=0,EDITMENU,TABMENU,NAVMENU,FUNCMENU,BMMENU,TOOLSMENU,HELPMENU};
 
-enum {FILEMENU=0,EDITMENU,TABSMENU,NAVIGATIONMENU,FUNCTIONSMENU,BOOKMARKSMENU,TOOLSMENU,HELPMENU,MAXMENUS};
-enum {FILENEW=1,FILEOPEN,FILESAVE,FILESAVEAS,FILECLOSE,FILEQUIT,FILECNT};
-enum {EDITCOPYW=1,EDITCUTW,EDITCOPYL,EDITCUTL,EDITPASTE,EDITCNT};
-enum {VIEWDOC0=1,VIEWDOC1,VIEWDOC2,VIEWCNT};
-enum {NAVEGOTODEF=1,NAVEOPENINC,NAVGOTOLINE,NAVOPENMANPAGE,NAVFIND,NAVFINDAGAIN,NAVCNT};
-enum {FUNC0=1,FUNC1,FUNCCNT};
-enum {BMREMOVEALL=1,BMTOGGLE,BMCNT};
-enum {TOOLMANAGE=1,TOOLCNT};
-enum {HELPHELP=1,HELPABOUT,HELPCNT};
+enum {NEWITEM=0,OPENITEM,SAVEITEM,SAVEASITEM,CLOSEITEM,QUITITEM};
+enum {COPYWORD=0,CUTWORD,COPYLINE,CUTLINE,PASTE};
+enum {NEXTTAB=0,PREVTAB};
+enum {NAVGOTODFINE=0,NAVOPENINCLUDE,NAVGOTOLINE,NAVOPENMANPAGE,NAVFIND,NAVFINDNEXT};
+enum {RMALLBMS=0,TOGGLEBM};
+enum {HELP=0,ABOUT};
 
-extern int			menuStart;
-//menus
-//static menus
-extern const char	*menuNames[];
-extern const char	*fileMenuNames[];
-extern const char	*editMenuNames[];
-extern const char	*navMenuNames[];
-extern const char	*helpMenuNames[];
-
-//dynamic menus
-extern char			**tabsMenuNames;
-extern funcStruct	**functionData;
-extern char			**functionsMenuNames;
-extern char			*bookmarksMenuNames[];
-extern const char	*toolsMenuNames[];
-
-extern shortCuts scs[];
-
-void drawMenuBar(void);
-int doMenuEvent(const char **menunames,int sx,int sy,bool doshortcut);
-void buildTabMenu(void);
-void buildBMMenu(void);
+void rebuildTabMenu(void);
+void setupMenus(void);
+void handleFileMenu(CTK_cursesMenuClass *mc);
+void handleEditMenu(CTK_cursesMenuClass *mc);
+void handleNavMenu(CTK_cursesMenuClass *mc);
+void handleTabMenu(CTK_cursesMenuClass *mc);
+void handleHelpMenu(CTK_cursesMenuClass *mc);
 
 #endif

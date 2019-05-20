@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Tue 31 Jul 13:10:48 BST 2018 keithdhedger@gmail.com
+ * ©K. D. Hedger. Mon  6 May 17:24:33 BST 2019 keithdhedger@gmail.com
 
  * This file (globals.h) is part of KKEditCLI.
 
@@ -18,164 +18,78 @@
  * along with KKEditCLI.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 #ifndef _GLOBALS_
 #define _GLOBALS_
 
+
+#include <string>
+#include <vector>
+
+#include <fstream>
+#include <libgen.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-#include <vector>
 
-#include <fstream>
-#include <sstream>
+#include <cursesGlobals.h>
 
-#include <ftw.h>
+#include "menus.h"
+#include "gui.h"
+#include "files.h"
 
-#include <srchilite/sourcehighlight.h>
-#include <srchilite/langmap.h>
-#include <srchilite/lineranges.h>
-#include <srchilite/languageinfer.h>
-
-#include <dialog.h>
-#include <termkey.h>
-#include <cdk.h>
-
-#include "config.h"
-
-using namespace std;
-using namespace srchilite;
+#define TABWIDTH 4
+#define TOPLINE 4
+#define INFOLINE 2
 
 #define MAXBUFFER 2048
 #define MAXLINES 50000
 
-#ifdef _ENABLEDEBUG_
-static bool	showFileData=true;
-static void debugFunc(const char *file,const char *func,int line,const char *fmt, ...)
+#define BOLDCOL "31"
+#define UNDELINECOL "32"
+#define DEFFORECOL "\\x1b[0;39m"
+
+#define UNDERLINEON "\\x1b\\[4m"
+#define UNDERLINEOFF "\\x1b\\[24m"
+#define BOLDON "\\x1b\\[1m"
+#define BOLDOFF "\\x1b\\[22m"
+#define BOLD "\\x1b\\[1;" BOLDCOL "m"
+#define UNDERLINE "\\x1b\\[1;" UNDELINECOL "m"
+
+struct funcStruct
 {
-	va_list	ap;
-	char	*buffer,*subbuffer;
+	char	*name;
+	char	*type;
+	int		line;
+	int		pageNumber;
+	char	*menuLabel;
+};
 
-	buffer=(char*)alloca(512);
-	subbuffer=(char*)alloca(512);
-
-	buffer[0]=0;
-	subbuffer[0]=0;
-	va_start(ap, fmt);
-	while (*fmt)
-		{
-			subbuffer[0]=0;
-			if(fmt[0]=='%')
-				{
-					fmt++;
-					switch(*fmt)
-						{
-							case 's':
-								sprintf(subbuffer,"%s",va_arg(ap,char*));
-								break;
-							case 'c':
-								sprintf(subbuffer,"%c",va_arg(ap,int));
-								break;
-							case 'i':
-								sprintf(subbuffer,"%i",va_arg(ap,int));
-								break;
-							case 'x':
-								sprintf(subbuffer,"%x",va_arg(ap,int));
-								break;
-							case 'p':
-								sprintf(subbuffer,"%p",va_arg(ap,char*));
-								break;
-							default:
-								sprintf(subbuffer,"%c",fmt[0]);
-								break;
-						}
-				}
-			else
-				sprintf(subbuffer,"%c",fmt[0]);
-			strcat(buffer,subbuffer);
-			fmt++;
-		}
-	va_end(ap);
-
-	if(showFileData==true)
-		{
-			fprintf(stderr,"\nFile: %s\nFunc: %s\nLine: %i\n",basename(file),func,line);
-			fprintf(stderr,"----USER DATA----\n%s\n----END----\n",buffer);
-		}
-	else
-		{
-			fprintf(stderr,"%s\n",buffer);
-		}
-}
-#define DEBUGFUNC(x,...) debugFunc(__FILE__,__func__,__LINE__,(const char*)x,__VA_ARGS__)
-#else
-#ifdef _WARN_ENABLEDEBUG_
-#define DEBUGFUNC(...) fprintf(stderr,"Remove debug code here: %s:%i\n",__FILE__,__LINE__);
-#else
-#define DEBUGFUNC(...) 
-#endif
-#endif
-
-static inline void freeAndNull(char** ptr)
+struct bookmarkStruct
 {
-	if(*ptr!=NULL)
-		free(*ptr);
+	int		pageNum=-1;
+	int		lineNum=-1;
+	char	*label=NULL;
+};
 
-	*ptr=NULL;
-}
+enum {REMOVEMARKS=0,TOGGLEMARK};
 
-#include "curseslib.h"
-#include "editor.h"
-#include "files.h"
-#include "menus.h"
-#include "gui.h"
+extern CTK_mainAppClass			*mainApp;
+extern int						windowRows;
+extern int						windowCols;
+extern int						showLineNumbers;
+extern const char				*tmpEdDir;
+extern char						*manFile;
 
-//termkey
-extern char buffer[];
-extern TermKey *tk;
-extern TermKeyResult ret;
-extern TermKeyKey key;
-extern TermKeyFormat format;
+extern int						newCnt;
+extern std::string				clip;
 
-//term info
-extern int			cols;
-extern int			rows;
-extern int			minY;
-extern int			minX;
-extern int			currentX;
-extern int			currentY;
-extern unsigned		maxRows;
-extern int			maxCols;
-extern int			forceCols;
+//functions
+extern std::vector<funcStruct*>	functions;
+//bms
+extern std::vector<bookmarkStruct>	bms;
 
-//file
-extern int			newFileNum;
-
-//gui
-extern int			tabs;
-extern int			startY;
-extern int			endY;
-extern int			lineColour;
-extern int			mBarHite;
-extern int			menuHite;
-
-//prefs
-extern int			tabs;
-extern bool			liveUpdate;
-extern bool			hilite;
-
-//files
-extern const char	*tmpEdDir;
-extern char			*tmpEdFile;
-extern char			*tmpEdFilePath;
-extern char			*srcPath;
-
-//pages
-extern int			maxPages;
-extern pageStruct	**pages;
-extern pageStruct	*page;
-
-//utils
 char* oneLiner(bool noreturn,const char* fmt,...);
 
 #endif

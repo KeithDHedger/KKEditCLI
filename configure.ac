@@ -1,6 +1,6 @@
 #
 #
-AC_INIT([KKEditCLI],[0.1.3],[PROJ],[KKEditCLI])
+AC_INIT([KKEditCLI],[0.2.0],[PROJ],[KKEditCLI])
 
 AC_CONFIG_HEADER([config.h])
 AC_PROG_CXX
@@ -16,23 +16,25 @@ AC_SUBST(LDFLAGS)
 
 CFLAGS=-Wall
 AC_SUBST(CFLAGS)
-CXXFLAGS=-Wall
 AC_SUBST(CXXFLAGS)
-
-SOURCEHILITE_MODULES="source-highlight >= 3.1.6"
-PKG_CHECK_MODULES(SOURCEHILITE, $SOURCEHILITE_MODULES)
-AC_SUBST(SOURCEHILITE_CFLAGS)
-AC_SUBST(SOURCEHILITE_LIBS)
 
 TERMKEY_MODULES="termkey >= 0.2"
 PKG_CHECK_MODULES(TERMKEY, $TERMKEY_MODULES)
 AC_SUBST(TERMKEY_CFLAGS)
 AC_SUBST(TERMKEY_LIBS)
 
-CDK_MODULES="cdk >= 6.1.4"
-PKG_CHECK_MODULES(CDK, $CDK_MODULES)
-AC_SUBST(CDK_CFLAGS)
-AC_SUBST(CDK_LIBS)
+CURSESTOOLKIT_MODULES="cursestoolkit >= 0.1.3"
+PKG_CHECK_MODULES(CURSESTOOLKIT, $CURSESTOOLKIT_MODULES, [nolib=true], [nolib=false])
+
+if test $nolib = false; then
+	AC_MSG_NOTICE([No cursestoolkit library found!])
+	AC_MSG_NOTICE([You can download it from here:])
+	AC_MSG_NOTICE([https://github.com/KeithDHedger/CursesToolKit])
+	exit 0
+fi
+
+AC_SUBST(CURSESTOOLKIT_CFLAGS)
+AC_SUBST(CURSESTOOLKIT_LIBS)
 
 AC_CHECK_PROG(CTAGS, ctags ,true,false)
 if test $CTAGS = false; then
@@ -41,27 +43,6 @@ if test $CTAGS = false; then
 	AC_MSG_NOTICE([http://ctags.sourceforge.net])
 	exit 0
 fi
-
-AC_MSG_CHECKING(whether to build debug functions)
-AC_ARG_ENABLE(debug,AS_HELP_STRING([--enable-debug],[Enable debug code]),
-    [enable_debug=$enableval],
-    [enable_debug="no"])
-AC_MSG_RESULT($enable_debug)
-if test "$enable_debug" = "yes"; then
-	AC_DEFINE([_ENABLEDEBUG_], [], [Enable debug code])
-fi
-
-AC_MSG_CHECKING(whether to warn about debug functions)
-AC_ARG_ENABLE(warn-debug,AS_HELP_STRING([--enable-warn-debug],[Enable warn debug code]),
-    [enable_warn_debug=$enableval],
-    [enable_warn_debug="no"])
-AC_MSG_RESULT($enable_warn_debug)
-if test "$enable_warn_debug" = "yes"; then
-	AC_DEFINE([_WARN_ENABLEDEBUG_], [], [Enable warn debug code])
-fi
-
-AC_SUBST(DIALOG_CFLAGS)
-AC_SUBST(DIALOG_LIBS)
 
 AC_OUTPUT(Makefile KKEditCLI/app/Makefile)
 

@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Sun 20 May 14:12:16 BST 2018 keithdhedger@gmail.com
+ * ©K. D. Hedger. Tue  7 May 16:14:49 BST 2019 keithdhedger@gmail.com
 
  * This file (gui.h) is part of KKEditCLI.
 
@@ -21,49 +21,6 @@
 #ifndef _GUI_
 #define _GUI_
 
-//keys
-#define KEYUP 'A'
-#define KEYDOWN 'B'
-#define KEYRITE 'C'
-#define KEYLEFT 'D'
-#define PAGEUP '5'
-#define PAGEDOWN '6'
-#define BACKSPACE 0x7f
-#define DELETEKEY '3'
-#define RETURNKEY 0xa
-#define TABKEY 0x9
-#define CURSHOME 'H'
-#define CURSEND 'F'
-#define CURSHOMECONS '1'
-#define CURSENDCONS '4'
-
-//#define CTRL_B 0x2
-//#define CTRL_E 0x5
-//#define CTRL_F 0x6
-//#define CTRL_HASH 0x23
-//#define CTRL_N 0xe
-//#define CTRL_T 0x14
-//#define CTRL_U 0x15
-//#define CTRL_V 0x16
-
-//ui
-#define CONT 0
-#define BRAKE -1
-#define MENURITE -2
-#define MENULEFT -3
-#define MENUREFRESH -4
-
-//mouse
-#define BUTTON1DOWN ' '
-#define BUTTON1UP '#'
-
-extern int	menuNumber;
-
-void initSrcHilite(void);
-void printSrcLines(void);
-void eventLoop(void);
-void printStatusBar(void);
-void printLines(void);
-void refreshScreen(void);
+void setInfoLabel(void);
 
 #endif

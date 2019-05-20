@@ -6,8 +6,6 @@ include ../sources
 
 kkeditcli_SOURCES = $(COMMONSRC)
 
-kkeditcli_CFLAGS = -O3
-
 scriptfilesdir = $(pkgdatadir)/scripts
 scriptfiles_SCRIPTS = ../resources/scripts/*
 

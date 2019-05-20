@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Sun 20 May 14:02:22 BST 2018 keithdhedger@gmail.com
+ * ©K. D. Hedger. Tue  7 May 20:41:38 BST 2019 keithdhedger@gmail.com
 
  * This file (files.h) is part of KKEditCLI.
 
@@ -21,24 +21,6 @@
 #ifndef _FILES_
 #define _FILES_
 
-//file data
-extern int	maxLines;
-extern int	dispLineData[];
-
-void openTheFile(const char *path,bool extsrc);
-void writeCharToFile(char c);
-bool deleteCharFromFile(bool back);
-void writeFile(void);
-
-int getDispLineData(int start,int dne);
-void saveFile(const char *path);
-void askSaveIfdirty(void);
-void setTempEdFile(const char *path);
-void makeNewFile(void);
-void askOpenFile(void);
-void getTagList(void);
-void clearTagList(void);
-void openFileList(const char *files);
-void askSaveFile(void);
+void getTagList(const char *filepath);
 
 #endif

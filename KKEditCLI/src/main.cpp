@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Tue 31 Jul 13:10:14 BST 2018 keithdhedger@gmail.com
+ * ©K. D. Hedger. Mon  6 May 16:40:22 BST 2019 keithdhedger@gmail.com
 
  * This file (main.cpp) is part of KKEditCLI.
 
@@ -17,133 +17,79 @@
  * You should have received a copy of the GNU General Public License
  * along with KKEditCLI.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <getopt.h>
+#include <libgen.h>
+#include <fstream>
+#include <curses.h>
+
+#include <cursesGlobals.h>
 
 #include "globals.h"
 
-#define UNKNOWNARG -100
-
-struct option long_options[] =
-	{
-		{"no-liveupdate",0,0,'l'},
-		{"no-hilite",0,0,'n'},
-		{"tabs",1,0,'t'},
-		{"cols",1,0,'c'},
-		{"version",0,0,'v'},
-		{"help",0,0,'?'},
-		{0, 0, 0, 0}
-	};
-
-void printhelp(void)
+void mainloopCB(void *mainc,void *data)
 {
-	printf("kkeditcli %s\n"
-	"Usage: kkeditcli [OPTION]\n"
-	" -l, --no-liveupdate	Don't update source highlighting as you type.\n"
-	" -n, --no-hilite	No source highlighting.\n"
-	" -t, --tabs		Tab width.\n"
-	" -c, --cols		Force number of coloumns.\n"
-	" -v, --version		Output version information and exit\n"
-	" -h, -?, --help		Print this help\n\n"
-	"Report bugs to kdhedger68713@gmail.com\n"
-	,VERSION);
+//	fprintf(stderr,">>>>>\n");
 }
 
 int main(int argc, char **argv)
 {
-	int		c;
-	int		option_index=0;
-	char	tmpfoldertemplate[]="/dev/shm/KKEditCLI-XXXXXX";
+	char			tmpfoldertemplate[]="/dev/shm/KKEditCLI-XXXXXX";
+	coloursStruct	cs;
+	char			*path=NULL;
 
 	tmpEdDir=mkdtemp(tmpfoldertemplate);
-	asprintf(&srcPath,"%s/src",tmpEdDir);
-
-	while (1)
+	if(tmpEdDir==NULL)
 		{
-			c = getopt_long (argc, argv, "t:c:v?hln",long_options, &option_index);
-			if (c == -1)
-				break;
-
-			switch (c)
-				{
-					case 'l':
-						liveUpdate=false;
-						break;
-
-					case 'n':
-						hilite=false;
-						break;
-
-					case 't':
-						tabs=atoi(optarg);
-						break;
-
-					case 'c':
-						forceCols=atoi(optarg);
-						break;
-
-					case 'v':
-						printf("kkeditcli %s\n",VERSION);
-						return 0;
-						break;
-
-					case '?':
-					case 'h':
-						printhelp();
-						return 0;
-						break;
-				}
+			fprintf(stderr,"Can't create tempory folder in /dev/shm, quiting ...\n");
+			exit(1);
 		}
+	asprintf(&manFile,"%s/manfile",tmpEdDir);
+	setupMenus();
 
-	clearScreen();
-	initCursesLib();
-//	int mouse = 0;
-////////////////////printf("\033[?%dh",1000);
+	mainApp->CTK_setTabWidth(TABWIDTH);
 
-	if(optind < argc)
+	cs.hiliteBackCol=BACK_CYAN;
+	cs.hiliteForeCol=FORE_BLACK;
+	cs.foreCol=FORE_WHITE;
+	cs.backCol=BACK_BLACK;
+
+	mainApp->CTK_setColours(cs);
+
+	if(argc==1)
 		{
-			while(optind < argc)
-				{
-					if(access(argv[optind],F_OK)!=F_OK)
-						{
-							oneLiner(true,"touch \"%s\" &>/dev/null",argv[optind]);
-							if(access(argv[optind],F_OK)!=F_OK)
-								{
-									makeNewFile();
-									optind++;
-									continue;
-								}
-						}
-					initEditor();
-					setTempEdFile(argv[optind]);
-					oneLiner(true,"cp %s %s/%s",argv[optind],tmpEdDir,tmpEdFile);
-					page->filePath=strdup(argv[optind]);
-					openTheFile(tmpEdFilePath,hilite);
-					optind++;
-				}
+			mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,false,"\n");
+			mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setShowLineNumbers(showLineNumbers);
+			mainApp->CTK_setPageUserData(0,(void*)strdup("/tmp/Untitled-1"));
 		}
 	else
 		{
-			makeNewFile();
+			for(int j=1;j<argc-1;j++)
+				{
+					path=realpath(argv[j],NULL);
+					mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,path);
+					mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setShowLineNumbers(showLineNumbers);
+					mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)path);
+					setInfoLabel();
+					mainApp->CTK_addPage();
+				}
+			path=realpath(argv[argc-1],NULL);
+			mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,path);
+			mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setShowLineNumbers(showLineNumbers);
+			mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)path);
 		}
 
-	printLines();
-	currentX=minX;
-	currentY=minY;
-	moveCursToTemp(currentX,currentY);
-	printStatusBar();
-
-	eventLoop();
-	finalizeCursesLib();
-	free(srcPath);
-	unlink(srcPath);
+	setInfoLabel();
+	rebuildTabMenu();
+	mainApp->eventLoopCB=mainloopCB;
+	mainApp->CTK_mainEventLoop();
+	for(int k=0;k<mainApp->pages.size();k++)
+		free(mainApp->pages[k].userData);
+	delete mainApp;
+	SETSHOWCURS;
+	unlink(manFile);
 	rmdir(tmpEdDir);
-	printf("\n");
-	system("stty sane");
-	printf("\033[?%dl\n", 1000);
+	free(manFile);
 	return 0;
 }
-

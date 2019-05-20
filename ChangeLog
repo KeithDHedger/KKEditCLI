@@ -1,3 +1,18 @@
+0.2.0
+Adde error msg to configure for no ctk lib.
+Done help menu.
+Done bookmarks.
+Added about menu item.
+Coloured man page.
+Set open manpage to read only.
+Done find/find again.
+Done open manpage.
+Goto define now searches current folder and opens file if needed.
+Done goto define.
+Done function menu.
+Done basics.
+Switched to using curses toolkit, here:https://github.com/KeithDHedger/CursesToolKit
+
 0.1.3
 Added file read only colours and dialog.
 Added Help menu.

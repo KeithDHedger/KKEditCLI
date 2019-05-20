@@ -9,3 +9,7 @@ config.status
 stamp-h1
 KKEditCLI/app/kkeditcli
 tags
+IGNORE/
+IGNOREXX
+KKEditCLI/src.BAK/
+*.*~

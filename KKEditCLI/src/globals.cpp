@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Tue 31 Jul 13:10:34 BST 2018 keithdhedger@gmail.com
+ * ©K. D. Hedger. Mon  6 May 17:24:42 BST 2019 keithdhedger@gmail.com
 
  * This file (globals.cpp) is part of KKEditCLI.
 
@@ -17,52 +17,23 @@
  * You should have received a copy of the GNU General Public License
  * along with KKEditCLI.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+ 
 #include "globals.h"
 
-//term info
-int			cols=0;
-int			rows=0;
-int			minY=4;
-int			minX=9;
-int			currentX=minX;
-int			currentY=minY;
-unsigned	maxRows=0;
-int			maxCols=0;
-int			forceCols=-1;
+CTK_mainAppClass			*mainApp=new CTK_mainAppClass();
+int							windowRows=mainApp->maxRows-TOPLINE;
+int							windowCols=mainApp->maxCols;
+int							showLineNumbers=4;
+const char					*tmpEdDir;
+char						*manFile=NULL;
 
-//termkey
-char buffer[50];
-TermKey *tk;
-TermKeyResult ret;
-TermKeyKey key;
-TermKeyFormat format = TERMKEY_FORMAT_VIM;
+int							newCnt=0;
+std::string					clip="";
 
-//file
-int			newFileNum=1;
-
-//gui
-int			startY=1;
-int			endY=1;
-int			lineColour=220;
-int			mBarHite=1;
-int			menuHite=1;
-
-//prefs
-int			tabs=8;
-bool		liveUpdate=true;
-bool		hilite=true;
-
-//files
-const char	*tmpEdDir="/dev/shm/";
-char		*tmpEdFile=NULL;
-char		*tmpEdFilePath=NULL;
-char		*srcPath=NULL;
-
-//pages
-int			maxPages=0;
-pageStruct	**pages=NULL;
-pageStruct	*page=NULL;
+//functions
+std::vector<funcStruct*>	functions;
+//bms
+std::vector<bookmarkStruct>	bms;
 
 //utils
 char* oneLiner(bool noreturn,const char* fmt,...)
