@@ -75,6 +75,15 @@ struct bookmarkStruct
 
 enum {REMOVEMARKS=0,TOGGLEMARK};
 
+static inline void freeAndNull(char **data)
+{
+	if((data!=NULL) && (*data!=NULL))
+		{
+			free(*data);
+			*data=NULL;
+		}
+}
+
 extern CTK_mainAppClass			*mainApp;
 extern int						windowRows;
 extern int						windowCols;
