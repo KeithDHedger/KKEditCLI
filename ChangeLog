@@ -1,5 +1,6 @@
 0.2.0
-Adde error msg to configure for no ctk lib.
+Fixed unable to open file from command line.
+Added error msg to configure for no ctk lib.
 Done help menu.
 Done bookmarks.
 Added about menu item.

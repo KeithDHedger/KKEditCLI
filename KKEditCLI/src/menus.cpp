@@ -277,7 +277,7 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 						}
 					basedir=strdup((char*)mainApp->pages[mainApp->pageNumber].userData);
 					dirn=dirname(basedir);
-					gdef=oneLiner(false,"ctags -x %s/*|sort -k 2rb,2rb -k 1b,1b|sed 's@ \\+@ @g'|grep %s|awk '{print $3 \" \" $4}'",dirn,tclip.c_str());
+					gdef=oneLiner(false,"ctags -x %s/* 2>/dev/null|sort -k 2rb,2rb -k 1b,1b|sed 's@ \\+@ @g'|grep %s|awk '{print $3 \" \" $4}' 2>/dev/null",dirn,tclip.c_str());
 					free(basedir);
 					
 					if(strlen(gdef)>0)

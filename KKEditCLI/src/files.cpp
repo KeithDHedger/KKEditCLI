@@ -41,7 +41,7 @@ void getTagList(const char *filepath)
 		}
 	functions.clear();
 
-	asprintf(&command,"ctags -x \"%s\"|%s|sed 's@ \\+@ @g'",filepath,sortcommand);
+	asprintf(&command,"ctags -x \"%s\" 2>/dev/null|%s|sed 's@ \\+@ @g' 2>/dev/null",filepath,sortcommand);
 	fp=popen(command, "r");
 	while(fgets(line,2048,fp))
 		{

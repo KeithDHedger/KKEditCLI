@@ -68,8 +68,11 @@ int main(int argc, char **argv)
 			for(int j=1;j<argc-1;j++)
 				{
 					path=realpath(argv[j],NULL);
+					if(path==NULL)
+						path=strdup(argv[j]);
 					mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,path);
 					mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setShowLineNumbers(showLineNumbers);
+
 					mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)path);
 					setInfoLabel();
 					mainApp->CTK_addPage();
