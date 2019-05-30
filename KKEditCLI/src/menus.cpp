@@ -30,6 +30,19 @@ const char	*navMenuNames[]= {" Goto _Define"," _Open Include"," Goto L_ine"," Op
 const char	*bookmarkMenuNames[]= {" _Remove All Marks"," _Toggle BM",NULL};
 const char	*helpMenuNames[]= {" _Help"," A_bout",NULL};
 
+shortcutStruct	scKeys[]={{FILEMENU,QUITITEM,'q'},{FILEMENU,NEWITEM,'n'},{FILEMENU,SAVEITEM,'s'},{FILEMENU,SAVEASITEM,'a'},{FILEMENU,CLOSEITEM,'C'},{FILEMENU,OPENITEM,'o'},{EDITMENU,COPYWORD,'c'},{EDITMENU,CUTWORD,'x'},{EDITMENU,PASTE,'v'},
+{NAVMENU,NAVGOTODFINE,'d'},
+{NAVMENU,NAVOPENINCLUDE,'u'},
+{NAVMENU,NAVGOTOLINE,'l'},
+{NAVMENU,NAVOPENMANPAGE,'p'},
+{NAVMENU,NAVFIND,'f'},
+{NAVMENU,NAVFINDNEXT,'g'},
+{BMMENU,RMALLBMS,'r'},
+{BMMENU,TOGGLEBM,'t'},
+{HELPMENU,HELP,'h'},
+{HELPMENU,ABOUT,'b'},
+{-1,-1,0}};
+
 int			foundX=-1;
 int			foundY=0;
 std::string	findString="";
@@ -42,6 +55,9 @@ void rebuildBMMenu(void)
 	mainApp->menuBar->CTK_clearMenu(BMMENU);
 	while(bookmarkMenuNames[cnt]!=NULL)
 		mainApp->menuBar->CTK_addMenuItem(BMMENU,bookmarkMenuNames[cnt++]);
+
+	mainApp->menuBar->CTK_setMenuShortCut(BMMENU,RMALLBMS,'r');
+	mainApp->menuBar->CTK_setMenuShortCut(BMMENU,TOGGLEBM,'t');
 
 	for(int j=0;j<bms.size();j++)
 		freeAndNull(&bms[j].label);
@@ -64,23 +80,25 @@ void rebuildBMMenu(void)
 									mainApp->menuBar->CTK_addMenuItem(BMMENU,(const char*)buffer);
 								}
 						}
+					continue;
 				}
-			else
-				{
-					for(int k=0;k<mainApp->pages[j].editBoxes[0]->CTK_getLineCnt();k++)
-						{
-							if(mainApp->pages[j].editBoxes[0]->CTK_getBookMark(k)==true)
-								{
-									bookmarkStruct bm;
-									bm.pageNum=j;
-									bm.lineNum=mainApp->pages[j].editBoxes[0]->CTK_getLineAtY(k);
-									sprintf(buffer," Tab %i, Line %i ",bm.pageNum,bm.lineNum);
-									bm.label=strdup(buffer);
-									bms.push_back(bm);
-									mainApp->menuBar->CTK_addMenuItem(BMMENU,(const char*)buffer);
-								}
-						}
-				}
+
+//			if(mainApp->pages[j].editBoxes.size()!=0)
+//				{
+//					for(int k=0;k<mainApp->pages[j].editBoxes[0]->CTK_getLineCnt();k++)
+//						{
+//							if(mainApp->pages[j].editBoxes[0]->CTK_getBookMark(k)==true)
+//								{
+//									bookmarkStruct bm;
+//									bm.pageNum=j;
+//									bm.lineNum=mainApp->pages[j].editBoxes[0]->CTK_getLineAtY(k);
+//									sprintf(buffer," Tab %i, Line %i ",bm.pageNum,bm.lineNum);
+//									bm.label=strdup(buffer);
+//									bms.push_back(bm);
+//									mainApp->menuBar->CTK_addMenuItem(BMMENU,(const char*)buffer);
+//								}
+//						}
+//				}
 		}
 }
 
@@ -95,7 +113,7 @@ void rebuildTabMenu(void)
 
 	for(unsigned j=0; j<mainApp->pages.size(); j++)
 		{
-			asprintf(&buffer," %s",(const char*)mainApp->pages[j].userData);
+			asprintf(&buffer," %s ",(const char*)mainApp->pages[j].userData);
 			mainApp->menuBar->CTK_addMenuItem(TABMENU,buffer);
 			free(buffer);
 		}
@@ -400,6 +418,7 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 					FILE	*fp;
 					char	filepath[2048];
 					tclip=mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getCurrentWord();
+					mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setRunLoop(false);
 					asprintf(&command,"man -aw %s",tclip.c_str());
 					fp=popen(command,"r");
 					free(command);
@@ -413,7 +432,6 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 										asprintf(&command,"MAN_KEEP_FORMATTING=1 MANWIDTH=%i man %s|sed 's/" UNDERLINEON BOLDOFF "/" UNDERLINE "/g;s/" UNDERLINEON "/" UNDERLINE "/g;s/" UNDERLINEOFF "/" DEFFORECOL "/g;s/" BOLDON "/" BOLD "/g;s/" BOLDOFF "/" DEFFORECOL "/g' > %s",windowCols-2,filepath,manFile);
 										system(command);
 										free(command);
-
 
 										mainApp->CTK_addNewEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,manFile);
 										mainApp->pages[mainApp->pageNumber].editBoxes[0]->CTK_setShowLineNumbers(false);
@@ -501,17 +519,29 @@ void handleBMMenu(CTK_cursesMenuClass *mc)
 		{
 			case REMOVEMARKS:
 				for(unsigned j=0;j<mainApp->pages.size();j++)
-					for(int k=0;k<mainApp->pages[j].srcEditBoxes[0]->CTK_getLineCnt();k++)
-						mainApp->pages[j].srcEditBoxes[0]->CTK_setBookMark(k,false);
+					{
+						if(mainApp->pages[j].srcEditBoxes.size()!=0)
+							{
+								for(int k=0;k<mainApp->pages[j].srcEditBoxes[0]->CTK_getLineCnt();k++)
+									mainApp->pages[j].srcEditBoxes[0]->CTK_setBookMark(k,false);
+							}
+						if(mainApp->pages[j].editBoxes.size()!=0)
+							{
+								for(int k=0;k<mainApp->pages[j].editBoxes[0]->CTK_getLineCnt();k++)
+									mainApp->pages[j].editBoxes[0]->CTK_setBookMark(k,false);
+							}
+					}
 				rebuildBMMenu();
 				break;
 			case TOGGLEMARK:
-				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_toggleBookMark(mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getCursLine());
+				if(mainApp->pages[mainApp->pageNumber].srcEditBoxes.size()!=0)
+					mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_toggleBookMark(mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getCursLine());
 				rebuildBMMenu();
 				break;
 			default:
 				mainApp->CTK_setPage(bms[mc->menuItemNumber-2].pageNum);
 				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_gotoLine(bms[mc->menuItemNumber-2].lineNum);
+				getTagList((const char*)mainApp->pages[mainApp->pageNumber].userData);
 				break;
 		}
 }
@@ -630,6 +660,11 @@ void setupMenus(void)
 	cnt=0;
 	while(helpMenuNames[cnt]!=NULL)
 		mainApp->menuBar->CTK_addMenuItem(HELPMENU,helpMenuNames[cnt++]);
+
+	cnt=0;
+	do
+		mainApp->menuBar->CTK_setMenuShortCut(scKeys[cnt].menu,scKeys[cnt].item,scKeys[cnt].key);
+	while(scKeys[++cnt].menu!=-1);
 
 	mainApp->menuBar->CTK_setColours(cs);
 	mainApp->menuBar->CTK_setSelectCB(menuSelectCB);

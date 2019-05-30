@@ -4586,7 +4586,7 @@ fi
 
 
 
-CURSESTOOLKIT_MODULES="cursestoolkit >= 0.1.3"
+CURSESTOOLKIT_MODULES="cursestoolkit >= 1.0.1"
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $CURSESTOOLKIT_MODULES" >&5

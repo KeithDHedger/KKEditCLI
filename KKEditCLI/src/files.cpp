@@ -40,9 +40,9 @@ void getTagList(const char *filepath)
 			delete functions[j];
 		}
 	functions.clear();
-
 	asprintf(&command,"ctags -x \"%s\" 2>/dev/null|%s|sed 's@ \\+@ @g' 2>/dev/null",filepath,sortcommand);
 	fp=popen(command, "r");
+	
 	while(fgets(line,2048,fp))
 		{
 			fd=new funcStruct;
@@ -60,7 +60,7 @@ void getTagList(const char *filepath)
 			ptr=strchr(ptr2,' ');
 			*ptr=0;
 			fd->line=atoi(ptr2);
-			asprintf(&fd->menuLabel," %.4s %s",fd->type,fd->name);
+			asprintf(&fd->menuLabel," %.4s %s ",fd->type,fd->name);
 			functions.push_back(fd);
 			mainApp->menuBar->CTK_addMenuItem(FUNCMENU,fd->menuLabel,false);
 		}

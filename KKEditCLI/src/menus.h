@@ -23,6 +23,13 @@
 
 #include "globals.h"
 
+struct shortcutStruct
+{
+	int		menu;
+	int		item;
+	char	key;
+};
+
 enum {FILEMENU=0,EDITMENU,TABMENU,NAVMENU,FUNCMENU,BMMENU,TOOLSMENU,HELPMENU};
 
 enum {NEWITEM=0,OPENITEM,SAVEITEM,SAVEASITEM,CLOSEITEM,QUITITEM};
