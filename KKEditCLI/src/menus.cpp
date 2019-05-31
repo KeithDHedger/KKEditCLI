@@ -76,29 +76,30 @@ void rebuildBMMenu(void)
 									bm.lineNum=mainApp->pages[j].srcEditBoxes[0]->CTK_getLineAtY(k);
 									sprintf(buffer," Tab %i, Line %i ",bm.pageNum,bm.lineNum);
 									bm.label=strdup(buffer);
+									bm.isSrc=true;
 									bms.push_back(bm);
 									mainApp->menuBar->CTK_addMenuItem(BMMENU,(const char*)buffer);
 								}
 						}
-					continue;
 				}
 
-//			if(mainApp->pages[j].editBoxes.size()!=0)
-//				{
-//					for(int k=0;k<mainApp->pages[j].editBoxes[0]->CTK_getLineCnt();k++)
-//						{
-//							if(mainApp->pages[j].editBoxes[0]->CTK_getBookMark(k)==true)
-//								{
-//									bookmarkStruct bm;
-//									bm.pageNum=j;
-//									bm.lineNum=mainApp->pages[j].editBoxes[0]->CTK_getLineAtY(k);
-//									sprintf(buffer," Tab %i, Line %i ",bm.pageNum,bm.lineNum);
-//									bm.label=strdup(buffer);
-//									bms.push_back(bm);
-//									mainApp->menuBar->CTK_addMenuItem(BMMENU,(const char*)buffer);
-//								}
-//						}
-//				}
+			if(mainApp->pages[j].editBoxes.size()!=0)
+				{
+					for(int k=0;k<mainApp->pages[j].editBoxes[0]->CTK_getLineCnt();k++)
+						{
+							if(mainApp->pages[j].editBoxes[0]->CTK_getBookMark(k)==true)
+								{
+									bookmarkStruct bm;
+									bm.pageNum=j;
+									bm.lineNum=mainApp->pages[j].editBoxes[0]->CTK_getLineAtY(k);
+									sprintf(buffer," Tab %i, Line %i ",bm.pageNum,bm.lineNum);
+									bm.label=strdup(buffer);
+									bm.isSrc=false;
+									bms.push_back(bm);
+									mainApp->menuBar->CTK_addMenuItem(BMMENU,(const char*)buffer);
+								}
+						}
+				}
 		}
 }
 
@@ -536,11 +537,17 @@ void handleBMMenu(CTK_cursesMenuClass *mc)
 			case TOGGLEMARK:
 				if(mainApp->pages[mainApp->pageNumber].srcEditBoxes.size()!=0)
 					mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_toggleBookMark(mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getCursLine());
+				else
+					if(mainApp->pages[mainApp->pageNumber].editBoxes.size()!=0)
+						mainApp->pages[mainApp->pageNumber].editBoxes[0]->CTK_toggleBookMark(mainApp->pages[mainApp->pageNumber].editBoxes[0]->CTK_getCursLine());
 				rebuildBMMenu();
 				break;
 			default:
 				mainApp->CTK_setPage(bms[mc->menuItemNumber-2].pageNum);
-				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_gotoLine(bms[mc->menuItemNumber-2].lineNum);
+				if(bms[mc->menuItemNumber-2].isSrc==true)
+					mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_gotoLine(bms[mc->menuItemNumber-2].lineNum);
+				else
+					mainApp->pages[mainApp->pageNumber].editBoxes[0]->CTK_gotoLine(bms[mc->menuItemNumber-2].lineNum);
 				getTagList((const char*)mainApp->pages[mainApp->pageNumber].userData);
 				break;
 		}

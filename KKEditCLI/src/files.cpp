@@ -32,6 +32,9 @@ void getTagList(const char *filepath)
 
 	mainApp->menuBar->CTK_clearMenu(FUNCMENU);
 
+	if(mainApp->pages[mainApp->pageNumber].srcEditBoxes.size()==0)
+		return;
+
 	for(int j=0;j<functions.size();j++)
 		{
 			freeAndNull(&functions[j]->name);

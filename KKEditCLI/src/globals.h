@@ -71,6 +71,7 @@ struct bookmarkStruct
 	int		pageNum=-1;
 	int		lineNum=-1;
 	char	*label=NULL;
+	bool	isSrc=false;
 };
 
 enum {REMOVEMARKS=0,TOGGLEMARK};

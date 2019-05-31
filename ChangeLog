@@ -1,4 +1,5 @@
 0.2.0
+Fixed removing BM's from man pages.
 Added shortcuts.
 Fixed updating function menu when jumping to bookmark.
 Fixed unable to open file from command line.
