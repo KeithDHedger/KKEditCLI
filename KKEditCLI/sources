@@ -1,1 +1,1 @@
-COMMONSRC = ../src/files.cpp ../src/globals.cpp ../src/gui.cpp ../src/main.cpp ../src/menus.cpp
+COMMONSRC = ../src/files.cpp ../src/globals.cpp ../src/gui.cpp ../src/LFSTKFindClass.cpp ../src/main.cpp ../src/menus.cpp

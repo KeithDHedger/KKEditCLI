@@ -104,8 +104,8 @@ am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(scriptfilesdir)" \
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_1 = ../src/files.$(OBJEXT) ../src/globals.$(OBJEXT) \
-	../src/gui.$(OBJEXT) ../src/main.$(OBJEXT) \
-	../src/menus.$(OBJEXT)
+	../src/gui.$(OBJEXT) ../src/LFSTKFindClass.$(OBJEXT) \
+	../src/main.$(OBJEXT) ../src/menus.$(OBJEXT)
 am_kkeditcli_OBJECTS = $(am__objects_1)
 kkeditcli_OBJECTS = $(am_kkeditcli_OBJECTS)
 kkeditcli_LDADD = $(LDADD)
@@ -308,7 +308,7 @@ AM_CPPFLAGS = -I$(top_srcdir) \
 			$(TERMKEY_CFLAGS) \
 			$(CURSESTOOLKIT_CFLAGS)
 
-COMMONSRC = ../src/files.cpp ../src/globals.cpp ../src/gui.cpp ../src/main.cpp ../src/menus.cpp
+COMMONSRC = ../src/files.cpp ../src/globals.cpp ../src/gui.cpp ../src/LFSTKFindClass.cpp ../src/main.cpp ../src/menus.cpp
 kkeditcli_SOURCES = $(COMMONSRC)
 scriptfilesdir = $(pkgdatadir)/scripts
 scriptfiles_SCRIPTS = ../resources/scripts/*
@@ -403,6 +403,8 @@ clean-binPROGRAMS:
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/gui.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
+../src/LFSTKFindClass.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/main.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/menus.$(OBJEXT): ../src/$(am__dirstamp) \
@@ -454,6 +456,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/LFSTKFindClass.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/files.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/globals.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/gui.Po@am__quote@

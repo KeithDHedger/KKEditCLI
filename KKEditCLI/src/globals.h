@@ -37,7 +37,7 @@
 
 #include "menus.h"
 #include "gui.h"
-#include "files.h"
+#include "LFSTKFindClass.h"
 
 #define TABWIDTH 4
 #define TOPLINE 4
@@ -74,7 +74,35 @@ struct bookmarkStruct
 	bool	isSrc=false;
 };
 
+struct	args
+{
+	const char	*name;
+	int			type;
+	void		*data;
+};
+
+struct toolStruct
+{
+	char				*menuName;
+	char				*filePath;
+	char				*command;
+	int					flags;
+	bool				inTerminal;					
+	bool				inPopUp;
+	bool				alwaysPopup;
+	bool				clearView;
+	char				*comment;
+	bool				global;
+	bool				runAsRoot;
+	int					keyCode;
+	bool				useBar;
+};
+
+#include "files.h"
+
 enum {REMOVEMARKS=0,TOGGLEMARK};
+enum {NOERR=0,NOOPENFILE,NOSAVEFILE};
+enum {TYPEINT=1,TYPESTRING,TYPEBOOL,TYPELIST};
 
 static inline void freeAndNull(char **data)
 {
@@ -94,6 +122,22 @@ extern char						*manFile;
 
 extern int						newCnt;
 extern std::string				clip;
+extern int						sinkReturn;
+extern char						*sinkReturnStr;
+
+//tools
+extern int					intermarg;
+extern int					flagsarg;
+extern int					inpopup;
+extern int					alwayspopup;
+extern int					clearview;
+extern char				*commandarg;
+extern char				*commentarg;
+extern char				*menuname;
+extern int					rootarg;
+extern int					keycode;
+extern int					usebar;
+extern std::vector<toolStruct>	tools;
 
 //functions
 extern std::vector<funcStruct*>	functions;

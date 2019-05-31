@@ -130,7 +130,7 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 				{
 					char	*uddata;
 					asprintf(&uddata,"/tmp/Untitled-%i",++newCnt);
-					std::ofstream output(uddata);
+					//std::ofstream output(uddata);
 					mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setRunLoop(false);
 					mainApp->CTK_addPage();
 					mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,uddata);
@@ -167,12 +167,26 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 					FILE *f=fopen((char*)mainApp->pages[mainApp->pageNumber].userData,"w+");
 					if(f!=NULL)
 						{
-							fprintf(f,"%s",mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getBuffer());
+							if(mainApp->pages[mainApp->pageNumber].srcEditBoxes.size()>0)
+								{
+									fprintf(f,"%s",mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getBuffer());
+									mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty=false;
+									//mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_updateText((char*)mainApp->pages[mainApp->pageNumber].userData,true);
+								}
+
+							if(mainApp->pages[mainApp->pageNumber].editBoxes.size()>0)
+								{
+									fprintf(f,"%s",mainApp->pages[mainApp->pageNumber].editBoxes[0]->CTK_getBuffer());
+									mainApp->pages[mainApp->pageNumber].editBoxes[0]->isDirty=false;
+									//mainApp->pages[mainApp->pageNumber].editBoxes[0]->CTK_updateText((char*)mainApp->pages[mainApp->pageNumber].userData,true);
+								}
+
 							fclose(f);
-							mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty=false;
+							//mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty=false;
+							//mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_updateText((char*)mainApp->pages[mainApp->pageNumber].userData,true);
+							getTagList((const char*)mainApp->pages[mainApp->pageNumber].userData);
 						}
-					mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_updateText((char*)mainApp->pages[mainApp->pageNumber].userData,true);
-					getTagList((const char*)mainApp->pages[mainApp->pageNumber].userData);
+					setInfoLabel();
 				}
 				break;
 
@@ -189,14 +203,29 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 							FILE *f=fopen(buffer,"w+");
 							if(f!=NULL)
 								{
+									if(mainApp->pages[mainApp->pageNumber].srcEditBoxes.size()>0)
+										{
 									fprintf(f,"%s",mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getBuffer());
 									freeAndNull((char**)&mainApp->pages[mainApp->pageNumber].userData);
 									mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(buffer));
 									fclose(f);
 									mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty=false;
 									mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_updateText(buffer,true);
+										}
+
+									if(mainApp->pages[mainApp->pageNumber].editBoxes.size()>0)
+										{
+									fprintf(f,"%s",mainApp->pages[mainApp->pageNumber].editBoxes[0]->CTK_getBuffer());
+									freeAndNull((char**)&mainApp->pages[mainApp->pageNumber].userData);
+									mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(buffer));
+									fclose(f);
+									mainApp->pages[mainApp->pageNumber].editBoxes[0]->isDirty=false;
+									mainApp->pages[mainApp->pageNumber].editBoxes[0]->CTK_updateText(buffer,true);
+										}
 									rebuildTabMenu();
+									fflush(NULL);
 								}
+							setInfoLabel();
 						}
 					free(holdstr);
 				}
@@ -553,11 +582,91 @@ void handleBMMenu(CTK_cursesMenuClass *mc)
 		}
 }
 
+void replaceAll(std::string &str,const std::string from,const std::string to)
+{
+    size_t start_pos=0;
+    while((start_pos=str.find(from,start_pos))!=std::string::npos)
+    	{
+			str.replace(start_pos,from.length(),to);
+			start_pos+=to.length();
+		}
+}
+
 void handleToolsMenu(CTK_cursesMenuClass *mc)
 {
-	switch(mc->menuItemNumber)
+	const char	*vars[]= {"%f","%d",NULL};
+	int			cnt=0;
+	std::string	str=tools[mc->menuItemNumber].command;
+	char		*path=strdup((char*)mainApp->pages[mainApp->pageNumber].userData);
+	char		*dir;
+	char		*command;
+	FILE		*fp=NULL;
+	char		line[1024];
+	char		*datafolder;
+
+	dir=dirname(path);
+	//fprintf(stderr,"name=%s command=%s path=%s\n",tools[mc->menuItemNumber].menuName,tools[mc->menuItemNumber].command,tools[mc->menuItemNumber].filePath);
+	
+	while(vars[cnt]!=NULL)
+		switch(cnt)
+			{
+				case 0:
+					replaceAll(str,vars[cnt++],(char*)mainApp->pages[mainApp->pageNumber].userData);
+					break;
+				case 1:
+					replaceAll(str,vars[cnt++],dir);
+					break;
+			}
+
+	setenv("KKEDIT_CURRENTFILE",(char*)mainApp->pages[mainApp->pageNumber].userData,1);
+	setenv("KKEDIT_CURRENTDIR",dir,1);
+	sinkReturn=asprintf(&datafolder,"%s/.KKEdit/tools",getenv("HOME"));
+	sinkReturn=asprintf(&command,"(cd \"%s\";%s)",datafolder,str.c_str());
+
+	fp=popen(command,"r");
+	if(fp!=NULL)
 		{
+			str.clear();
+			while(fgets(line,1024,fp))
+				str.append(line);
+			pclose(fp);
 		}
+
+	if(tools[mc->menuItemNumber].flags & TOOL_PASTE_OP)
+		{
+			//fprintf(stderr,"TOOL_PASTE_OP\n");
+			mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_insertText(str.c_str());
+			mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty=true;
+		}
+
+	if(tools[mc->menuItemNumber].flags & TOOL_REPLACE_OP)
+		{
+			//fprintf(stderr,"TOOL_REPLACE_OP\n");
+			mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_updateText(str.c_str());
+			mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty=true;
+		}
+	if(tools[mc->menuItemNumber].flags & TOOL_VIEW_OP)
+		{
+			//fprintf(stderr,"TOOL_VIEW_OP\n");
+			mainApp->CTK_addPage();
+			mainApp->CTK_addNewEditBox(mainApp,1,TOPLINE,windowCols,windowRows,false,str.c_str());
+			mainApp->pages[mainApp->pageNumber].editBoxes[0]->CTK_setShowLineNumbers(false);
+			mainApp->pages[mainApp->pageNumber].editBoxes[0]->CTK_setEditable(false);
+			mainApp->pages[mainApp->pageNumber].editBoxes[0]->isDirty=true;
+			mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup("Tool Output"));
+
+			setInfoLabel();
+			rebuildTabMenu();
+			mainApp->CTK_clearScreen();
+			mainApp->CTK_updateScreen(mainApp,NULL);
+		}
+
+
+	//fprintf(stderr,"command=%s\n",command);
+	//fprintf(stderr,"results=%s\n",str.c_str());
+	free(command);
+	free(path);
+	free(datafolder);
 }
 
 void handleHelpMenu(CTK_cursesMenuClass *mc)

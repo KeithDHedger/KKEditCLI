@@ -47,6 +47,7 @@ int main(int argc, char **argv)
 		}
 	asprintf(&manFile,"%s/manfile",tmpEdDir);
 	setupMenus();
+	buildToolsList();
 
 	mainApp->CTK_setTabWidth(TABWIDTH);
 

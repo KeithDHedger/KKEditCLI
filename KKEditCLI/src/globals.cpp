@@ -29,6 +29,22 @@ char						*manFile=NULL;
 
 int							newCnt=0;
 std::string					clip="";
+int							sinkReturn;
+char						*sinkReturnStr;
+
+//tools
+int					intermarg=0;
+int					flagsarg=0;
+int					inpopup=0;
+int					alwayspopup=0;
+int					clearview=0;
+char				*commandarg=NULL;
+char				*commentarg=NULL;
+char				*menuname=NULL;
+int					rootarg=0;
+int					keycode=0;
+int					usebar=0;
+std::vector<toolStruct>	tools;
 
 //functions
 std::vector<funcStruct*>	functions;

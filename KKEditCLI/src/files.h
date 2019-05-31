@@ -21,6 +21,9 @@
 #ifndef _FILES_
 #define _FILES_
 
+
 void getTagList(const char *filepath);
+int loadVarsFromFile(char *filepath,args *dataptr);
+void buildToolsList(void);
 
 #endif
