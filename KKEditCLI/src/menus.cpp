@@ -742,6 +742,7 @@ void setupMenus(void)
 
 	cs.hiliteBackCol=BACK_BLACK;
 	cs.hiliteForeCol=FORE_GREEN;
+	cs.disabledForeCol=FORE_BOLD_GREEN;
 
 	mainApp->CTK_addNewMenuBar();
 	mainApp->menuBar->CTK_addMenuToBar(menuNames[FILEMENU]);

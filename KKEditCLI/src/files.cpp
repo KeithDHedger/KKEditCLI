@@ -57,7 +57,10 @@ void getTagList(const char *filepath)
 	mainApp->menuBar->CTK_clearMenu(FUNCMENU);
 
 	if(mainApp->pages[mainApp->pageNumber].srcEditBoxes.size()==0)
-		return;
+		{
+			mainApp->menuBar->menuNames[FUNCMENU]->menuEnabled=false;
+			return;
+		}
 
 	for(int j=0;j<functions.size();j++)
 		{
@@ -93,6 +96,10 @@ void getTagList(const char *filepath)
 		}
 	pclose(fp);
 	free(command);
+	if(functions.size()==0)
+		mainApp->menuBar->menuNames[FUNCMENU]->menuEnabled=false;
+	else
+		mainApp->menuBar->menuNames[FUNCMENU]->menuEnabled=true;
 }
 
 varStrings* allocVStrings(char *string)
