@@ -46,6 +46,9 @@ int main(int argc, char **argv)
 			exit(1);
 		}
 	asprintf(&manFile,"%s/manfile",tmpEdDir);
+	sinkReturn=asprintf(&configFolder,"%s/.KKEditCLI",getenv("HOME"));
+	oneLiner(false,"mkdir -p %s",configFolder);
+
 	setupMenus();
 	buildToolsList();
 
@@ -86,7 +89,7 @@ int main(int argc, char **argv)
 
 	setInfoLabel();
 	rebuildTabMenu();
-	mainApp->eventLoopCB=mainloopCB;
+	//mainApp->eventLoopCB=mainloopCB;
 	mainApp->CTK_mainEventLoop();
 	for(int k=0;k<mainApp->pages.size();k++)
 		free(mainApp->pages[k].userData);
@@ -95,5 +98,6 @@ int main(int argc, char **argv)
 	unlink(manFile);
 	rmdir(tmpEdDir);
 	free(manFile);
+	free(configFolder);
 	return 0;
 }

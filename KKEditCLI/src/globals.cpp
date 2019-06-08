@@ -26,6 +26,7 @@ int							windowCols=mainApp->maxCols;
 int							showLineNumbers=4;
 const char					*tmpEdDir;
 char						*manFile=NULL;
+char						*configFolder=NULL;
 
 int							newCnt=0;
 std::string					clip="";

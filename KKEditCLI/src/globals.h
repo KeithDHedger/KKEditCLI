@@ -83,10 +83,10 @@ struct	args
 
 struct toolStruct
 {
-	char				*menuName;
-	char				*filePath;
-	char				*command;
-	int					flags;
+	char				*menuName=NULL;
+	char				*filePath=NULL;
+	char				*command=NULL;
+	int					flags=0;
 	bool				inTerminal;					
 	bool				inPopUp;
 	bool				alwaysPopup;
@@ -97,6 +97,17 @@ struct toolStruct
 	int					keyCode;
 	bool				useBar;
 };
+
+#define MANAGETOOLSLABEL " Manage Tools"
+
+//enum {FILEMENU=0,EDITMENU,TABMENU,NAVMENU,FUNCMENU,BMMENU,TOOLSMENU,HELPMENU};
+//
+//enum {NEWITEM=0,OPENITEM,SAVEITEM,SAVEASITEM,CLOSEITEM,QUITITEM};
+//enum {COPYWORD=0,CUTWORD,COPYLINE,CUTLINE,PASTE};
+//enum {NEXTTAB=0,PREVTAB};
+//enum {NAVGOTODFINE=0,NAVOPENINCLUDE,NAVGOTOLINE,NAVOPENMANPAGE,NAVFIND,NAVFINDNEXT};
+//enum {RMALLBMS=0,TOGGLEBM};
+//enum {HELP=0,ABOUT};
 
 #include "files.h"
 
@@ -119,6 +130,7 @@ extern int						windowCols;
 extern int						showLineNumbers;
 extern const char				*tmpEdDir;
 extern char						*manFile;
+extern char						*configFolder;
 
 extern int						newCnt;
 extern std::string				clip;

@@ -28,6 +28,7 @@ const char	*editMenuNames[]= {" _Copy Word"," C_ut Word"," Copy _Line"," Cu_t Li
 const char	*tabMenuNames[]= {" Next Tab"," Prev Tab",NULL};
 const char	*navMenuNames[]= {" Goto _Define"," _Open Include"," Goto L_ine"," Open _Manpage"," _Find"," Find A_gain",NULL};
 const char	*bookmarkMenuNames[]= {" _Remove All Marks"," _Toggle BM",NULL};
+//const char	*toolsMenuNames[]= {" Manage Tools",NULL};
 const char	*helpMenuNames[]= {" _Help"," A_bout",NULL};
 
 shortcutStruct	scKeys[]={{FILEMENU,QUITITEM,'q'},{FILEMENU,NEWITEM,'n'},{FILEMENU,SAVEITEM,'s'},{FILEMENU,SAVEASITEM,'a'},{FILEMENU,CLOSEITEM,'C'},{FILEMENU,OPENITEM,'o'},{EDITMENU,COPYWORD,'c'},{EDITMENU,CUTWORD,'x'},{EDITMENU,PASTE,'v'},
@@ -231,7 +232,7 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 				}
 				break;
 
-			case CLOSEITEM:
+			case CLOSEITEM://TODO// lcose edit box
 				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setRunLoop(false);
 				if(mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty==true)
 					{
@@ -596,7 +597,7 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 {
 	const char	*vars[]= {"%f","%d",NULL};
 	int			cnt=0;
-	std::string	str=tools[mc->menuItemNumber].command;
+	std::string	str;
 	char		*path=strdup((char*)mainApp->pages[mainApp->pageNumber].userData);
 	char		*dir;
 	char		*command;
@@ -604,8 +605,14 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 	char		line[1024];
 	char		*datafolder;
 
+	if(mc->menuItemNumber==0)
+		{
+			manageTools();
+			return;
+		}
+
+	str=tools[mc->menuItemNumber-1].command;
 	dir=dirname(path);
-	//fprintf(stderr,"name=%s command=%s path=%s\n",tools[mc->menuItemNumber].menuName,tools[mc->menuItemNumber].command,tools[mc->menuItemNumber].filePath);
 	
 	while(vars[cnt]!=NULL)
 		switch(cnt)
@@ -620,7 +627,7 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 
 	setenv("KKEDIT_CURRENTFILE",(char*)mainApp->pages[mainApp->pageNumber].userData,1);
 	setenv("KKEDIT_CURRENTDIR",dir,1);
-	sinkReturn=asprintf(&datafolder,"%s/.KKEdit/tools",getenv("HOME"));
+	sinkReturn=asprintf(&datafolder,"%s/tools",configFolder);
 	sinkReturn=asprintf(&command,"(cd \"%s\";%s)",datafolder,str.c_str());
 
 	fp=popen(command,"r");
@@ -632,20 +639,20 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 			pclose(fp);
 		}
 
-	if(tools[mc->menuItemNumber].flags & TOOL_PASTE_OP)
+	if(tools[mc->menuItemNumber-1].flags & TOOL_PASTE_OP)
 		{
 			//fprintf(stderr,"TOOL_PASTE_OP\n");
 			mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_insertText(str.c_str());
 			mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty=true;
 		}
 
-	if(tools[mc->menuItemNumber].flags & TOOL_REPLACE_OP)
+	if(tools[mc->menuItemNumber-1].flags & TOOL_REPLACE_OP)
 		{
 			//fprintf(stderr,"TOOL_REPLACE_OP\n");
 			mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_updateText(str.c_str());
 			mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty=true;
 		}
-	if(tools[mc->menuItemNumber].flags & TOOL_VIEW_OP)
+	if(tools[mc->menuItemNumber-1].flags & TOOL_VIEW_OP)
 		{
 			//fprintf(stderr,"TOOL_VIEW_OP\n");
 			mainApp->CTK_addPage();
@@ -660,7 +667,6 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 			mainApp->CTK_clearScreen();
 			mainApp->CTK_updateScreen(mainApp,NULL);
 		}
-
 
 	//fprintf(stderr,"command=%s\n",command);
 	//fprintf(stderr,"results=%s\n",str.c_str());
@@ -773,6 +779,8 @@ void setupMenus(void)
 	cnt=0;
 	while(bookmarkMenuNames[cnt]!=NULL)
 		mainApp->menuBar->CTK_addMenuItem(BMMENU,bookmarkMenuNames[cnt++]);
+
+	mainApp->menuBar->CTK_addMenuItem(TOOLSMENU,MANAGETOOLSLABEL);
 
 	cnt=0;
 	while(helpMenuNames[cnt]!=NULL)

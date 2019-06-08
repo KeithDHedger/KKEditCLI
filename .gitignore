@@ -13,3 +13,5 @@ IGNORE/
 IGNOREXX
 KKEditCLI/src.BAK/
 *.*~
+KKEditCLI/src/html
+searchdata.xml

@@ -21,9 +21,14 @@
 #ifndef _FILES_
 #define _FILES_
 
+#define TOOLNAMELISTWIDTH 40
+#define INPUTWIDTH 40
+enum {IGNOREOP=0,PASTEOP,REPLACEOP,VIEWOP};
+enum {BACKLABEL=1,TOOLSLABEL,NAMELABEL,COMMANDLABEL,LASTLABEL};
 
 void getTagList(const char *filepath);
 int loadVarsFromFile(char *filepath,args *dataptr);
 void buildToolsList(void);
+void manageTools(void);
 
 #endif
