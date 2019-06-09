@@ -1,4 +1,5 @@
 0.2.1
+Saves/Cancels files on quit/close properly.
 Fixed closing generated pages.
 New now create file.
 Disabled menus and shorcuts while managing tools.

@@ -215,13 +215,24 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 				}
 				break;
 
-			case CLOSEITEM://TODO// close edit box
+			case CLOSEITEM:
 				box->CTK_setRunLoop(false);
 				if(box->isDirty==true)
 					{
 						CTK_cursesUtilsClass	cu;
-						cu.CTK_queryDialog(mainApp,"File has changed ...\nDo you want to save it?",(const char*)mainApp->pages[mainApp->pageNumber].userData,"Save ...",ALLBUTTONS);
-						fprintf(stderr,"Button pressed=%i\n",cu.intResult);
+						cu.CTK_queryDialog(mainApp,"File has changed ...\nDo you want to save it?",(const char*)mainApp->pages[mainApp->pageNumber].userData,"Save ...",YESBUTTON|NOBUTTON);
+						if(cu.intResult & YESBUTTON)
+							{
+								FILE *f=fopen((char*)mainApp->pages[mainApp->pageNumber].userData,"w+");
+								if(f!=NULL)
+									{
+										box->CTK_setRunLoop(false);
+										fprintf(f,"%s",box->CTK_getBuffer());
+										box->isDirty=false;
+										fclose(f);
+										getTagList((const char*)mainApp->pages[mainApp->pageNumber].userData);
+									}
+							}
 					}
 				freeAndNull((char**)&(mainApp->pages[mainApp->pageNumber].userData));
 				mainApp->CTK_removePage(mainApp->pageNumber);
@@ -241,7 +252,24 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 									{
 										CTK_cursesUtilsClass	cu;
 										cu.CTK_queryDialog(mainApp,"File has changed ...\nDo you want to save it?",(const char*)mainApp->pages[j].userData,"Save ...",ALLBUTTONS);
-										fprintf(stderr,"Button pressed=%i\n",cu.intResult);
+										//fprintf(stderr,"Button pressed=%i\n",cu.intResult);
+										if(cu.intResult & CANCELBUTTON)
+											{
+												return;
+											}
+
+										if(cu.intResult & YESBUTTON)
+											{
+												FILE *f=fopen((char*)mainApp->pages[mainApp->pageNumber].userData,"w+");
+												if(f!=NULL)
+													{
+														box->CTK_setRunLoop(false);
+														fprintf(f,"%s",box->CTK_getBuffer());
+														box->isDirty=false;
+														fclose(f);
+														getTagList((const char*)mainApp->pages[mainApp->pageNumber].userData);
+													}
+											}
 									}
 								mainApp->pages[j].srcEditBoxes[0]->CTK_setRunLoop(false);
 							}
