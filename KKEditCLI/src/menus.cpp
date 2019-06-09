@@ -125,14 +125,23 @@ void rebuildTabMenu(void)
 
 void handleFileMenu(CTK_cursesMenuClass *mc)
 {
+	CTK_cursesEditBoxClass	*box=NULL;
+	char					buffer[PATH_MAX]={0,};
+
+	if(mainApp->pages[mainApp->pageNumber].srcEditBoxes.size()>0)
+		box=static_cast<CTK_cursesEditBoxClass*>(mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]);
+	else if(mainApp->pages[mainApp->pageNumber].editBoxes.size()>0)
+		box=mainApp->pages[mainApp->pageNumber].editBoxes[0];
+
 	switch(mc->menuItemNumber)
 		{
 			case NEWITEM:
 				{
 					char	*uddata;
 					asprintf(&uddata,"/tmp/Untitled-%i",++newCnt);
-					//std::ofstream output(uddata);
-					mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setRunLoop(false);
+					sprintf(buffer,"touch %s",uddata);
+					system(buffer);
+					box->CTK_setRunLoop(false);
 					mainApp->CTK_addPage();
 					mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,uddata);
 					mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setShowLineNumbers(showLineNumbers);
@@ -151,7 +160,7 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 					cu.CTK_openFile(mainApp,"Open File",buffer);
 					if(cu.isValidFile==true)
 						{
-							mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setRunLoop(false);
+							box->CTK_setRunLoop(false);
 							mainApp->CTK_addPage();
 							mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,cu.stringResult.c_str());
 							mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setShowLineNumbers(showLineNumbers);
@@ -168,23 +177,10 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 					FILE *f=fopen((char*)mainApp->pages[mainApp->pageNumber].userData,"w+");
 					if(f!=NULL)
 						{
-							if(mainApp->pages[mainApp->pageNumber].srcEditBoxes.size()>0)
-								{
-									fprintf(f,"%s",mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getBuffer());
-									mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty=false;
-									//mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_updateText((char*)mainApp->pages[mainApp->pageNumber].userData,true);
-								}
-
-							if(mainApp->pages[mainApp->pageNumber].editBoxes.size()>0)
-								{
-									fprintf(f,"%s",mainApp->pages[mainApp->pageNumber].editBoxes[0]->CTK_getBuffer());
-									mainApp->pages[mainApp->pageNumber].editBoxes[0]->isDirty=false;
-									//mainApp->pages[mainApp->pageNumber].editBoxes[0]->CTK_updateText((char*)mainApp->pages[mainApp->pageNumber].userData,true);
-								}
-
+							box->CTK_setRunLoop(false);
+							fprintf(f,"%s",box->CTK_getBuffer());
+							box->isDirty=false;
 							fclose(f);
-							//mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty=false;
-							//mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_updateText((char*)mainApp->pages[mainApp->pageNumber].userData,true);
 							getTagList((const char*)mainApp->pages[mainApp->pageNumber].userData);
 						}
 					setInfoLabel();
@@ -204,25 +200,12 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 							FILE *f=fopen(buffer,"w+");
 							if(f!=NULL)
 								{
-									if(mainApp->pages[mainApp->pageNumber].srcEditBoxes.size()>0)
-										{
-									fprintf(f,"%s",mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getBuffer());
+									fprintf(f,"%s",box->CTK_getBuffer());
 									freeAndNull((char**)&mainApp->pages[mainApp->pageNumber].userData);
 									mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(buffer));
 									fclose(f);
-									mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty=false;
-									mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_updateText(buffer,true);
-										}
-
-									if(mainApp->pages[mainApp->pageNumber].editBoxes.size()>0)
-										{
-									fprintf(f,"%s",mainApp->pages[mainApp->pageNumber].editBoxes[0]->CTK_getBuffer());
-									freeAndNull((char**)&mainApp->pages[mainApp->pageNumber].userData);
-									mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(buffer));
-									fclose(f);
-									mainApp->pages[mainApp->pageNumber].editBoxes[0]->isDirty=false;
-									mainApp->pages[mainApp->pageNumber].editBoxes[0]->CTK_updateText(buffer,true);
-										}
+									box->isDirty=false;
+									box->CTK_updateText(buffer,true);
 									rebuildTabMenu();
 									fflush(NULL);
 								}
@@ -233,8 +216,8 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 				break;
 
 			case CLOSEITEM://TODO// close edit box
-				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setRunLoop(false);
-				if(mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty==true)
+				box->CTK_setRunLoop(false);
+				if(box->isDirty==true)
 					{
 						CTK_cursesUtilsClass	cu;
 						cu.CTK_queryDialog(mainApp,"File has changed ...\nDo you want to save it?",(const char*)mainApp->pages[mainApp->pageNumber].userData,"Save ...",ALLBUTTONS);

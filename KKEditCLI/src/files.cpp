@@ -266,7 +266,7 @@ void toolListCB(void *inst,void *userdata)
 	char						*buffer=(char*)alloca(256);
 	CTK_cursesListBoxClass		*ls=static_cast<CTK_cursesListBoxClass*>(inst);
 
-	fprintf(stderr,"List %i List item/num '%s/%i' clicked, user data=%p.\n",(long)userdata,ls->listItems[ls->listItemNumber]->label.c_str(),ls->listItemNumber,ls->listItems[ls->listItemNumber]->userData);
+//	fprintf(stderr,"List %i List item/num '%s/%i' clicked, user data=%p.\n",(long)userdata,ls->listItems[ls->listItemNumber]->label.c_str(),ls->listItemNumber,ls->listItems[ls->listItemNumber]->userData);
 
 	mainApp->pages[mainApp->pageNumber].inputs[0]->CTK_setText(ls->listItems[ls->listItemNumber]->label.c_str());
 
@@ -298,7 +298,7 @@ void checkCB(void *inst,void *userdata)
 	for(int j=0;j<mainApp->pages[mainApp->pageNumber].checkBoxes.size();j++)
 		mainApp->pages[mainApp->pageNumber].checkBoxes[j]->CTK_setValue(false);
 	cb->CTK_setValue(!cb->CTK_getValue());
-	fprintf(stderr,"ud=%i cbsize=%i\n",userdata,mainApp->pages[mainApp->pageNumber].checkBoxes.size());
+//	fprintf(stderr,"ud=%i cbsize=%i\n",userdata,mainApp->pages[mainApp->pageNumber].checkBoxes.size());
 }
 
 void toolButtonCB(void *inst,void *userdata)
@@ -308,7 +308,7 @@ void toolButtonCB(void *inst,void *userdata)
 	FILE					*fp=NULL;
 	int						flags=0;
 
-	fprintf(stderr,"Button '%s' clicked ud=%i.\n",bc->label,userdata);
+	//fprintf(stderr,"Button '%s' clicked ud=%i.\n",bc->label,userdata);
 	switch((long)userdata)
 		{
 			case 1:
@@ -358,10 +358,8 @@ void toolButtonCB(void *inst,void *userdata)
 			case 4:
 				{
 					char	path[PATH_MAX];
-					//char	commandpath[PATH_MAX];
 					char	*rp;
 
-					//fprintf(stderr,">>%s<<\n",mainApp->pages[mainApp->pageNumber].inputs[1]->CTK_getText());
 					if(strlen(mainApp->pages[mainApp->pageNumber].inputs[1]->CTK_getText())==0)
 						return;
 					sprintf(path,"%s/tools/%s",configFolder,mainApp->pages[mainApp->pageNumber].inputs[1]->CTK_getText());
@@ -374,7 +372,6 @@ void toolButtonCB(void *inst,void *userdata)
 							if(rp==NULL)
 								return;
 						}
-					fprintf(stderr,">>%s<<\n",rp);
 					mainApp->CTK_addPage();
 					mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,rp);
 					mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setShowLineNumbers(showLineNumbers);

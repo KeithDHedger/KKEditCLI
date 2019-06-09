@@ -21,13 +21,11 @@
 #ifndef _MENUS_
 #define _MENUS_
 
-#define TOOL_ASYNC			8
 #define TOOL_IGNORE_OP		0
 #define TOOL_PASTE_OP		1
 #define TOOL_REPLACE_OP		2
-#define TOOL_SHOW_DOC		4
-#define	TOOL_INSERT_MASK	0b10111
-#define	TOOL_VIEW_OP 		16
+#define	TOOL_VIEW_OP 		4
+#define TOOL_RELOAD_FILE	8
 
 #include "globals.h"
 

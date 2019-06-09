@@ -1,4 +1,6 @@
 0.2.1
+Fixed closing generated pages.
+New now create file.
 Disabled menus and shorcuts while managing tools.
 Added edit button to managae tools.
 Set check boxes select key in manage tools to 'SPACE' key.
