@@ -1,4 +1,6 @@
 0.2.1
+Disabled menus and shorcuts while managing tools.
+Added edit button to managae tools.
 Set check boxes select key in manage tools to 'SPACE' key.
 Disabled function menu when no functions available.
 
