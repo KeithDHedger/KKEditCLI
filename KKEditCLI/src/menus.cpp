@@ -637,11 +637,11 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 
 	setenv("KKEDIT_SELECTION",box->CTK_getCurrentWord().c_str(),1);
 
-fprintf(stderr,"this folder=%s\n",dir);
-fprintf(stderr,"tools folder=%s/tools\n",configFolder);
-fprintf(stderr,"command=%s\n",str.c_str());
-fprintf(stderr,"command to run=(cd %s/tools;%s) 2>&1\n",configFolder,str.c_str());
-fprintf(stderr,"path=%s\n",getenv("PATH"));
+//fprintf(stderr,"this folder=%s\n",dir);
+//fprintf(stderr,"tools folder=%s/tools\n",configFolder);
+//fprintf(stderr,"command=%s\n",str.c_str());
+//fprintf(stderr,"command to run=(cd %s/tools;%s) 2>&1\n",configFolder,str.c_str());
+//fprintf(stderr,"path=%s\n",getenv("PATH"));
 
 	sprintf(commandpath,"(cd \"%s/tools\";%s) 2>&1",configFolder,str.c_str());
 	fp=popen(commandpath,"r");
