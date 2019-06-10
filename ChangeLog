@@ -1,4 +1,5 @@
 0.2.1
+Disabled 'Save' menu item if page not dirty.
 Saves/Cancels files on quit/close properly.
 Fixed closing generated pages.
 New now create file.

@@ -28,9 +28,24 @@
 
 #include "globals.h"
 
-void mainloopCB(void *mainc,void *data)
+void mainloopCBIn(void *mainc,void *data)
 {
-//	fprintf(stderr,">>>>>\n");
+	CTK_mainAppClass		*app=static_cast<CTK_mainAppClass*>(mainc);
+	CTK_cursesEditBoxClass	*box;
+
+	if(app->pages[app->pageNumber].srcEditBoxes.size()>0)
+		box=static_cast<CTK_cursesEditBoxClass*>(app->pages[app->pageNumber].srcEditBoxes[0]);
+	else if(app->pages[app->pageNumber].editBoxes.size()>0)
+		box=app->pages[app->pageNumber].editBoxes[0];
+
+//	fprintf(stderr,"main loop in\n");
+	app->menuBar->menuNames[FILEMENU]->menuItem[SAVEITEM]->menuEnabled=box->isDirty;
+}
+
+void mainloopCBOut(void *mainc,void *data)
+{
+	
+//	fprintf(stderr,"main loop out\n");
 }
 
 int main(int argc, char **argv)
@@ -89,7 +104,8 @@ int main(int argc, char **argv)
 
 	setInfoLabel();
 	rebuildTabMenu();
-	//mainApp->eventLoopCB=mainloopCB;
+	mainApp->eventLoopCBIn=mainloopCBIn;
+	mainApp->eventLoopCBOut=mainloopCBOut;
 	mainApp->CTK_mainEventLoop();
 	for(int k=0;k<mainApp->pages.size();k++)
 		free(mainApp->pages[k].userData);

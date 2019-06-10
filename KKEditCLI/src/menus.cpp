@@ -174,11 +174,13 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 
 			case SAVEITEM:
 				{
+					const char	*buf;
+					buf=box->CTK_getBuffer();
 					FILE *f=fopen((char*)mainApp->pages[mainApp->pageNumber].userData,"w+");
 					if(f!=NULL)
 						{
 							box->CTK_setRunLoop(false);
-							fprintf(f,"%s",box->CTK_getBuffer());
+							fprintf(f,"%s",buf);
 							box->isDirty=false;
 							fclose(f);
 							getTagList((const char*)mainApp->pages[mainApp->pageNumber].userData);
