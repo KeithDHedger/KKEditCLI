@@ -191,10 +191,12 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 
 			case SAVEASITEM:
 				{
+					const char				*buf;
 					char					*buffer=(char*)alloca(PATH_MAX);
 					CTK_cursesUtilsClass	cu;
 					char					*holdstr=strdup((char*)mainApp->pages[mainApp->pageNumber].userData);
 
+					buf=box->CTK_getBuffer();
 					cu.CTK_openFile(mainApp,"Save As ...",dirname(holdstr),false,basename(holdstr));
 					if(cu.isValidFile==true)
 						{
@@ -202,7 +204,7 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 							FILE *f=fopen(buffer,"w+");
 							if(f!=NULL)
 								{
-									fprintf(f,"%s",box->CTK_getBuffer());
+									fprintf(f,"%s",buf);
 									freeAndNull((char**)&mainApp->pages[mainApp->pageNumber].userData);
 									mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(buffer));
 									fclose(f);

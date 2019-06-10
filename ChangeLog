@@ -1,4 +1,6 @@
 0.2.1
+Disabled certain menu items when no selection.
+Fixed losing filetype when using save.
 Disabled 'Save' menu item if page not dirty.
 Saves/Cancels files on quit/close properly.
 Fixed closing generated pages.

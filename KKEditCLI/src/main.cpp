@@ -32,13 +32,33 @@ void mainloopCBIn(void *mainc,void *data)
 {
 	CTK_mainAppClass		*app=static_cast<CTK_mainAppClass*>(mainc);
 	CTK_cursesEditBoxClass	*box;
+	const char				*compstr[]={"\n","\t"," ",NULL};
+	bool					enable;
+	int						cnt;
 
 	if(app->pages[app->pageNumber].srcEditBoxes.size()>0)
 		box=static_cast<CTK_cursesEditBoxClass*>(app->pages[app->pageNumber].srcEditBoxes[0]);
 	else if(app->pages[app->pageNumber].editBoxes.size()>0)
 		box=app->pages[app->pageNumber].editBoxes[0];
 
-//	fprintf(stderr,"main loop in\n");
+	cnt=0;
+	enable=true;
+	while(compstr[cnt]!=NULL)
+		{
+			if(box->CTK_getCurrentWord().compare(compstr[cnt])==0)
+				enable=false;
+			cnt++;
+		}
+
+//enable/disable menus
+//edit
+	app->menuBar->menuNames[EDITMENU]->menuItem[COPYWORD]->menuEnabled=enable;
+	app->menuBar->menuNames[EDITMENU]->menuItem[CUTWORD]->menuEnabled=enable;
+//nav
+	app->menuBar->menuNames[NAVMENU]->menuItem[NAVGOTODFINE]->menuEnabled=enable;
+	app->menuBar->menuNames[NAVMENU]->menuItem[NAVOPENINCLUDE]->menuEnabled=enable;
+	app->menuBar->menuNames[NAVMENU]->menuItem[NAVOPENMANPAGE]->menuEnabled=enable;
+//file
 	app->menuBar->menuNames[FILEMENU]->menuItem[SAVEITEM]->menuEnabled=box->isDirty;
 }
 
