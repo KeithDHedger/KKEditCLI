@@ -31,16 +31,19 @@
 void mainloopCBIn(void *mainc,void *data)
 {
 	CTK_mainAppClass		*app=static_cast<CTK_mainAppClass*>(mainc);
-	CTK_cursesEditBoxClass	*box;
+	CTK_cursesEditBoxClass	*box=NULL;
 	const char				*compstr[]={"\n","\t"," ",NULL};
 	bool					enable;
 	int						cnt;
 
+	
 	if(app->pages[app->pageNumber].srcEditBoxes.size()>0)
 		box=static_cast<CTK_cursesEditBoxClass*>(app->pages[app->pageNumber].srcEditBoxes[0]);
 	else if(app->pages[app->pageNumber].editBoxes.size()>0)
 		box=app->pages[app->pageNumber].editBoxes[0];
 
+	if(box==NULL)
+		return;
 	cnt=0;
 	enable=true;
 	while(compstr[cnt]!=NULL)
