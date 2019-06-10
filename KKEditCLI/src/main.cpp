@@ -36,7 +36,6 @@ void mainloopCBIn(void *mainc,void *data)
 	bool					enable;
 	int						cnt;
 
-	
 	if(app->pages[app->pageNumber].srcEditBoxes.size()>0)
 		box=static_cast<CTK_cursesEditBoxClass*>(app->pages[app->pageNumber].srcEditBoxes[0]);
 	else if(app->pages[app->pageNumber].editBoxes.size()>0)

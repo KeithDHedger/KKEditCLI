@@ -1,4 +1,5 @@
 0.2.1
+Find is now case insensitive.
 Disabled certain menu items when no selection.
 Fixed losing filetype when using save.
 Disabled 'Save' menu item if page not dirty.

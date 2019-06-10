@@ -47,6 +47,7 @@ shortcutStruct	scKeys[]={{FILEMENU,QUITITEM,'q'},{FILEMENU,NEWITEM,'n'},{FILEMEN
 int			foundX=-1;
 int			foundY=0;
 std::string	findString="";
+std::string	lowerneedle="";
 
 void rebuildBMMenu(void)
 {
@@ -505,17 +506,23 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 						return;
 
 					findString=cu.stringResult;
+					lowerneedle=findString;
+					transform(lowerneedle.begin(),lowerneedle.end(),lowerneedle.begin(),::tolower );
 				}
 			case NAVFINDNEXT:
 				{
-					const std::vector<std::string> str=mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getStrings();
-					int tfind=foundX;
+					const std::vector<std::string>	str=mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getStrings();
+					std::string						lowerhaystack;
+					int								tfind=foundX;
+
 					for(int j=foundY;j<str.size();j++)
 						{
+							lowerhaystack=str[j];
+							transform(lowerhaystack.begin(),lowerhaystack.end(),lowerhaystack.begin(),::tolower );
 							if(foundX==-1)
-								tfind=str[j].find(findString);
+								tfind=lowerhaystack.find(lowerneedle);
 							else
-								tfind=str[j].find(findString,foundX+1);
+								tfind=lowerhaystack.find(lowerneedle,foundX+1);
 							if(tfind!=-1)
 								{
 									mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_gotoXY(tfind,j);//TODO//highlight
