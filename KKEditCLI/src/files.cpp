@@ -44,7 +44,7 @@ args					toolVars[]=
 	{NULL,0,NULL}
 };
 
-CTK_cursesListBoxClass	toolList;
+CTK_cursesListBoxClass	*toolList;
 
 void getTagList(const char *filepath)
 {
@@ -311,7 +311,7 @@ void toolButtonCB(void *inst,void *userdata)
 	//fprintf(stderr,"Button '%s' clicked ud=%i.\n",bc->label,userdata);
 	switch((long)userdata)
 		{
-			case 1:
+			case APPLYBUTTON:
 					sinkReturn=asprintf(&newfilepath,"%s/tools/%s",configFolder,mainApp->pages[mainApp->pageNumber].inputs[0]->CTK_getText());
 					fp=fopen(newfilepath,"w");
 					if(fp!=NULL)
@@ -329,34 +329,39 @@ void toolButtonCB(void *inst,void *userdata)
 							fprintf(fp,"flags	%i\n",flags);
 							fclose(fp);
 
-							toolList.CTK_clearList();
-							toolList.CTK_addListItem("New Tool");
+							toolList->CTK_clearList();
+							toolList->CTK_addListItem("New Tool");
 							buildToolsList();
 							for(int j=0;j<tools.size();j++)
-								toolList.CTK_addListItem(tools[j].menuName);
+								toolList->CTK_addListItem(tools[j].menuName);
 						}
 						free(newfilepath);
 				break;
-			case 2:
+			case DELETEBUTTON:
 				unlink(tools[mainApp->pages[mainApp->pageNumber].lists[0]->listItemNumber-1].filePath);
-				toolList.CTK_clearList();
-				toolList.CTK_addListItem("New Tool");
+				toolList->CTK_clearList();
+				toolList->CTK_addListItem("New Tool");
 				buildToolsList();
 				for(int j=0;j<tools.size();j++)
-					toolList.CTK_addListItem(tools[j].menuName);
+					toolList->CTK_addListItem(tools[j].menuName);
 				break;
-			case 3:
+			case FINISHEDBUTTON:
 				{
-					int holdpage=mainApp->pageNumber;
+					coloursStruct	cs;
+
 					mainApp->CTK_removePage(mainApp->pageNumber);
 					mainApp->CTK_clearScreen();
 					rebuildTabMenu();
 					mainApp->menuBar->CTK_setMenuBarEnable(true);
 					mainApp->menuBar->enableShortcuts=true;
+					mainApp->colours.windowBackCol=BACK_BLACK;
+					mainApp->CTK_clearScreen();
 				}
 				break;
-			case 4:
+			case EDITBUTTON:
 				{
+				//TODO//
+				break;
 					char	path[PATH_MAX];
 					char	*rp;
 
@@ -384,12 +389,16 @@ void toolButtonCB(void *inst,void *userdata)
 				break;
 		}
 }
+
 void manageTools(void)
 {
-	int						newpage;
+	int						newpage=0;
 	coloursStruct			cs;
 	CTK_cursesUtilsClass	cu;
+	char					folder[PATH_MAX];
 
+	sprintf(folder,"mkdir -p \"%s\"/{tools,scripts}",configFolder);
+	system(folder);
 	mainApp->menuBar->CTK_setMenuBarEnable(false);
 	newpage=mainApp->CTK_addPage();
 	mainApp->CTK_setPageUserData(newpage,(void*)strdup("Manage Tools"));
@@ -397,23 +406,23 @@ void manageTools(void)
 	cs.foreCol=FORE_BLACK;
 	cs.backCol=BACK_WHITE;
 	cs.use256Colours=false;
-	cs.fancyGadgets=false;
-
-	mainApp->CTK_addNewLabel(1,3,mainApp->maxCols,mainApp->maxRows," ");
-	mainApp->pages[newpage].labels[BACKLABEL]->CTK_setColours(cs);
 	cs.fancyGadgets=true;
+
+	cs.windowBackCol=BACK_WHITE;
+	mainApp->colours.windowBackCol=BACK_WHITE;
 
 //tools
 	mainApp->CTK_addNewLabel(2,3,TOOLNAMELISTWIDTH,1,"Tool Name");
-	toolList.CTK_newListBox(2,5,TOOLNAMELISTWIDTH,mainApp->maxRows-5);
-	toolList.CTK_addListItem("New Tool");
+	toolList=new CTK_cursesListBoxClass;
+	toolList->CTK_newListBox(2,5,TOOLNAMELISTWIDTH,mainApp->maxRows-5);
+	toolList->CTK_addListItem("New Tool");
 
 	for(int j=0;j<tools.size();j++)
-		toolList.CTK_addListItem(tools[j].menuName);
-	toolList.CTK_setSelectCB(toolListCB,(void*)1);
-	toolList.CTK_setColours(cs);
-	toolList.CTK_setEnterDeselects(false);
-	mainApp->CTK_addListBox(&toolList);
+		toolList->CTK_addListItem(tools[j].menuName);
+	toolList->CTK_setSelectCB(toolListCB,(void*)1);
+	toolList->CTK_setColours(cs);
+	toolList->CTK_setEnterDeselects(false);
+	mainApp->CTK_addListBox(toolList);
 
 //output
 //ignore
@@ -442,26 +451,26 @@ void manageTools(void)
 	mainApp->pages[newpage].checkBoxes[VIEWOP]->CTK_setSelectKey(TERMKEY_SYM_SPACE);
 
 	mainApp->pages[newpage].checkBoxes[IGNOREOP]->CTK_setValue(true);
+#define SXOFF 1+TOOLNAMELISTWIDTH-4
+#define BOXWID INPUTWIDTH+16
 
 //buttons
 //apply
-#define SXOFF 1+TOOLNAMELISTWIDTH-4
-#define BOXWID INPUTWIDTH+16
 	mainApp->CTK_addNewButton(cu.CTK_getGadgetPosX(SXOFF,BOXWID,3,14,0),20,14,1," Apply  ");
 	mainApp->pages[newpage].buttons[0]->CTK_setColours(cs);
-	mainApp->pages[newpage].buttons[0]->CTK_setSelectCB(toolButtonCB,(void*)1);
+	mainApp->pages[newpage].buttons[0]->CTK_setSelectCB(toolButtonCB,(void*)APPLYBUTTON);
 //delete
 	mainApp->CTK_addNewButton(cu.CTK_getGadgetPosX(SXOFF,BOXWID,3,14,1),20,14,1," Delete ");
 	mainApp->pages[newpage].buttons[1]->CTK_setColours(cs);
-	mainApp->pages[newpage].buttons[1]->CTK_setSelectCB(toolButtonCB,(void*)2);
+	mainApp->pages[newpage].buttons[1]->CTK_setSelectCB(toolButtonCB,(void*)DELETEBUTTON);
 //open
 	mainApp->CTK_addNewButton(cu.CTK_getGadgetPosX(SXOFF,BOXWID,3,14,2),20,14,1,"  Edit  ");
 	mainApp->pages[newpage].buttons[2]->CTK_setColours(cs);
-	mainApp->pages[newpage].buttons[2]->CTK_setSelectCB(toolButtonCB,(void*)4);
+	mainApp->pages[newpage].buttons[2]->CTK_setSelectCB(toolButtonCB,(void*)EDITBUTTON);
 //fin
 	mainApp->CTK_addNewButton(cu.CTK_getGadgetPosX(SXOFF,BOXWID,3,14,3),20,14,1,"Finished");
 	mainApp->pages[newpage].buttons[3]->CTK_setColours(cs);
-	mainApp->pages[newpage].buttons[3]->CTK_setSelectCB(toolButtonCB,(void*)3);
+	mainApp->pages[newpage].buttons[3]->CTK_setSelectCB(toolButtonCB,(void*)FINISHEDBUTTON);
 	
 //toolname
 	mainApp->CTK_addNewLabel(4+TOOLNAMELISTWIDTH,13,20,1,"Tool Name:");
@@ -472,11 +481,20 @@ void manageTools(void)
 	mainApp->CTK_addNewInput(16+TOOLNAMELISTWIDTH,16,INPUTWIDTH-1,1,"");
 	mainApp->pages[newpage].inputs[1]->CTK_setColours(cs);
 
+//instructions
+	const char	*instructions="PLACEHOLDERS:\n\
+%t - Currently selected text. Passed to command as $KKEDIT_SELECTION\n\
+%f - Filepath of the current document. Passed to command as $KKEDIT_CURRENTFILE\n\
+%d - Directory of the current document or $HOME. Passed to command as $KKEDIT_CURRENTDIR";
+
+	mainApp->CTK_addNewLabel(5+TOOLNAMELISTWIDTH+20,4,mainApp->maxCols-(5+TOOLNAMELISTWIDTH+20),7,instructions);
+
 	cs.foreCol=FORE_BLACK;
 	cs.backCol=BACK_WHITE;
 	cs.fancyGadgets=false;
 	for(int j=1;j<LASTLABEL;j++)
 		mainApp->pages[newpage].labels[j]->CTK_setColours(cs);
+
 	mainApp->pages[newpage].labels[TOOLSLABEL]->CTK_setJustify(CENTRE);
 	mainApp->CTK_setDefaultGadget(LIST,0);
 

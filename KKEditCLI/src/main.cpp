@@ -43,6 +43,7 @@ void mainloopCBIn(void *mainc,void *data)
 
 	if(box==NULL)
 		return;
+
 	cnt=0;
 	enable=true;
 	while(compstr[cnt]!=NULL)
@@ -118,10 +119,15 @@ int main(int argc, char **argv)
 					setInfoLabel();
 					mainApp->CTK_addPage();
 				}
+
 			path=realpath(argv[argc-1],NULL);
+			if(path==NULL)
+				path=strdup(argv[argc-1]);
+					
 			mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,path);
 			mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setShowLineNumbers(showLineNumbers);
 			mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)path);
+			
 		}
 
 	setInfoLabel();

@@ -1,4 +1,8 @@
 0.2.1
+Added place holder info to tools window.
+Fixed flickering in manage tools window.
+Added replace text place holder in tools.
+Fixed trying to open non existant files on startup.
 Find is now case insensitive.
 Disabled certain menu items when no selection.
 Fixed losing filetype when using save.
