@@ -354,21 +354,26 @@ void toolButtonCB(void *inst,void *userdata)
 					rebuildTabMenu();
 					mainApp->menuBar->CTK_setMenuBarEnable(true);
 					mainApp->menuBar->enableShortcuts=true;
+					mainApp->menuBar->CTK_setMenuBarVisible(true);
 					mainApp->colours.windowBackCol=BACK_BLACK;
 					mainApp->CTK_clearScreen();
+					mainApp->menuBar->CTK_drawDefaultMenuBar();
 				}
 				break;
 			case EDITBUTTON:
 				{
-				//TODO//
-				break;
+				//TODO//horrible hack!
 					char	path[PATH_MAX];
 					char	*rp;
+					
+					fprintf(stderr,">%s<\n",mainApp->pages[mainApp->pageNumber].inputs[1]->CTK_getText());
 
 					if(strlen(mainApp->pages[mainApp->pageNumber].inputs[1]->CTK_getText())==0)
 						return;
+
 					sprintf(path,"%s/tools/%s",configFolder,mainApp->pages[mainApp->pageNumber].inputs[1]->CTK_getText());
 					rp=realpath(path,NULL);
+					fprintf(stderr,">%s<\n",rp);
 					if(rp==NULL)
 						{
 							oneLiner(true,"touch %s",path);
@@ -377,6 +382,18 @@ void toolButtonCB(void *inst,void *userdata)
 							if(rp==NULL)
 								return;
 						}
+
+
+					mainApp->CTK_removePage(mainApp->pageNumber);
+					mainApp->CTK_clearScreen();
+					rebuildTabMenu();
+					mainApp->menuBar->CTK_setMenuBarEnable(true);
+					mainApp->menuBar->enableShortcuts=true;
+					mainApp->menuBar->CTK_setMenuBarVisible(true);
+					mainApp->colours.windowBackCol=BACK_BLACK;
+					mainApp->menuBar->CTK_drawDefaultMenuBar();
+					mainApp->CTK_clearScreen();
+
 					mainApp->CTK_addPage();
 					mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,rp);
 					mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setShowLineNumbers(showLineNumbers);
@@ -400,6 +417,7 @@ void manageTools(void)
 	sprintf(folder,"mkdir -p \"%s\"/{tools,scripts}",configFolder);
 	system(folder);
 	mainApp->menuBar->CTK_setMenuBarEnable(false);
+	mainApp->menuBar->CTK_setMenuBarVisible(false);
 	newpage=mainApp->CTK_addPage();
 	mainApp->CTK_setPageUserData(newpage,(void*)strdup("Manage Tools"));
 	setInfoLabel();

@@ -98,7 +98,7 @@ struct toolStruct
 	bool				useBar;
 };
 
-#define MANAGETOOLSLABEL " Manage Tools"
+#define MANAGETOOLSLABEL " Manage Tools "
 
 //enum {FILEMENU=0,EDITMENU,TABMENU,NAVMENU,FUNCMENU,BMMENU,TOOLSMENU,HELPMENU};
 //
