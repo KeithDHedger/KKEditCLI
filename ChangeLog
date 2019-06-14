@@ -1,4 +1,5 @@
 0.2.1
+Fixed duplicate shortcut keys.
 Removed redundant edit menu items.
 Added multi line select/copy.
 Done edit file in manage tools.

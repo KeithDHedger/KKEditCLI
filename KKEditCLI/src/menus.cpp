@@ -38,8 +38,6 @@ shortcutStruct	scKeys[]={{FILEMENU,QUITITEM,'q'},{FILEMENU,NEWITEM,'n'},{FILEMEN
 {NAVMENU,NAVOPENMANPAGE,'p'},
 {NAVMENU,NAVFIND,'f'},
 {NAVMENU,NAVFINDNEXT,'g'},
-{BMMENU,RMALLBMS,'r'},
-{BMMENU,TOGGLEBM,'t'},
 {HELPMENU,HELP,'h'},
 {HELPMENU,ABOUT,'b'},
 {-1,-1,0}};
@@ -58,7 +56,7 @@ void rebuildBMMenu(void)
 	while(bookmarkMenuNames[cnt]!=NULL)
 		mainApp->menuBar->CTK_addMenuItem(BMMENU,bookmarkMenuNames[cnt++]);
 
-	mainApp->menuBar->CTK_setMenuShortCut(BMMENU,RMALLBMS,'r');
+	mainApp->menuBar->CTK_setMenuShortCut(BMMENU,RMALLBMS,'k');
 	mainApp->menuBar->CTK_setMenuShortCut(BMMENU,TOGGLEBM,'t');
 
 	for(int j=0;j<bms.size();j++)
@@ -650,7 +648,7 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 	str=tools[mc->menuItemNumber-1].command;
 	path=strdup((char*)mainApp->pages[mainApp->pageNumber].userData);
 	dir=dirname(path);
-	
+
 	if(mainApp->pages[mainApp->pageNumber].srcEditBoxes.size()>0)
 		box=static_cast<CTK_cursesEditBoxClass*>(mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]);
 	else if(mainApp->pages[mainApp->pageNumber].editBoxes.size()>0)

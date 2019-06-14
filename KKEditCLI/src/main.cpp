@@ -53,8 +53,8 @@ void mainloopCBIn(void *mainc,void *data)
 			cnt++;
 		}
 
-if(box->isSelecting==true)
-	enable=true;
+	if(box->isSelecting==true)
+		enable=true;
 
 //enable/disable menus
 //edit
