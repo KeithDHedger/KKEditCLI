@@ -24,14 +24,14 @@
 
 const char	*menuNames[]= {"File","Edit","Tabs","Navigation","Functions","Bookmarks","Tools","Help",NULL};
 const char	*fileMenuNames[]= {" _New"," _Open"," _Save"," Save _As"," Clos_e"," _Quit",NULL};
-const char	*editMenuNames[]= {" _Copy Word"," C_ut Word"," Copy _Line"," Cu_t Line"," _Paste",NULL};
+const char	*editMenuNames[]= {" _Copy"," C_ut Word"," Copy _Line"," Cu_t Line"," _Paste"," Sta_rt Sel"," _End Sel",NULL};
 const char	*tabMenuNames[]= {" Next Tab"," Prev Tab",NULL};
 const char	*navMenuNames[]= {" Goto _Define"," _Open Include"," Goto L_ine"," Open _Manpage"," _Find"," Find A_gain",NULL};
 const char	*bookmarkMenuNames[]= {" _Remove All Marks"," _Toggle BM",NULL};
 //const char	*toolsMenuNames[]= {" Manage Tools",NULL};
 const char	*helpMenuNames[]= {" _Help"," A_bout",NULL};
 
-shortcutStruct	scKeys[]={{FILEMENU,QUITITEM,'q'},{FILEMENU,NEWITEM,'n'},{FILEMENU,SAVEITEM,'s'},{FILEMENU,SAVEASITEM,'a'},{FILEMENU,CLOSEITEM,'C'},{FILEMENU,OPENITEM,'o'},{EDITMENU,COPYWORD,'c'},{EDITMENU,CUTWORD,'x'},{EDITMENU,PASTE,'v'},
+shortcutStruct	scKeys[]={{FILEMENU,QUITITEM,'q'},{FILEMENU,NEWITEM,'n'},{FILEMENU,SAVEITEM,'s'},{FILEMENU,SAVEASITEM,'a'},{FILEMENU,CLOSEITEM,'w'},{FILEMENU,OPENITEM,'o'},{EDITMENU,COPYWORD,'c'},{EDITMENU,CUTWORD,'x'},{EDITMENU,PASTE,'v'},{EDITMENU,STARTSEL,'r'},{EDITMENU,ENDSEL,'e'},
 {NAVMENU,NAVGOTODFINE,'d'},
 {NAVMENU,NAVOPENINCLUDE,'u'},
 {NAVMENU,NAVGOTOLINE,'l'},
@@ -288,8 +288,22 @@ void handleEditMenu(CTK_cursesMenuClass *mc)
 {
 	switch(mc->menuItemNumber)
 		{
+			case ENDSEL:
+				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_finishSelecting();
+				break;
+
+			case STARTSEL:
+				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_startSelecting();
+				break;
+
 			case COPYWORD:
-				clip=mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getCurrentWord();
+				if(mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isSelecting==true)
+					{
+						clip=mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getSelection();
+						mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_finishSelecting();
+					}
+				else
+					clip=mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getCurrentWord();
 				break;
 
 			case COPYLINE:
@@ -465,8 +479,10 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 					FILE	*fp;
 					char	filepath[2048];
 					tclip=mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getCurrentWord();
+					//fprintf(stderr,"clip=>%s<\n",tclip.c_str());
 					mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setRunLoop(false);
 					asprintf(&command,"man -aw %s",tclip.c_str());
+					//fprintf(stderr,"command=>%s<\n",command);
 					fp=popen(command,"r");
 					free(command);
 					if(fp!=NULL)

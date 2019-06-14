@@ -20,7 +20,8 @@
  
 #include "globals.h"
 
-CTK_mainAppClass			*mainApp=new CTK_mainAppClass();
+//CTK_mainAppClass			*mainApp;//=new CTK_mainAppClass();
+CTK_mainAppClass			*mainApp=new CTK_mainAppClass;
 int							windowRows=mainApp->maxRows-TOPLINE;
 int							windowCols=mainApp->maxCols;
 int							showLineNumbers=4;
