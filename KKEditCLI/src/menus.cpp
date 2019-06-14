@@ -24,7 +24,7 @@
 
 const char	*menuNames[]= {"File","Edit","Tabs","Navigation","Functions","Bookmarks","Tools","Help",NULL};
 const char	*fileMenuNames[]= {" _New"," _Open"," _Save"," Save _As"," Clos_e"," _Quit",NULL};
-const char	*editMenuNames[]= {" _Copy"," C_ut Word"," Copy _Line"," Cu_t Line"," _Paste"," Sta_rt Sel"," _End Sel",NULL};
+const char	*editMenuNames[]= {" _Copy"," C_ut"," _Paste"," Sta_rt Sel"," _End Sel",NULL};
 const char	*tabMenuNames[]= {" Next Tab"," Prev Tab",NULL};
 const char	*navMenuNames[]= {" Goto _Define"," _Open Include"," Goto L_ine"," Open _Manpage"," _Find"," Find A_gain",NULL};
 const char	*bookmarkMenuNames[]= {" _Remove All Marks"," _Toggle BM",NULL};
@@ -306,20 +306,17 @@ void handleEditMenu(CTK_cursesMenuClass *mc)
 					clip=mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getCurrentWord();
 				break;
 
-			case COPYLINE:
-				clip=mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getCurrentLine();
-				break;
-
 			case CUTWORD:
-				clip=mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getCurrentWord();
-				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_deleteCurrentWord();
-				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty=true;
-				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getBuffer();
-				break;
-
-			case CUTLINE:
-				clip=mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getCurrentLine();
-				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_deleteCurrentLine();
+				if(mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isSelecting==true)
+					{
+						clip=mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getSelection();
+						mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_deleteSelection();
+					}
+				else
+					{
+						clip=mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getCurrentWord();
+						mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_deleteCurrentWord();
+					}
 				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isDirty=true;
 				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_getBuffer();
 				break;

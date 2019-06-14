@@ -1,4 +1,5 @@
 0.2.1
+Removed redundant edit menu items.
 Added multi line select/copy.
 Done edit file in manage tools.
 Added place holder info to tools window.
