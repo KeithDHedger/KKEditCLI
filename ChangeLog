@@ -1,4 +1,5 @@
 0.2.1
+Fixed copy shortcut key when drag selecting.
 Fixed duplicate shortcut keys.
 Removed redundant edit menu items.
 Added multi line select/copy.

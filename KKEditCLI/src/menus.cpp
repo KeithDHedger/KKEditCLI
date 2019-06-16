@@ -291,6 +291,9 @@ void handleEditMenu(CTK_cursesMenuClass *mc)
 				break;
 
 			case STARTSEL:
+				mainApp->menuBar->menuNames[EDITMENU]->menuItem[COPYWORD]->menuEnabled=true;
+				mainApp->menuBar->menuNames[EDITMENU]->menuItem[CUTWORD]->menuEnabled=true;
+
 				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_startSelecting();
 				break;
 
