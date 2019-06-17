@@ -24,14 +24,14 @@
 
 const char	*menuNames[]= {"File","Edit","Tabs","Navigation","Functions","Bookmarks","Tools","Help",NULL};
 const char	*fileMenuNames[]= {" _New"," _Open"," _Save"," Save _As"," Clos_e"," _Quit",NULL};
-const char	*editMenuNames[]= {" _Copy"," C_ut"," _Paste"," Sta_rt Sel"," _End Sel",NULL};
+const char	*editMenuNames[]= {" _Copy"," C_ut"," _Paste",NULL};
 const char	*tabMenuNames[]= {" Next Tab"," Prev Tab",NULL};
 const char	*navMenuNames[]= {" Goto _Define"," _Open Include"," Goto L_ine"," Open _Manpage"," _Find"," Find A_gain",NULL};
 const char	*bookmarkMenuNames[]= {" _Remove All Marks"," _Toggle BM",NULL};
 //const char	*toolsMenuNames[]= {" Manage Tools",NULL};
 const char	*helpMenuNames[]= {" _Help"," A_bout",NULL};
 
-shortcutStruct	scKeys[]={{FILEMENU,QUITITEM,'q'},{FILEMENU,NEWITEM,'n'},{FILEMENU,SAVEITEM,'s'},{FILEMENU,SAVEASITEM,'a'},{FILEMENU,CLOSEITEM,'w'},{FILEMENU,OPENITEM,'o'},{EDITMENU,COPYWORD,'c'},{EDITMENU,CUTWORD,'x'},{EDITMENU,PASTE,'v'},{EDITMENU,STARTSEL,'r'},{EDITMENU,ENDSEL,'e'},
+shortcutStruct	scKeys[]={{FILEMENU,QUITITEM,'q'},{FILEMENU,NEWITEM,'n'},{FILEMENU,SAVEITEM,'s'},{FILEMENU,SAVEASITEM,'a'},{FILEMENU,CLOSEITEM,'w'},{FILEMENU,OPENITEM,'o'},{EDITMENU,COPYWORD,'c'},{EDITMENU,CUTWORD,'x'},{EDITMENU,PASTE,'v'},
 {NAVMENU,NAVGOTODFINE,'d'},
 {NAVMENU,NAVOPENINCLUDE,'u'},
 {NAVMENU,NAVGOTOLINE,'l'},
@@ -286,16 +286,16 @@ void handleEditMenu(CTK_cursesMenuClass *mc)
 {
 	switch(mc->menuItemNumber)
 		{
-			case ENDSEL:
-				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_finishSelecting();
-				break;
-
-			case STARTSEL:
-				mainApp->menuBar->menuNames[EDITMENU]->menuItem[COPYWORD]->menuEnabled=true;
-				mainApp->menuBar->menuNames[EDITMENU]->menuItem[CUTWORD]->menuEnabled=true;
-
-				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_startSelecting();
-				break;
+//			case ENDSEL:
+//				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_finishSelecting();
+//				break;
+//
+//			case STARTSEL:
+//				mainApp->menuBar->menuNames[EDITMENU]->menuItem[COPYWORD]->menuEnabled=true;
+//				mainApp->menuBar->menuNames[EDITMENU]->menuItem[CUTWORD]->menuEnabled=true;
+//
+//				mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_startSelecting();
+//				break;
 
 			case COPYWORD:
 				if(mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->isSelecting==true)
