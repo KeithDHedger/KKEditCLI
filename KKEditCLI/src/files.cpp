@@ -431,7 +431,7 @@ void manageTools(void)
 
 //tools
 	mainApp->CTK_addNewLabel(2,3,TOOLNAMELISTWIDTH,1,"Tool Name");
-	toolList=new CTK_cursesListBoxClass;
+	toolList=new CTK_cursesListBoxClass(mainApp);
 	toolList->CTK_newListBox(2,5,TOOLNAMELISTWIDTH,mainApp->maxRows-5);
 	toolList->CTK_addListItem("New Tool");
 

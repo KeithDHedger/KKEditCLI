@@ -749,7 +749,7 @@ void handleHelpMenu(CTK_cursesMenuClass *mc)
 		}
 }
 
-void menuSelectCB(void *inst)
+void menuSelectCB(void *inst,void *userdata)
 {
 	CTK_cursesMenuClass	*mc=static_cast<CTK_cursesMenuClass*>(inst);
 
@@ -841,5 +841,5 @@ void setupMenus(void)
 	while(scKeys[++cnt].menu!=-1);
 
 	mainApp->menuBar->CTK_setColours(cs);
-	mainApp->menuBar->CTK_setSelectCB(menuSelectCB);
+	mainApp->menuBar->CTK_setSelectCB(menuSelectCB,NULL);
 }
