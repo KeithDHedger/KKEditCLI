@@ -20,7 +20,6 @@
  
 #include "globals.h"
 
-//CTK_mainAppClass			*mainApp;//=new CTK_mainAppClass();
 CTK_mainAppClass			*mainApp=new CTK_mainAppClass;
 int							windowRows=mainApp->maxRows-TOPLINE;
 int							windowCols=mainApp->maxCols;
@@ -28,6 +27,7 @@ int							showLineNumbers=4;
 const char					*tmpEdDir;
 char						*manFile=NULL;
 char						*configFolder=NULL;
+CTK_cursesLabelClass		*fileInfoLabel=NULL;
 
 int							newCnt=0;
 std::string					clip="";
@@ -110,4 +110,22 @@ char* oneLiner(bool noreturn,const char* fmt,...)
 				return(strdup(buffer));
 		}
 	return(NULL);
+}
+
+//find src box
+CTK_cursesSourceEditBoxClass* getSrcBox(int page)
+{
+	CTK_cursesGadgetClass	*srcbox;
+
+	srcbox=mainApp->CTK_getGadgetNum(page,SRCGADGET,1);
+	return(static_cast<CTK_cursesSourceEditBoxClass*>(srcbox));
+}
+
+//find edit box
+CTK_cursesEditBoxClass* getEditBox(int page)
+{
+	CTK_cursesGadgetClass	*edbox;
+
+	edbox=mainApp->CTK_getGadgetNum(page,EDITGADGET,1);
+	return(static_cast<CTK_cursesEditBoxClass*>(edbox));
 }

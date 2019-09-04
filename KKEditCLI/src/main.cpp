@@ -35,11 +35,16 @@ void mainloopCBIn(void *mainc,void *data)
 	const char				*compstr[]={"\n","\t"," ",NULL};
 	bool					enable;
 	int						cnt;
+	CTK_cursesGadgetClass	*srcbox;
+	CTK_cursesGadgetClass	*edbox;
 
-	if(app->pages[app->pageNumber].srcEditBoxes.size()>0)
-		box=static_cast<CTK_cursesEditBoxClass*>(app->pages[app->pageNumber].srcEditBoxes[0]);
-	else if(app->pages[app->pageNumber].editBoxes.size()>0)
-		box=app->pages[app->pageNumber].editBoxes[0];
+	srcbox=app->CTK_getGadgetNum(app->pageNumber,SRCGADGET,1);
+	edbox=app->CTK_getGadgetNum(app->pageNumber,EDITGADGET,1);
+	//if(app->pages[app->pageNumber].srcEditBoxes.size()>0)
+	if(srcbox!=NULL)
+		box=static_cast<CTK_cursesEditBoxClass*>(srcbox);//static_cast<CTK_cursesEditBoxClass*>(app->pages[app->pageNumber].srcEditBoxes[0]);
+	else if(edbox!=NULL)
+		box=static_cast<CTK_cursesEditBoxClass*>(edbox);
 
 	if(box==NULL)
 		return;
@@ -79,6 +84,7 @@ int main(int argc, char **argv)
 	char			tmpfoldertemplate[]="/dev/shm/KKEditCLI-XXXXXX";
 	coloursStruct	cs;
 	char			*path=NULL;
+	CTK_cursesSourceEditBoxClass	*srcbox;
 
 	tmpEdDir=mkdtemp(tmpfoldertemplate);
 	if(tmpEdDir==NULL)
@@ -104,8 +110,8 @@ int main(int argc, char **argv)
 
 	if(argc==1)
 		{
-			mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,false,"\n");
-			mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setShowLineNumbers(showLineNumbers);
+			srcbox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,false,"\n");
+			srcbox->CTK_setShowLineNumbers(showLineNumbers);
 			mainApp->CTK_setPageUserData(0,(void*)strdup("/tmp/Untitled-1"));
 		}
 	else
@@ -115,8 +121,8 @@ int main(int argc, char **argv)
 					path=realpath(argv[j],NULL);
 					if(path==NULL)
 						path=strdup(argv[j]);
-					mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,path);
-					mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setShowLineNumbers(showLineNumbers);
+					srcbox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,path);
+					srcbox->CTK_setShowLineNumbers(showLineNumbers);
 
 					mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)path);
 					setInfoLabel();
@@ -127,8 +133,8 @@ int main(int argc, char **argv)
 			if(path==NULL)
 				path=strdup(argv[argc-1]);
 					
-			mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,path);
-			mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setShowLineNumbers(showLineNumbers);
+			srcbox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,path);
+			srcbox->CTK_setShowLineNumbers(showLineNumbers);
 			mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)path);
 			
 		}

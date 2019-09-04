@@ -131,6 +131,7 @@ extern int						showLineNumbers;
 extern const char				*tmpEdDir;
 extern char						*manFile;
 extern char						*configFolder;
+extern CTK_cursesLabelClass		*fileInfoLabel;
 
 extern int						newCnt;
 extern std::string				clip;
@@ -157,5 +158,8 @@ extern std::vector<funcStruct*>	functions;
 extern std::vector<bookmarkStruct>	bms;
 
 char* oneLiner(bool noreturn,const char* fmt,...);
+//find src/edit box
+CTK_cursesSourceEditBoxClass*	getSrcBox(int page);
+CTK_cursesEditBoxClass*			getEditBox(int page);
 
 #endif
