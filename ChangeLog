@@ -1,4 +1,7 @@
 0.2.2
+Fixed Multi line selection being passed to external tool.
+Fixed segfaults when fnishing/editing in manage tools window.
+Various updates for new library version.
 
 0.2.1
 Fixed copy shortcut key when drag selecting.

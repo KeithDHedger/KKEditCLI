@@ -333,16 +333,12 @@ void toolButtonCB(void *inst,void *userdata)
 						{
 							fprintf(fp,"name	%s\n",manageToolsData.inputs[NAMEINPUT]->CTK_getText());
 							fprintf(fp,"command	%s\n",manageToolsData.inputs[COMMANDINPUT]->CTK_getText());
-							//if(mainApp->pages[mainApp->pageNumber].checkBoxes[IGNOREOP]->CTK_getValue()==true)
 							if(manageToolsData.checkBoxes[IGNOREOP]->CTK_getValue()==true)
 								flags=TOOL_IGNORE_OP;
-							//if(mainApp->pages[mainApp->pageNumber].checkBoxes[PASTEOP]->CTK_getValue()==true)
 							if(manageToolsData.checkBoxes[PASTEOP]->CTK_getValue()==true)
 								flags=TOOL_PASTE_OP;
-							//if(mainApp->pages[mainApp->pageNumber].checkBoxes[REPLACEOP]->CTK_getValue()==true)
 							if(manageToolsData.checkBoxes[REPLACEOP]->CTK_getValue()==true)
 								flags=TOOL_REPLACE_OP;
-							//if(mainApp->pages[mainApp->pageNumber].checkBoxes[VIEWOP]->CTK_getValue()==true)
 							if(manageToolsData.checkBoxes[VIEWOP]->CTK_getValue()==true)
 								flags=TOOL_VIEW_OP;
 							fprintf(fp,"flags	%i\n",flags);
@@ -515,11 +511,12 @@ void manageTools(void)
 	manageToolsData.inputs[COMMANDINPUT]->CTK_setColours(cs);
 //instructions
 	const char	*instructions="PLACEHOLDERS:\n\
-%t - Currently selected text. Passed to command as $KKEDIT_SELECTION\n\
+%c - Currently selected text. Passed to command as $KKEDIT_SELECTION\n\
+%t - Word under cursor. Passed to command as $KKEDIT_SELECTION\n\
 %f - Filepath of the current document. Passed to command as $KKEDIT_CURRENTFILE\n\
-%d - Directory of the current document or $HOME. Passed to command as $KKEDIT_CURRENTDIR";
+%d - Directory of the current document or $HOME. Passed to command as $KKEDIT_CURRENTDIR\n";
 
-	manageToolsData.labels[LABELINFO]=mainApp->CTK_addNewLabel(5+TOOLNAMELISTWIDTH+20,4,mainApp->maxCols-(5+TOOLNAMELISTWIDTH+20),7,instructions);
+	manageToolsData.labels[LABELINFO]=mainApp->CTK_addNewLabel(5+TOOLNAMELISTWIDTH+20,4,mainApp->maxCols-(5+TOOLNAMELISTWIDTH+20),6,instructions);
 
 	cs.foreCol=FORE_BLACK;
 	cs.backCol=BACK_WHITE;

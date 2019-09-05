@@ -695,7 +695,7 @@ void replaceAll(std::string &str,const std::string from,const std::string to)
 
 void handleToolsMenu(CTK_cursesMenuClass *mc)
 {
-	const char				*vars[]= {"%f","%d","%t",NULL};
+	const char				*vars[]= {"%f","%d","%t","%c",NULL};
 	int						cnt=0;
 	std::string				str;
 	char					*path;
@@ -703,7 +703,6 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 	FILE					*fp=NULL;
 	char					line[1024];
 	char					commandpath[PATH_MAX];
-//	CTK_cursesEditBoxClass	*box=NULL;
 
 	CTK_cursesGadgetClass	*srcbox;
 	CTK_cursesGadgetClass	*edbox;
@@ -727,11 +726,6 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 	path=strdup((char*)mainApp->pages[mainApp->pageNumber].userData);
 	dir=dirname(path);
 
-//	if(mainApp->pages[mainApp->pageNumber].srcEditBoxes.size()>0)
-//		box=static_cast<CTK_cursesEditBoxClass*>(mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]);
-//	else if(mainApp->pages[mainApp->pageNumber].editBoxes.size()>0)
-//		box=mainApp->pages[mainApp->pageNumber].editBoxes[0];
-
 	while(vars[cnt]!=NULL)
 		switch(cnt)
 			{
@@ -743,12 +737,16 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 					break;
 				case 2:
 					replaceAll(str,vars[cnt++],box->CTK_getCurrentWord().c_str());
+					setenv("KKEDIT_SELECTION",box->CTK_getCurrentWord().c_str(),1);
+					break;
+				case 3:
+					replaceAll(str,vars[cnt++],box->CTK_getSelection().c_str());
+					setenv("KKEDIT_SELECTION",box->CTK_getSelection().c_str(),1);
 					break;
 			}
 
 	setenv("KKEDIT_CURRENTFILE",(char*)mainApp->pages[mainApp->pageNumber].userData,1);
 	setenv("KKEDIT_CURRENTDIR",dir,1);
-	setenv("KKEDIT_SELECTION",box->CTK_getCurrentWord().c_str(),1);
 
 //fprintf(stderr,"this folder=%s\n",dir);
 //fprintf(stderr,"tools folder=%s/tools\n",configFolder);
@@ -756,7 +754,7 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 //fprintf(stderr,"command to run=(cd %s/tools;%s) 2>&1\n",configFolder,str.c_str());
 //fprintf(stderr,"path=%s\n",getenv("PATH"));
 
-	sprintf(commandpath,"(cd \"%s/tools\";%s) 2>&1",configFolder,str.c_str());
+	sprintf(commandpath,"(cd \"%s/tools\";%s)",configFolder,str.c_str());
 	fp=popen(commandpath,"r");
 	free(path);
 	if(fp!=NULL)
@@ -766,7 +764,7 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 				str.append(line);
 			pclose(fp);
 		}
-
+//fprintf(stderr,"--->%s<---\n",commandpath);
 	if(tools[mc->menuItemNumber-1].flags & TOOL_PASTE_OP)
 		{
 			//fprintf(stderr,"TOOL_PASTE_OP\n");
