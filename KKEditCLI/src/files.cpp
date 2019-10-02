@@ -524,7 +524,7 @@ void manageTools(void)
 	for(int j=0;j<LASTLABEL;j++)
 		manageToolsData.labels[j]->CTK_setColours(cs);
 
-	manageToolsData.labels[LABELLIST]->CTK_setJustify(CENTRE);
+	manageToolsData.labels[LABELLIST]->CTK_setJustify(CENTREJUSTIFY);
 	mainApp->CTK_setDefaultGadget(manageToolsData.toolList);
 
 	rebuildTabMenu();

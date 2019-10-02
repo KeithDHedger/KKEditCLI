@@ -143,7 +143,9 @@ int main(int argc, char **argv)
 	rebuildTabMenu();
 	mainApp->eventLoopCBIn=mainloopCBIn;
 	mainApp->eventLoopCBOut=mainloopCBOut;
+	mainApp->CTK_setDefaultGadget(srcbox);
 	mainApp->CTK_mainEventLoop();
+	
 	for(int k=0;k<mainApp->pages.size();k++)
 		free(mainApp->pages[k].userData);
 	delete mainApp;
