@@ -148,6 +148,20 @@ int main(int argc, char **argv)
 	
 	for(int k=0;k<mainApp->pages.size();k++)
 		free(mainApp->pages[k].userData);
+
+	for(int j=0;j<functions.size();j++)
+		{
+			freeAndNull(&functions[j]->name);
+			freeAndNull(&functions[j]->type);
+			freeAndNull(&functions[j]->menuLabel);
+			delete functions[j];
+		}
+	functions.clear();
+	destroyTools();
+	free(menuname);
+	free(commandarg);
+	free(commentarg);
+
 	delete mainApp;
 	SETSHOWCURS;
 	unlink(manFile);

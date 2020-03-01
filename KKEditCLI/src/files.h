@@ -33,5 +33,6 @@ void getTagList(const char *filepath);
 int loadVarsFromFile(char *filepath,args *dataptr);
 void buildToolsList(void);
 void manageTools(void);
+void destroyTools(void);
 
 #endif

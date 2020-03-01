@@ -86,12 +86,12 @@ struct toolStruct
 	char				*menuName=NULL;
 	char				*filePath=NULL;
 	char				*command=NULL;
+	char				*comment;
 	int					flags=0;
 	bool				inTerminal;					
 	bool				inPopUp;
 	bool				alwaysPopup;
 	bool				clearView;
-	char				*comment;
 	bool				global;
 	bool				runAsRoot;
 	int					keyCode;

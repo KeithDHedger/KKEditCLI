@@ -67,7 +67,6 @@ void getTagList(const char *filepath)
 
 	mainApp->menuBar->CTK_clearMenu(FUNCMENU);
 
-//	if(mainApp->pages[mainApp->pageNumber].srcEditBoxes.size()==0)
 	if(getSrcBox(mainApp->pageNumber)==NULL)
 		{
 			mainApp->menuBar->menuNames[FUNCMENU]->menuEnabled=false;
@@ -166,9 +165,6 @@ int loadVarsFromFile(char *filepath,args *dataptr)
 											case TYPESTRING:
 												if(*(char**)(dataptr[cnt].data)!=NULL)
 													freeAndNull((char**)dataptr[cnt].data);
-												//	{
-												//		ERRDATA debugFree(&*(char**)(dataptr[cnt].data));
-												//	}
 												*(char**)(dataptr[cnt].data)=(char*)strdup(vs->data);
 												break;
 											case TYPEBOOL:
@@ -199,7 +195,13 @@ void destroyTools(void)
 {
 	if(tools.size()==0)
 		return;
+/*
+	char				*menuName=NULL;
+	char				*filePath=NULL;
+	char				*command=NULL;
+	char				*comment;
 
+*/
 	for(int j=0;j<tools.size();j++)
 		{
 			if(tools[j].menuName!=NULL)
@@ -208,6 +210,8 @@ void destroyTools(void)
 				freeAndNull(&tools[j].filePath);
 			if(tools[j].command!=NULL)
 				freeAndNull(&tools[j].command);
+			if(tools[j].comment!=NULL)
+				freeAndNull(&tools[j].comment);
 		}
 	tools.clear();
 }
@@ -269,6 +273,8 @@ void buildToolsList(void)
 					mainApp->menuBar->CTK_addMenuItem(TOOLSMENU,tool.menuName);
 				}
 		}
+	delete files;
+	free(datafolder);
 }
 
 void toolListCB(void *inst,void *userdata)
