@@ -422,6 +422,7 @@ void toolButtonCB(void *inst,void *userdata)
 				}
 				break;
 		}
+	mainApp->CTK_updateScreen(mainApp,SCREENUPDATEUNHILITE);
 }
 
 void manageTools(void)
