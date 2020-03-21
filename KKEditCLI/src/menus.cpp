@@ -82,6 +82,7 @@ void rebuildBMMenu(void)
 									bm.isSrc=true;
 									bms.push_back(bm);
 									mainApp->menuBar->CTK_addMenuItem(BMMENU,(const char*)buffer);
+									//free(buffer);
 								}
 						}
 				}
