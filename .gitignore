@@ -8,6 +8,8 @@ config.log
 config.status
 stamp-h1
 KKEditCLI/app/kkeditcli
+KKEditCLI/app/ignorelibleaks
+KKEditCLI/app/valgrindwrapper
 tags
 IGNORE/
 IGNOREXX

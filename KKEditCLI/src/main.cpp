@@ -144,6 +144,7 @@ int main(int argc, char **argv)
 	mainApp->eventLoopCBIn=mainloopCBIn;
 	mainApp->eventLoopCBOut=mainloopCBOut;
 	mainApp->CTK_setDefaultGadget(srcbox);
+	SETHIDECURS;
 	mainApp->CTK_mainEventLoop();
 	
 	for(int k=0;k<mainApp->pages.size();k++)

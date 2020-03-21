@@ -271,13 +271,16 @@ void buildToolsList(void)
 					tool.global=false;
 					tools.push_back(tool);
 					mainApp->menuBar->CTK_addMenuItem(TOOLSMENU,tool.menuName);
+					freeAndNull(&menuname);
+					freeAndNull(&commandarg);
+					freeAndNull(&commentarg);
 				}
 		}
 	delete files;
 	free(datafolder);
 }
 
-void toolListCB(void *inst,void *userdata)
+bool toolListCB(void *inst,void *userdata)
 {
 	char						*buffer=(char*)alloca(256);
 	CTK_cursesListBoxClass		*ls=static_cast<CTK_cursesListBoxClass*>(inst);
@@ -294,7 +297,7 @@ void toolListCB(void *inst,void *userdata)
 		{
 			manageToolsData.checkBoxes[IGNOREOP]->CTK_setValue(true);
 			manageToolsData.inputs[COMMANDINPUT]->CTK_setText("");
-			return;
+			return(true);
 		}
 
 	manageToolsData.inputs[COMMANDINPUT]->CTK_setText(tools[ls->listItemNumber-1].command);
@@ -310,9 +313,10 @@ void toolListCB(void *inst,void *userdata)
 	else
 		//mainApp->pages[mainApp->pageNumber].checkBoxes[IGNOREOP]->CTK_setValue(true);
 		manageToolsData.checkBoxes[IGNOREOP]->CTK_setValue(true);
+	return(true);
 }
 
-void checkCB(void *inst,void *userdata)
+bool checkCB(void *inst,void *userdata)
 {
 	CTK_cursesCheckBoxClass	*cb=static_cast<CTK_cursesCheckBoxClass*>(inst);
 
@@ -320,9 +324,10 @@ void checkCB(void *inst,void *userdata)
 		manageToolsData.checkBoxes[j]->CTK_setValue(false);
 	cb->CTK_setValue(!cb->CTK_getValue());
 //	fprintf(stderr,"ud=%i cbsize=%i\n",userdata,mainApp->pages[mainApp->pageNumber].checkBoxes.size());
+	return(true);
 }
 
-void toolButtonCB(void *inst,void *userdata)
+bool toolButtonCB(void *inst,void *userdata)
 {
 	CTK_cursesButtonClass	*bc=static_cast<CTK_cursesButtonClass*>(inst);
 	char					*newfilepath;
@@ -391,7 +396,7 @@ void toolButtonCB(void *inst,void *userdata)
 					int								holdpn=mainApp->pageNumber;
 					
 					if(strlen(manageToolsData.inputs[COMMANDINPUT]->CTK_getText())==0)
-						return;
+						return(true);
 
 					sprintf(path,"%s/tools/%s",configFolder,manageToolsData.inputs[COMMANDINPUT]->CTK_getText());
 					rp=realpath(path,NULL);
@@ -402,7 +407,7 @@ void toolButtonCB(void *inst,void *userdata)
 							oneLiner(true,"chmod +x %s",path);
 							rp=realpath(path,NULL);
 							if(rp==NULL)
-								return;
+								return(true);
 						}
 
 					mainApp->CTK_addPage();
@@ -423,6 +428,7 @@ void toolButtonCB(void *inst,void *userdata)
 				break;
 		}
 	mainApp->CTK_updateScreen(mainApp,SCREENUPDATEUNHILITE);
+	return(true);
 }
 
 void manageTools(void)
@@ -466,26 +472,26 @@ void manageTools(void)
 	manageToolsData.checkBoxes[IGNOREOP]->CTK_setColours(cs);
 	manageToolsData.checkBoxes[IGNOREOP]->CTK_setSelectDeselects(false);
 	manageToolsData.checkBoxes[IGNOREOP]->CTK_setSelectCB(checkCB,(void*)IGNOREOP);
-	manageToolsData.checkBoxes[IGNOREOP]->CTK_setSelectKey(TERMKEY_SYM_SPACE);
+	manageToolsData.checkBoxes[IGNOREOP]->CTK_setSelectKey(' ');
 	manageToolsData.checkBoxes[IGNOREOP]->CTK_setValue(true);
 //paste
 	manageToolsData.checkBoxes[PASTEOP]=mainApp->CTK_addNewCheckBox(4+TOOLNAMELISTWIDTH,6,20,"Paste Output    ");
 	manageToolsData.checkBoxes[PASTEOP]->CTK_setColours(cs);
 	manageToolsData.checkBoxes[PASTEOP]->CTK_setSelectDeselects(false);
 	manageToolsData.checkBoxes[PASTEOP]->CTK_setSelectCB(checkCB,(void*)PASTEOP);
-	manageToolsData.checkBoxes[PASTEOP]->CTK_setSelectKey(TERMKEY_SYM_SPACE);
+	manageToolsData.checkBoxes[PASTEOP]->CTK_setSelectKey(' ');
 //replace
 	manageToolsData.checkBoxes[REPLACEOP]=mainApp->CTK_addNewCheckBox(4+TOOLNAMELISTWIDTH,8,20,"Replace Contents");
 	manageToolsData.checkBoxes[REPLACEOP]->CTK_setColours(cs);
 	manageToolsData.checkBoxes[REPLACEOP]->CTK_setSelectDeselects(false);
 	manageToolsData.checkBoxes[REPLACEOP]->CTK_setSelectCB(checkCB,(void*)REPLACEOP);
-	manageToolsData.checkBoxes[REPLACEOP]->CTK_setSelectKey(TERMKEY_SYM_SPACE);
+	manageToolsData.checkBoxes[REPLACEOP]->CTK_setSelectKey(' ');
 //view
 	manageToolsData.checkBoxes[VIEWOP]=mainApp->CTK_addNewCheckBox(4+TOOLNAMELISTWIDTH,10,20,"View Output     ");
 	manageToolsData.checkBoxes[VIEWOP]->CTK_setColours(cs);
 	manageToolsData.checkBoxes[VIEWOP]->CTK_setSelectDeselects(false);
 	manageToolsData.checkBoxes[VIEWOP]->CTK_setSelectCB(checkCB,(void*)VIEWOP);
-	manageToolsData.checkBoxes[VIEWOP]->CTK_setSelectKey(TERMKEY_SYM_SPACE);
+	manageToolsData.checkBoxes[VIEWOP]->CTK_setSelectKey(' ');
 
 #define SXOFF 1+TOOLNAMELISTWIDTH-4
 #define BOXWID INPUTWIDTH+16

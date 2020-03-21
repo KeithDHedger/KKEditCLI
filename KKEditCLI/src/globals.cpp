@@ -107,7 +107,8 @@ char* oneLiner(bool noreturn,const char* fmt,...)
 				}
 			pclose(fp);
 			if(noreturn==false)
-				return(strdup(buffer));
+			//	return(strdup(buffer));
+				return(NULL);
 		}
 	return(NULL);
 }

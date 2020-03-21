@@ -175,14 +175,14 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 					std::string				str;
 					CTK_cursesUtilsClass	cu;
 					char					*buffer=get_current_dir_name();
-					cu.CTK_openFile(mainApp,"Open File",buffer);
-					if(cu.isValidFile==true)
+					cu.CTK_fileChooserDialog(buffer,CUOPENFILE);
+					if(cu.dialogReturnData.isValidData==true)
 						{
 							box->CTK_setRunLoop(false);
 							mainApp->CTK_addPage();
-							sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,cu.stringResult.c_str());
+							sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,cu.dialogReturnData.stringValue.c_str());
 							sourcebox->CTK_setShowLineNumbers(showLineNumbers);
-							mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(cu.stringResult.c_str()));
+							mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(cu.dialogReturnData.stringValue.c_str()));
 							setInfoLabel();
 							rebuildTabMenu();
 						}
@@ -192,7 +192,7 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 
 			case SAVEITEM:
 				{
-					const char	*buf;
+					char	*buf;
 					buf=box->CTK_getBuffer();
 					FILE *f=fopen((char*)mainApp->pages[mainApp->pageNumber].userData,"w+");
 					if(f!=NULL)
@@ -203,22 +203,23 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 							fclose(f);
 							getTagList((const char*)mainApp->pages[mainApp->pageNumber].userData);
 						}
+					free(buf);
 					setInfoLabel();
 				}
 				break;
 
 			case SAVEASITEM:
 				{
-					const char				*buf;
+					char				*buf;
 					char					*buffer=(char*)alloca(PATH_MAX);
 					CTK_cursesUtilsClass	cu;
 					char					*holdstr=strdup((char*)mainApp->pages[mainApp->pageNumber].userData);
 
 					buf=box->CTK_getBuffer();
-					cu.CTK_openFile(mainApp,"Save As ...",dirname(holdstr),false,basename(holdstr));
-					if(cu.isValidFile==true)
+					cu.CTK_fileChooserDialog(dirname(holdstr),CUSAVEFILE,NULL,basename(holdstr));
+					if(cu.dialogReturnData.isValidData==true)
 						{
-							sprintf(buffer,"%s/%s",cu.inFolder.c_str(),cu.stringResult.c_str());
+							sprintf(buffer,"%s",cu.dialogReturnData.stringValue.c_str());
 							FILE *f=fopen(buffer,"w+");
 							if(f!=NULL)
 								{
@@ -227,12 +228,12 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 									mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(buffer));
 									fclose(f);
 									box->isDirty=false;
-									box->CTK_updateText(buffer,true);
 									rebuildTabMenu();
 									fflush(NULL);
 								}
 							setInfoLabel();
 						}
+					free(buf);
 					free(holdstr);
 				}
 				break;
@@ -242,8 +243,9 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 				if(box->isDirty==true)
 					{
 						CTK_cursesUtilsClass	cu;
-						cu.CTK_queryDialog(mainApp,"File has changed ...\nDo you want to save it?",(const char*)mainApp->pages[mainApp->pageNumber].userData,"Save ...",YESBUTTON|NOBUTTON);
-						if(cu.intResult & YESBUTTON)
+					//	cu.CTK_queryDialog(mainApp,"File has changed ...\nDo you want to save it?",(const char*)mainApp->pages[mainApp->pageNumber].userData,"Save ...",YESBUTTON|NOBUTTON);
+						cu.CTK_queryDialog("File has changed ...\nDo you want to save it?",(const char*)mainApp->pages[mainApp->pageNumber].userData,"Save ...",YESBUTTON|NOBUTTON);
+						if((cu.dialogReturnData.isValidData) && (cu.dialogReturnData.intValue==CUQUERYOK))
 							{
 								FILE *f=fopen((char*)mainApp->pages[mainApp->pageNumber].userData,"w+");
 								if(f!=NULL)
@@ -274,14 +276,16 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 								if(sourcebox->isDirty==true)
 									{
 										CTK_cursesUtilsClass	cu;
-										cu.CTK_queryDialog(mainApp,"File has changed ...\nDo you want to save it?",(const char*)mainApp->pages[j].userData,"Save ...",ALLBUTTONS);
+										cu.CTK_queryDialog("File has changed ...\nDo you want to save it?",(const char*)mainApp->pages[j].userData,"Save ...",ALLBUTTONS);
 										//fprintf(stderr,"Button pressed=%i\n",cu.intResult);
-										if(cu.intResult & CANCELBUTTON)
+										if((cu.dialogReturnData.isValidData) && (cu.dialogReturnData.intValue==CUENTRYCANCEL))
+										//if(cu.intResult & CANCELBUTTON)
 											{
 												return;
 											}
 
-										if(cu.intResult & YESBUTTON)
+										//if(cu.intResult & YESBUTTON)
+										if((cu.dialogReturnData.isValidData) && (cu.dialogReturnData.intValue==CUQUERYOK))
 											{
 												FILE *f=fopen((char*)mainApp->pages[mainApp->pageNumber].userData,"w+");
 												if(f!=NULL)
@@ -497,12 +501,12 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 			case NAVGOTOLINE:
 				{
 					CTK_cursesUtilsClass	cu;
-					if(cu.CTK_entryDialog(mainApp,"Goto Line Number?","","Jump To Line ...",NULL,true))
+					if(cu.CTK_entryDialog("Goto Line Number?","","Jump To Line ...","",true)==true)
 						{
 							sourcebox=getSrcBox(mainApp->pageNumber);//TODO//
-							sourcebox->CTK_gotoLine(atoi(cu.stringResult.c_str()));
+							sourcebox->CTK_gotoLine(atoi(cu.dialogReturnData.stringValue.c_str()));
 							mainApp->menuBar->CTK_drawDefaultMenuBar();
-							mainApp->CTK_updateScreen(mainApp,NULL);
+							mainApp->CTK_clearScreen();
 							sourcebox->CTK_doEvent(true,sourcebox->CTK_getStrings(),sourcebox->CTK_getSrcStrings());
 							break;
 						}
@@ -554,14 +558,14 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 
 					foundX=-1;
 					foundY=0;
-
-					if(cu.CTK_entryDialog(mainApp,"Find Text",findString.c_str(),NULL,NULL,1)==false)
+					if(cu.CTK_entryDialog("Find Text",findString.c_str(),"Find ...","",1)==false)
 						return;
 
-					findString=cu.stringResult;
+					findString=cu.dialogReturnData.stringValue;
 					lowerneedle=findString;
 					transform(lowerneedle.begin(),lowerneedle.end(),lowerneedle.begin(),::tolower );
 				}
+
 			case NAVFINDNEXT:
 				{
 					const std::vector<std::string>	str=box->CTK_getStrings();
@@ -816,14 +820,14 @@ void handleHelpMenu(CTK_cursesMenuClass *mc)
 			 	{
 				 	CTK_cursesUtilsClass	*cu;
 				 	cu=new CTK_cursesUtilsClass;
-					cu->CTK_aboutDialog(mainApp,"KKEditCli","Cli Text Editor","Copyright ©2019 K.D.Hedger","keithdhedger@gmail.com","http://keithhedger.freeddns.org","K.D.Hedger",DATADIR "/help/LICENSE");
+					cu->CTK_aboutDialog("KKEditCli","Cli Text Editor","Copyright ©2019 K.D.Hedger","keithdhedger@gmail.com","http://keithhedger.freeddns.org","K.D.Hedger",DATADIR "/help/LICENSE");
 					delete cu;
 				}
 				break;
 		}
 }
 
-void menuSelectCB(void *inst,void *userdata)
+bool menuSelectCB(void *inst,void *userdata)
 {
 	CTK_cursesMenuClass	*mc=static_cast<CTK_cursesMenuClass*>(inst);
 
@@ -863,6 +867,7 @@ void menuSelectCB(void *inst,void *userdata)
 				handleHelpMenu(mc);
 				break;
 		}
+	return(true);
 }
 
 void setupMenus(void)
