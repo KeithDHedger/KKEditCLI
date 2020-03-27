@@ -521,10 +521,8 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 					FILE	*fp;
 					char	filepath[2048];
 					tclip=box->CTK_getCurrentWord();
-					//fprintf(stderr,"clip=>%s<\n",tclip.c_str());
 					box->CTK_setRunLoop(false);
 					asprintf(&command,"man -aw %s",tclip.c_str());
-					//fprintf(stderr,"command=>%s<\n",command);
 					fp=popen(command,"r");
 					free(command);
 					if(fp!=NULL)
@@ -920,6 +918,6 @@ void setupMenus(void)
 		mainApp->menuBar->CTK_setMenuShortCut(scKeys[cnt].menu,scKeys[cnt].item,scKeys[cnt].key);
 	while(scKeys[++cnt].menu!=-1);
 
-	mainApp->menuBar->CTK_setColours(cs);
+	mainApp->menuBar->CTK_setColours(&cs);
 	mainApp->menuBar->CTK_setSelectCB(menuSelectCB,NULL);
 }

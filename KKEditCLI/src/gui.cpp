@@ -39,5 +39,5 @@ void setInfoLabel(void)
 			//delete fileInfoLabel;
 			fileInfoLabel=mainApp->CTK_addNewLabel((windowCols/2)-(strlen((char*)mainApp->pages[mainApp->pageNumber].userData)/2),INFOLINE,strlen((char*)mainApp->pages[mainApp->pageNumber].userData),1,(char*)mainApp->pages[mainApp->pageNumber].userData);
 		}
-	fileInfoLabel->CTK_setColours(cs);
+	fileInfoLabel->CTK_setColours(&cs);
 }

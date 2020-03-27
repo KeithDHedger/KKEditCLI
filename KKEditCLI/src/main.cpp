@@ -106,7 +106,7 @@ int main(int argc, char **argv)
 	cs.foreCol=FORE_WHITE;
 	cs.backCol=BACK_BLACK;
 
-	mainApp->CTK_setColours(cs);
+	mainApp->CTK_setColours(&cs,true);
 
 	if(argc==1)
 		{

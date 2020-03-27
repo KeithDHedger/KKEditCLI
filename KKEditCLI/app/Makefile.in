@@ -236,9 +236,7 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
-LIBS = $(CURSESTOOLKIT_LIBS) \
-			$(TERMKEY_LIBS)
-
+LIBS = $(CURSESTOOLKIT_LIBS)
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
@@ -257,8 +255,6 @@ PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-TERMKEY_CFLAGS = @TERMKEY_CFLAGS@
-TERMKEY_LIBS = @TERMKEY_LIBS@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -309,8 +305,7 @@ AM_CPPFLAGS = -I$(top_srcdir) \
 			-DDATADIR=\""${pkgdatadir}"\" \
 			-DSYSCONFDIR=\""${sysconfdir}/${PACKAGE}"\" \
 			-DLIBDIR=\""${libdir}/${PACKAGE}"\" \
-			$(CURSESTOOLKIT_CFLAGS) \
-			$(TERMKEY_CFLAGS)
+			$(CURSESTOOLKIT_CFLAGS)
 
 COMMONSRC = ../src/files.cpp ../src/globals.cpp ../src/gui.cpp ../src/LFSTKFindClass.cpp ../src/main.cpp ../src/menus.cpp
 kkeditcli_SOURCES = $(COMMONSRC)
