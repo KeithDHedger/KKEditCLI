@@ -1,4 +1,5 @@
 0.2.3
+Fixed ui dialogs.
 Fixed memory leak.
 Changes for new CTK library.
 

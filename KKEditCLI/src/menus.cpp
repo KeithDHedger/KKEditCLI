@@ -173,17 +173,18 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 
 			case OPENITEM:
 				{
-					std::string				str;
-					CTK_cursesUtilsClass	cu;
-					char					*buffer=get_current_dir_name();
-					cu.CTK_fileChooserDialog(buffer,CUOPENFILE);
-					if(cu.dialogReturnData.isValidData==true)
+					std::string	str;
+					char		*buffer=get_current_dir_name();
+
+					mainApp->utils->CTK_fileChooserDialog(buffer,CUOPENFILE);
+					if(mainApp->utils->dialogReturnData.isValidData==true)
 						{
 							box->CTK_setRunLoop(false);
+							mainApp->CTK_clearScreen();
 							mainApp->CTK_addPage();
-							sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,cu.dialogReturnData.stringValue.c_str());
+							sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,mainApp->utils->dialogReturnData.stringValue.c_str());
 							sourcebox->CTK_setShowLineNumbers(showLineNumbers);
-							mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(cu.dialogReturnData.stringValue.c_str()));
+							mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(mainApp->utils->dialogReturnData.stringValue.c_str()));
 							setInfoLabel();
 							rebuildTabMenu();
 						}
@@ -405,7 +406,6 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 								{
 									if(strcmp((char*)mainApp->pages[j].userData,fpath)==0)
 										{
-											//sourcebox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,SRCGADGET,1);//TODO//
 											sourcebox=getSrcBox(mainApp->pageNumber);//TODO//
 											sourcebox->CTK_setRunLoop(false);
 											mainApp->CTK_setPage(j);
@@ -415,7 +415,6 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 											return;
 										}
 								}
-							//mainApp->pages[mainApp->pageNumber].srcEditBoxes[0]->CTK_setRunLoop(false);
 							mainApp->CTK_addPage();
 							sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,fpath);
 							sourcebox->CTK_setShowLineNumbers(showLineNumbers);
@@ -501,17 +500,14 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 
 			case NAVGOTOLINE:
 				{
-					CTK_cursesUtilsClass	cu;
-					if(cu.CTK_entryDialog("Goto Line Number?","","Jump To Line ...","",true)==true)
+					if(mainApp->utils->CTK_entryDialog("Goto Line Number?","","Jump To Line ...","",true)==true)
 						{
-							sourcebox=getSrcBox(mainApp->pageNumber);//TODO//
-							sourcebox->CTK_gotoLine(atoi(cu.dialogReturnData.stringValue.c_str()));
+							sourcebox=getSrcBox(mainApp->pageNumber);
+							sourcebox->CTK_gotoLine(atoi(mainApp->utils->dialogReturnData.stringValue.c_str()));
 							mainApp->menuBar->CTK_drawDefaultMenuBar();
-							mainApp->CTK_clearScreen();
 							sourcebox->CTK_doEvent(true,sourcebox->CTK_getStrings(),sourcebox->CTK_getSrcStrings());
 							break;
 						}
-					mainApp->CTK_updateScreen(mainApp,NULL);
 				}
 				break;
 
