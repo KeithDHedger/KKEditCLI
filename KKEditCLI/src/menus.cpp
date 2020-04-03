@@ -813,10 +813,7 @@ void handleHelpMenu(CTK_cursesMenuClass *mc)
 				break;
 			case ABOUT:
 			 	{
-				 	CTK_cursesUtilsClass	*cu;
-				 	cu=new CTK_cursesUtilsClass;
-					cu->CTK_aboutDialog("KKEditCli","Cli Text Editor","Copyright ©2019 K.D.Hedger","keithdhedger@gmail.com","http://keithhedger.freeddns.org","K.D.Hedger",DATADIR "/help/LICENSE",80);
-					delete cu;
+					mainApp->utils->CTK_aboutDialog("KKEditCli","Cli Text Editor","Copyright ©2019 K.D.Hedger","keithdhedger@gmail.com","http://keithhedger.freeddns.org","K.D.Hedger",DATADIR "/help/LICENSE",80);
 				}
 				break;
 		}
