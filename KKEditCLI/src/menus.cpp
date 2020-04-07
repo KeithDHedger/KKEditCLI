@@ -23,7 +23,7 @@
 #include "menus.h"
 
 const char	*menuNames[]= {"File","Edit","Tabs","Navigation","Functions","Bookmarks","Tools","Help",NULL};
-const char	*fileMenuNames[]= {" _New"," _Open"," _Save"," Save _As"," Clos_e"," _Quit",NULL};
+const char	*fileMenuNames[]= {" _New"," _Open"," _Save"," Save _As"," Clos_e"," S_hell"," _Quit",NULL};
 const char	*editMenuNames[]= {" _Copy"," C_ut"," _Paste",NULL};
 const char	*tabMenuNames[]= {" Next Tab"," Prev Tab",NULL};
 const char	*navMenuNames[]= {" Goto _Define"," _Open Include"," Goto L_ine"," Open _Manpage"," _Find"," Find A_gain",NULL};
@@ -31,7 +31,7 @@ const char	*bookmarkMenuNames[]= {" _Remove All Marks"," _Toggle BM",NULL};
 //const char	*toolsMenuNames[]= {" Manage Tools",NULL};
 const char	*helpMenuNames[]= {" _Help"," A_bout",NULL};
 
-shortcutStruct	scKeys[]={{FILEMENU,QUITITEM,'q'},{FILEMENU,NEWITEM,'n'},{FILEMENU,SAVEITEM,'s'},{FILEMENU,SAVEASITEM,'a'},{FILEMENU,CLOSEITEM,'w'},{FILEMENU,OPENITEM,'o'},{EDITMENU,COPYWORD,'c'},{EDITMENU,CUTWORD,'x'},{EDITMENU,PASTE,'v'},
+shortcutStruct	scKeys[]={{FILEMENU,QUITITEM,'q'},{FILEMENU,NEWITEM,'n'},{FILEMENU,SAVEITEM,'s'},{FILEMENU,SAVEASITEM,'a'},{FILEMENU,CLOSEITEM,'w'},{FILEMENU,SHELLITEM,'h'},{FILEMENU,OPENITEM,'o'},{EDITMENU,COPYWORD,'c'},{EDITMENU,CUTWORD,'x'},{EDITMENU,PASTE,'v'},
 {NAVMENU,NAVGOTODFINE,'d'},
 {NAVMENU,NAVOPENINCLUDE,'u'},
 {NAVMENU,NAVGOTOLINE,'l'},
@@ -267,6 +267,13 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 					mainApp->runEventLoop=false;
 				else
 					rebuildTabMenu();
+				break;
+
+			case SHELLITEM:
+				{
+					CTK_cursesShellClass shell(mainApp);
+					shell.CTK_startShell();
+				}
 				break;
 
 			case QUITITEM:
@@ -505,7 +512,6 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 							sourcebox=getSrcBox(mainApp->pageNumber);
 							sourcebox->CTK_gotoLine(atoi(mainApp->utils->dialogReturnData.stringValue.c_str()));
 							mainApp->menuBar->CTK_drawDefaultMenuBar();
-							sourcebox->CTK_doEvent(true,sourcebox->CTK_getStrings(),sourcebox->CTK_getSrcStrings());
 							break;
 						}
 				}
@@ -791,8 +797,8 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 
 			setInfoLabel();
 			rebuildTabMenu();
-			mainApp->CTK_clearScreen();
-			mainApp->CTK_updateScreen(mainApp,NULL);
+			//mainApp->CTK_clearScreen();
+			//mainApp->CTK_updateScreen(mainApp,NULL);
 		}
 }
 

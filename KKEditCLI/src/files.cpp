@@ -545,6 +545,7 @@ void manageTools(void)
 
 	manageToolsData.labels[LABELLIST]->CTK_setJustify(CENTREJUSTIFY);
 	rebuildTabMenu();
+	mainApp->CTK_clearScreen();
 	mainApp->CTK_setDefaultGadget(manageToolsData.toolList);
 }
 
