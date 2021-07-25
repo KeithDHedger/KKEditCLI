@@ -164,6 +164,7 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 					mainApp->CTK_addPage();
 					sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,uddata);
 					sourcebox->CTK_setShowLineNumbers(showLineNumbers);
+					sourcebox->gadgetColours.useFancy=false;
 					mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)uddata);
 					setInfoLabel();
 					rebuildTabMenu();
@@ -184,6 +185,7 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 							mainApp->CTK_addPage();
 							sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,mainApp->utils->dialogReturnData.stringValue.c_str());
 							sourcebox->CTK_setShowLineNumbers(showLineNumbers);
+							sourcebox->gadgetColours.useFancy=false;
 							mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(mainApp->utils->dialogReturnData.stringValue.c_str()));
 							setInfoLabel();
 							rebuildTabMenu();
@@ -245,7 +247,7 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 				if(box->isDirty==true)
 					{
 						CTK_cursesUtilsClass	cu;
-					//	cu.CTK_queryDialog(mainApp,"File has changed ...\nDo you want to save it?",(const char*)mainApp->pages[mainApp->pageNumber].userData,"Save ...",YESBUTTON|NOBUTTON);
+
 						cu.CTK_queryDialog("File has changed ...\nDo you want to save it?",(const char*)mainApp->pages[mainApp->pageNumber].userData,"Save ...",YESBUTTON|NOBUTTON);
 						if((cu.dialogReturnData.isValidData) && (cu.dialogReturnData.intValue==CUQUERYOK))
 							{
@@ -286,7 +288,6 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 									{
 										CTK_cursesUtilsClass	cu;
 										cu.CTK_queryDialog("File has changed ...\nDo you want to save it?",(const char*)mainApp->pages[j].userData,"Save ...",ALLBUTTONS);
-										//fprintf(stderr,"Button pressed=%i\n",cu.intResult);
 										if((cu.dialogReturnData.isValidData) && (cu.dialogReturnData.intValue==CUENTRYCANCEL))
 										//if(cu.intResult & CANCELBUTTON)
 											{
@@ -425,6 +426,7 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 							mainApp->CTK_addPage();
 							sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,fpath);
 							sourcebox->CTK_setShowLineNumbers(showLineNumbers);
+							sourcebox->gadgetColours.useFancy=false;
 							mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(fpath));
 							sourcebox->CTK_gotoLine(line);
 							setInfoLabel();
@@ -487,10 +489,10 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 											{
 												if(strlen(filepath)>1)
 													filepath[strlen(filepath)-1]=0;
-										
 												mainApp->CTK_addPage();
 												sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,filepath);
 												sourcebox->CTK_setShowLineNumbers(showLineNumbers);
+												sourcebox->gadgetColours.useFancy=false;
 												mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(filepath));
 												setInfoLabel();
 											}
@@ -541,6 +543,7 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 									box=mainApp->CTK_addNewEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,manFile);
 									box->CTK_setShowLineNumbers(false);
 									box->CTK_setEditable(false);
+									box->gadgetColours.useFancy=false;
 									mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(filepath));
 
 									setInfoLabel();
@@ -811,6 +814,9 @@ void handleHelpMenu(CTK_cursesMenuClass *mc)
 				mainApp->CTK_addPage();				
 				box=mainApp->CTK_addNewEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,DATADIR "/help/help");
 				box->CTK_setShowLineNumbers(false);
+				box->gadgetColours.foreCol=FORE_WHITE;
+				box->gadgetColours.backCol=BACK_BLACK;
+				box->gadgetColours.useFancy=false;
 				mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(DATADIR "/help/help"));
 				setInfoLabel();
 				rebuildTabMenu();
@@ -870,11 +876,11 @@ bool menuSelectCB(void *inst,void *userdata)
 
 void setupMenus(void)
 {
-	coloursStruct cs;
+	//coloursStruct cs;
 
-	cs.hiliteBackCol=BACK_BLACK;
-	cs.hiliteForeCol=FORE_GREEN;
-	cs.disabledForeCol=FORE_WHITE;
+	//cs.hiliteBackCol=BACK_BLACK;
+	//cs.hiliteForeCol=FORE_GREEN;
+	//cs.disabledForeCol=FORE_WHITE;
 
 	mainApp->CTK_addNewMenuBar();
 	mainApp->menuBar->CTK_addMenuToBar(menuNames[FILEMENU]);
@@ -917,6 +923,6 @@ void setupMenus(void)
 		mainApp->menuBar->CTK_setMenuShortCut(scKeys[cnt].menu,scKeys[cnt].item,scKeys[cnt].key);
 	while(scKeys[++cnt].menu!=-1);
 
-	mainApp->menuBar->CTK_setColours(&cs);
+	//mainApp->menuBar->CTK_setColours(&cs);
 	mainApp->menuBar->CTK_setSelectCB(menuSelectCB,NULL);
 }

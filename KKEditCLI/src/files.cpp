@@ -374,8 +374,6 @@ bool toolButtonCB(void *inst,void *userdata)
 				break;
 			case FINISHEDBUTTON:
 				{
-					coloursStruct	cs;
-
 					mainApp->CTK_removePage(mainApp->pageNumber);
 					fileInfoLabel==NULL;
 					mainApp->CTK_clearScreen();
@@ -383,7 +381,8 @@ bool toolButtonCB(void *inst,void *userdata)
 					mainApp->menuBar->CTK_setMenuBarEnable(true);
 					mainApp->menuBar->enableShortcuts=true;
 					mainApp->menuBar->CTK_setMenuBarVisible(true);
-					mainApp->colours.windowBackCol=BACK_BLACK;
+					mainApp->windowColours.backCol=BACK_BLACK;
+					mainApp->windowColours.backCol=BACK_BLACK;
 					mainApp->CTK_clearScreen();
 					mainApp->menuBar->CTK_drawDefaultMenuBar();
 				}
@@ -420,7 +419,7 @@ bool toolButtonCB(void *inst,void *userdata)
 					mainApp->menuBar->CTK_setMenuBarEnable(true);
 					mainApp->menuBar->enableShortcuts=true;
 					mainApp->menuBar->CTK_setMenuBarVisible(true);
-					mainApp->colours.windowBackCol=BACK_BLACK;
+					mainApp->windowColours.backCol=BACK_BLACK;
 					mainApp->menuBar->CTK_drawDefaultMenuBar();
 					mainApp->CTK_removePage(holdpn);
 					mainApp->CTK_clearScreen();
@@ -435,7 +434,6 @@ bool toolButtonCB(void *inst,void *userdata)
 void manageTools(void)
 {
 	int						newpage=0;
-	coloursStruct			cs;
 	CTK_cursesUtilsClass	cu;
 	char					folder[PATH_MAX];
 
@@ -446,15 +444,9 @@ void manageTools(void)
 	newpage=mainApp->CTK_addPage();
 	mainApp->CTK_setPageUserData(newpage,(void*)strdup("Manage Tools"));
 	setInfoLabel();
-	cs.foreCol=FORE_BLACK;
-	cs.backCol=BACK_WHITE;
-	cs.use256Colours=false;
-	cs.fancyGadgets=true;
-
-	cs.windowBackCol=BACK_WHITE;
-	
-	//mainApp->colours.windowBackCol=BACK_WHITE;
-	mainApp->CTK_setColours(&cs,true);
+	mainApp->windowColours.foreCol=BACK_BLACK;
+	mainApp->windowColours.backCol=BACK_WHITE;
+	mainApp->windowColours.useFancy=true;
 
 //tools
 	manageToolsData.labels[LABELLIST]=mainApp->CTK_addNewLabel(2,3,TOOLNAMELISTWIDTH,1,"Tool Name");
@@ -465,7 +457,7 @@ void manageTools(void)
 	for(int j=0;j<tools.size();j++)
 		manageToolsData.toolList->CTK_addListItem(tools[j].menuName);
 	manageToolsData.toolList->CTK_setSelectCB(toolListCB,(void*)1);
-	manageToolsData.toolList->CTK_setColours(&cs,true);
+	//manageToolsData.toolList->CTK_setColours(&cs,true);
 	manageToolsData.toolList->CTK_setSelectDeselects(false);
 	manageToolsData.toolList->hiLited=true;
 	manageToolsData.toolList->gadgetDirty=true;
@@ -475,26 +467,26 @@ void manageTools(void)
 //output
 //ignore
 	manageToolsData.checkBoxes[IGNOREOP]=mainApp->CTK_addNewCheckBox(4+TOOLNAMELISTWIDTH,4,20,"Ignore Output   ");
-	manageToolsData.checkBoxes[IGNOREOP]->CTK_setColours(&cs,true);
+	//manageToolsData.checkBoxes[IGNOREOP]->CTK_setColours(&cs,true);
 	manageToolsData.checkBoxes[IGNOREOP]->CTK_setSelectDeselects(false);
 	manageToolsData.checkBoxes[IGNOREOP]->CTK_setSelectCB(checkCB,(void*)IGNOREOP);
 	manageToolsData.checkBoxes[IGNOREOP]->CTK_setSelectKey(' ');
 	manageToolsData.checkBoxes[IGNOREOP]->CTK_setValue(true);
 //paste
 	manageToolsData.checkBoxes[PASTEOP]=mainApp->CTK_addNewCheckBox(4+TOOLNAMELISTWIDTH,6,20,"Paste Output    ");
-	manageToolsData.checkBoxes[PASTEOP]->CTK_setColours(&cs,true);
+	//manageToolsData.checkBoxes[PASTEOP]->CTK_setColours(&cs,true);
 	manageToolsData.checkBoxes[PASTEOP]->CTK_setSelectDeselects(false);
 	manageToolsData.checkBoxes[PASTEOP]->CTK_setSelectCB(checkCB,(void*)PASTEOP);
 	manageToolsData.checkBoxes[PASTEOP]->CTK_setSelectKey(' ');
 //replace
 	manageToolsData.checkBoxes[REPLACEOP]=mainApp->CTK_addNewCheckBox(4+TOOLNAMELISTWIDTH,8,20,"Replace Contents");
-	manageToolsData.checkBoxes[REPLACEOP]->CTK_setColours(&cs,true);
+	//manageToolsData.checkBoxes[REPLACEOP]->CTK_setColours(&cs,true);
 	manageToolsData.checkBoxes[REPLACEOP]->CTK_setSelectDeselects(false);
 	manageToolsData.checkBoxes[REPLACEOP]->CTK_setSelectCB(checkCB,(void*)REPLACEOP);
 	manageToolsData.checkBoxes[REPLACEOP]->CTK_setSelectKey(' ');
 //view
 	manageToolsData.checkBoxes[VIEWOP]=mainApp->CTK_addNewCheckBox(4+TOOLNAMELISTWIDTH,10,20,"View Output     ");
-	manageToolsData.checkBoxes[VIEWOP]->CTK_setColours(&cs,true);
+	//manageToolsData.checkBoxes[VIEWOP]->CTK_setColours(&cs,true);
 	manageToolsData.checkBoxes[VIEWOP]->CTK_setSelectDeselects(false);
 	manageToolsData.checkBoxes[VIEWOP]->CTK_setSelectCB(checkCB,(void*)VIEWOP);
 	manageToolsData.checkBoxes[VIEWOP]->CTK_setSelectKey(' ');
@@ -505,29 +497,29 @@ void manageTools(void)
 //buttons
 //apply
 	manageToolsData.buttons[APPLYBUTTON]=mainApp->CTK_addNewButton(cu.CTK_getGadgetPosX(SXOFF,BOXWID,3,14,0),20,14,1," Apply  ");
-	manageToolsData.buttons[APPLYBUTTON]->CTK_setColours(&cs,true);
+//	manageToolsData.buttons[APPLYBUTTON]->CTK_setColours(&cs,true);
 	manageToolsData.buttons[APPLYBUTTON]->CTK_setSelectCB(toolButtonCB,(void*)APPLYBUTTON);
 //delete
 	manageToolsData.buttons[DELETEBUTTON]=mainApp->CTK_addNewButton(cu.CTK_getGadgetPosX(SXOFF,BOXWID,3,14,1),20,14,1," Delete ");
-	manageToolsData.buttons[DELETEBUTTON]->CTK_setColours(&cs,true);
+	//manageToolsData.buttons[DELETEBUTTON]->CTK_setColours(&cs,true);
 	manageToolsData.buttons[DELETEBUTTON]->CTK_setSelectCB(toolButtonCB,(void*)DELETEBUTTON);
 //open
 	manageToolsData.buttons[EDITBUTTON]=mainApp->CTK_addNewButton(cu.CTK_getGadgetPosX(SXOFF,BOXWID,3,14,2),20,14,1,"  Edit  ");
-	manageToolsData.buttons[EDITBUTTON]->CTK_setColours(&cs,true);
+	//manageToolsData.buttons[EDITBUTTON]->CTK_setColours(&cs,true);
 	manageToolsData.buttons[EDITBUTTON]->CTK_setSelectCB(toolButtonCB,(void*)EDITBUTTON);
 //fin
 	manageToolsData.buttons[FINISHEDBUTTON]=mainApp->CTK_addNewButton(cu.CTK_getGadgetPosX(SXOFF,BOXWID,3,14,3),20,14,1,"Finished");
-	manageToolsData.buttons[FINISHEDBUTTON]->CTK_setColours(&cs,true);
+	//manageToolsData.buttons[FINISHEDBUTTON]->CTK_setColours(&cs,true);
 	manageToolsData.buttons[FINISHEDBUTTON]->CTK_setSelectCB(toolButtonCB,(void*)FINISHEDBUTTON);
 	
 //toolname
 	manageToolsData.labels[LABELTOOLNAME]=mainApp->CTK_addNewLabel(4+TOOLNAMELISTWIDTH,13,20,1,"Tool Name:");
 	manageToolsData.inputs[NAMEINPUT]=mainApp->CTK_addNewInput(16+TOOLNAMELISTWIDTH,13,INPUTWIDTH-1,1,"");
-	manageToolsData.inputs[NAMEINPUT]->CTK_setColours(&cs,true);
+	//manageToolsData.inputs[NAMEINPUT]->CTK_setColours(&cs,true);
 //command
 	manageToolsData.labels[LABELCOMMAND]=mainApp->CTK_addNewLabel(4+TOOLNAMELISTWIDTH,16,20,1,"Command:");
 	manageToolsData.inputs[COMMANDINPUT]=mainApp->CTK_addNewInput(16+TOOLNAMELISTWIDTH,16,INPUTWIDTH-1,1,"");
-	manageToolsData.inputs[COMMANDINPUT]->CTK_setColours(&cs,true);
+	//manageToolsData.inputs[COMMANDINPUT]->CTK_setColours(&cs,true);
 //instructions
 	const char	*instructions="PLACEHOLDERS:\n\
 %c - Currently selected text. Passed to command as $KKEDIT_SELECTION\n\
@@ -537,11 +529,11 @@ void manageTools(void)
 
 	manageToolsData.labels[LABELINFO]=mainApp->CTK_addNewLabel(5+TOOLNAMELISTWIDTH+20,4,mainApp->maxCols-(5+TOOLNAMELISTWIDTH+20),6,instructions);
 
-	cs.foreCol=FORE_BLACK;
-	cs.backCol=BACK_WHITE;
-	cs.fancyGadgets=false;
-	for(int j=0;j<LASTLABEL;j++)
-		manageToolsData.labels[j]->CTK_setColours(&cs,true);
+	//cs.foreCol=FORE_BLACK;
+	//cs.backCol=BACK_WHITE;
+	//cs.fancyGadgets=false;
+	//for(int j=0;j<LASTLABEL;j++)
+	//	manageToolsData.labels[j]->CTK_setColours(&cs,true);//TODO//
 
 	manageToolsData.labels[LABELLIST]->CTK_setJustify(CENTREJUSTIFY);
 	rebuildTabMenu();

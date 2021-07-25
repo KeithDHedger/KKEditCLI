@@ -18,7 +18,7 @@ CFLAGS=-Wall
 AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
 
-CURSESTOOLKIT_MODULES="cursestoolkit >= 2.0.1"
+CURSESTOOLKIT_MODULES="cursestoolkit >= 3.0.0"
 PKG_CHECK_MODULES(CURSESTOOLKIT, $CURSESTOOLKIT_MODULES, [nolib=true], [nolib=false])
 
 if test $nolib = false; then

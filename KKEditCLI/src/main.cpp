@@ -82,7 +82,7 @@ void mainloopCBOut(void *mainc,void *data)
 int main(int argc, char **argv)
 {
 	char			tmpfoldertemplate[]="/dev/shm/KKEditCLI-XXXXXX";
-	coloursStruct	cs;
+//	coloursStruct	cs;
 	char			*path=NULL;
 	CTK_cursesSourceEditBoxClass	*srcbox;
 
@@ -101,17 +101,21 @@ int main(int argc, char **argv)
 
 	mainApp->CTK_setTabWidth(TABWIDTH);
 
-	cs.hiliteBackCol=BACK_CYAN;
-	cs.hiliteForeCol=FORE_BLACK;
-	cs.foreCol=FORE_WHITE;
-	cs.backCol=BACK_BLACK;
+	//cs.hiliteBackCol=BACK_CYAN;
+	//cs.hiliteForeCol=FORE_BLACK;
+	//cs.foreCol=FORE_WHITE;
+	//cs.backCol=BACK_BLACK;
+mainApp->windowColours.foreCol=FORE_WHITE;
+mainApp->windowColours.backCol=FORE_BLACK;
+mainApp->windowColours.useFancy=false;
 
-	mainApp->CTK_setColours(&cs,true);
+	//mainApp->CTK_setColours(&cs,true);
 
 	if(argc==1)
 		{
 			srcbox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,false,"\n");
 			srcbox->CTK_setShowLineNumbers(showLineNumbers);
+			srcbox->gadgetColours.useFancy=false;
 			mainApp->CTK_setPageUserData(0,(void*)strdup("/tmp/Untitled-1"));
 		}
 	else
@@ -123,7 +127,7 @@ int main(int argc, char **argv)
 						path=strdup(argv[j]);
 					srcbox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,path);
 					srcbox->CTK_setShowLineNumbers(showLineNumbers);
-
+					srcbox->gadgetColours.useFancy=false;
 					mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)path);
 					setInfoLabel();
 					mainApp->CTK_addPage();
@@ -135,8 +139,8 @@ int main(int argc, char **argv)
 					
 			srcbox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,path);
 			srcbox->CTK_setShowLineNumbers(showLineNumbers);
+			srcbox->gadgetColours.useFancy=false;
 			mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)path);
-			
 		}
 
 	setInfoLabel();

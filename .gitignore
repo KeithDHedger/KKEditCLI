@@ -19,3 +19,4 @@ KKEditCLI/src/html
 searchdata.xml
 localconfig
 devwrap
+debug.h

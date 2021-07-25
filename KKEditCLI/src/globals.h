@@ -33,6 +33,10 @@
 #include <unistd.h>
 #include <string.h>
 
+#if defined _DEBUGCODEKKCLI_ || defined _WARN_ENABLEDEBUGKKCLI_
+#include "debug.h"
+#endif
+
 #include <cursesGlobals.h>
 
 #include "menus.h"
