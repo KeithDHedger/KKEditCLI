@@ -33,8 +33,8 @@
 #include <unistd.h>
 #include <string.h>
 
-#if defined _DEBUGCODEKKCLI_ || defined _WARN_ENABLEDEBUGKKCLI_
-#include "debug.h"
+#if defined _DEBUGCODE_ || defined _WARN_ENABLEDEBUG_
+#include "/media/LinuxData/Development/DevelopmentFiles/Debugging/debug.h"
 #endif
 
 #include <cursesGlobals.h>
