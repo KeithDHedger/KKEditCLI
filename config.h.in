@@ -1,5 +1,17 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* define if the Boost library is available */
+#undef HAVE_BOOST
+
+/* define if the Boost::Filesystem library is available */
+#undef HAVE_BOOST_FILESYSTEM
+
+/* define if the Boost::Regex library is available */
+#undef HAVE_BOOST_REGEX
+
+/* define if the Boost::System library is available */
+#undef HAVE_BOOST_SYSTEM
+
 /* Name of package */
 #undef PACKAGE
 

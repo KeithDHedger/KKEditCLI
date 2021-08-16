@@ -10,6 +10,8 @@ AM_INIT_AUTOMAKE
 AC_PROG_CC
 AC_HEADER_STDC
 
+AC_CONFIG_MACRO_DIR([./localm4s])
+
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
@@ -17,6 +19,7 @@ AC_SUBST(LDFLAGS)
 CFLAGS=-Wall
 AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
+
 
 CURSESTOOLKIT_MODULES="cursestoolkit >= 3.0.0"
 PKG_CHECK_MODULES(CURSESTOOLKIT, $CURSESTOOLKIT_MODULES, [nolib=true], [nolib=false])
@@ -38,6 +41,11 @@ if test $CTAGS = false; then
 	AC_MSG_NOTICE([http://ctags.sourceforge.net])
 	exit 0
 fi
+
+AX_BOOST_BASE([1.63],, [AC_MSG_ERROR([CursesToolKit needs Boost, but it was not found in your system])])
+AX_BOOST_SYSTEM
+AX_BOOST_FILESYSTEM
+AX_BOOST_REGEX
 
 AC_OUTPUT(Makefile KKEditCLI/app/Makefile)
 

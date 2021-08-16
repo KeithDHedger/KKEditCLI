@@ -186,6 +186,7 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 							sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,mainApp->utils->dialogReturnData.stringValue.c_str());
 							sourcebox->CTK_setShowLineNumbers(showLineNumbers);
 							sourcebox->gadgetColours.useFancy=false;
+							sourcebox->liveUpdate=true;
 							mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(mainApp->utils->dialogReturnData.stringValue.c_str()));
 							setInfoLabel();
 							rebuildTabMenu();

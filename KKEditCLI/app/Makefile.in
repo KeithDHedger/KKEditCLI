@@ -88,10 +88,16 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+build_triplet = @build@
+host_triplet = @host@
 bin_PROGRAMS = kkeditcli$(EXEEXT)
 subdir = KKEditCLI/app
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/localm4s/ax_boost_base.m4 \
+	$(top_srcdir)/localm4s/ax_boost_filesystem.m4 \
+	$(top_srcdir)/localm4s/ax_boost_regex.m4 \
+	$(top_srcdir)/localm4s/ax_boost_system.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(am__DIST_COMMON)
@@ -209,6 +215,11 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BOOST_CPPFLAGS = @BOOST_CPPFLAGS@
+BOOST_FILESYSTEM_LIB = @BOOST_FILESYSTEM_LIB@
+BOOST_LDFLAGS = @BOOST_LDFLAGS@
+BOOST_REGEX_LIB = @BOOST_REGEX_LIB@
+BOOST_SYSTEM_LIB = @BOOST_SYSTEM_LIB@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -236,7 +247,12 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
-LIBS = $(CURSESTOOLKIT_LIBS)
+LIBS = $(CURSESTOOLKIT_LIBS) \
+			$(BOOST_LDFLAGS) \
+			$(BOOST_SYSTEM_LIB) \
+			$(BOOST_FILESYSTEM_LIB) \
+			$(BOOST_REGEX_LIB)
+
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
@@ -268,14 +284,22 @@ am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
 bindir = @bindir@
+build = @build@
 build_alias = @build_alias@
+build_cpu = @build_cpu@
+build_os = @build_os@
+build_vendor = @build_vendor@
 builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+host = @host@
 host_alias = @host_alias@
+host_cpu = @host_cpu@
+host_os = @host_os@
+host_vendor = @host_vendor@
 htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
@@ -305,7 +329,8 @@ AM_CPPFLAGS = -I$(top_srcdir) \
 			-DDATADIR=\""${pkgdatadir}"\" \
 			-DSYSCONFDIR=\""${sysconfdir}/${PACKAGE}"\" \
 			-DLIBDIR=\""${libdir}/${PACKAGE}"\" \
-			$(CURSESTOOLKIT_CFLAGS)
+			$(CURSESTOOLKIT_CFLAGS) \
+			$(BOOST_CPPFLAGS)
 
 COMMONSRC = ../src/files.cpp ../src/globals.cpp ../src/gui.cpp ../src/LFSTKFindClass.cpp ../src/main.cpp ../src/menus.cpp
 kkeditcli_SOURCES = $(COMMONSRC)

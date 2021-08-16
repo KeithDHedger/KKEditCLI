@@ -117,6 +117,7 @@ mainApp->windowColours.useFancy=false;
 			srcbox->CTK_setShowLineNumbers(showLineNumbers);
 			srcbox->gadgetColours.useFancy=false;
 			mainApp->CTK_setPageUserData(0,(void*)strdup("/tmp/Untitled-1"));
+			srcbox->liveUpdate=true;
 		}
 	else
 		{
@@ -131,6 +132,7 @@ mainApp->windowColours.useFancy=false;
 					mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)path);
 					setInfoLabel();
 					mainApp->CTK_addPage();
+					srcbox->liveUpdate=true;
 				}
 
 			path=realpath(argv[argc-1],NULL);
@@ -141,6 +143,7 @@ mainApp->windowColours.useFancy=false;
 			srcbox->CTK_setShowLineNumbers(showLineNumbers);
 			srcbox->gadgetColours.useFancy=false;
 			mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)path);
+			srcbox->liveUpdate=true;
 		}
 
 	setInfoLabel();

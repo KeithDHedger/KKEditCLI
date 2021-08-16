@@ -60,8 +60,8 @@ char* oneLiner(bool noreturn,const char* fmt,...)
 	va_list	ap;
 	char	*buffer,*subbuffer;
 
-	buffer=(char*)alloca(MAXBUFFER);
-	subbuffer=(char*)alloca(MAXBUFFER);
+	buffer=(char*)alloca(MAXBUFFERKKEDIT);
+	subbuffer=(char*)alloca(MAXBUFFERKKEDIT);
 
 	buffer[0]=0;
 	subbuffer[0]=0;
@@ -99,7 +99,7 @@ char* oneLiner(bool noreturn,const char* fmt,...)
 	if(fp!=NULL)
 		{
 			buffer[0]=0;
-			fgets(buffer,MAXBUFFER,fp);
+			fgets(buffer,MAXBUFFERKKEDIT,fp);
 			if(strlen(buffer)>0)
 				{
 					if(buffer[strlen(buffer)-1] =='\n')

@@ -47,7 +47,7 @@
 #define TOPLINE 4
 #define INFOLINE 2
 
-#define MAXBUFFER 2048
+#define MAXBUFFERKKEDIT 2048
 #define MAXLINES 50000
 
 #define BOLDCOL "31"
