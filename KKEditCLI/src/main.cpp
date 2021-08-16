@@ -113,7 +113,7 @@ mainApp->windowColours.useFancy=false;
 
 	if(argc==1)
 		{
-			srcbox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,false,"\n");
+			srcbox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,false,"\n",true);
 			srcbox->CTK_setShowLineNumbers(showLineNumbers);
 			srcbox->gadgetColours.useFancy=false;
 			mainApp->CTK_setPageUserData(0,(void*)strdup("/tmp/Untitled-1"));
@@ -126,7 +126,7 @@ mainApp->windowColours.useFancy=false;
 					path=realpath(argv[j],NULL);
 					if(path==NULL)
 						path=strdup(argv[j]);
-					srcbox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,path);
+					srcbox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,path,true);
 					srcbox->CTK_setShowLineNumbers(showLineNumbers);
 					srcbox->gadgetColours.useFancy=false;
 					mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)path);
@@ -139,7 +139,7 @@ mainApp->windowColours.useFancy=false;
 			if(path==NULL)
 				path=strdup(argv[argc-1]);
 					
-			srcbox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,path);
+			srcbox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,path,true);
 			srcbox->CTK_setShowLineNumbers(showLineNumbers);
 			srcbox->gadgetColours.useFancy=false;
 			mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)path);

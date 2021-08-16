@@ -183,7 +183,7 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 							box->CTK_setRunLoop(false);
 							mainApp->CTK_clearScreen();
 							mainApp->CTK_addPage();
-							sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,mainApp->utils->dialogReturnData.stringValue.c_str());
+							sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,mainApp->utils->dialogReturnData.stringValue.c_str(),true);
 							sourcebox->CTK_setShowLineNumbers(showLineNumbers);
 							sourcebox->gadgetColours.useFancy=false;
 							sourcebox->liveUpdate=true;
