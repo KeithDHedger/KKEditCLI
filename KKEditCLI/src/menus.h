@@ -36,7 +36,7 @@ struct shortcutStruct
 	char	key;
 };
 
-enum {FILEMENU=0,EDITMENU,TABMENU,NAVMENU,FUNCMENU,BMMENU,TOOLSMENU,HELPMENU};
+enum {FILEMENU=0,EDITMENU,TABMENU,NAVMENU,FUNCMENU,SYNTAXMENU,BMMENU,TOOLSMENU,HELPMENU};
 
 enum {NEWITEM=0,OPENITEM,SAVEITEM,SAVEASITEM,CLOSEITEM,SHELLITEM,QUITITEM};
 //enum {COPYWORD=0,CUTWORD,COPYLINE,CUTLINE,PASTE,STARTSEL,ENDSEL};
@@ -45,6 +45,7 @@ enum {NEXTTAB=0,PREVTAB};
 enum {NAVGOTODFINE=0,NAVOPENINCLUDE,NAVGOTOLINE,NAVOPENMANPAGE,NAVFIND,NAVFINDNEXT};
 enum {RMALLBMS=0,TOGGLEBM};
 enum {HELP=0,ABOUT};
+enum {HILITEPLAIN=0,HILITESHELL,HILITECPP,HILITEJS,HILITEPHP,HILITEPERL};
 
 void rebuildTabMenu(void);
 void setupMenus(void);
@@ -53,5 +54,6 @@ void handleEditMenu(CTK_cursesMenuClass *mc);
 void handleNavMenu(CTK_cursesMenuClass *mc);
 void handleTabMenu(CTK_cursesMenuClass *mc);
 void handleHelpMenu(CTK_cursesMenuClass *mc);
+void handleSyntaxMenu(CTK_cursesMenuClass *mc);
 
 #endif

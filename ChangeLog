@@ -1,4 +1,6 @@
 0.2.3
+Fixed file name colour.
+Added syntax higlighting to menubar.
 Force use internal syntax hilighter ( may change ).
 Updated for new ctk toolkit.
 Added shell to file menu, to start new shell.

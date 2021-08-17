@@ -26,7 +26,7 @@ void setInfoLabel(void)
 
 	//cs.foreCol=FORE_BLACK ;
 	//cs.backCol=BACK_GREEN;
-	int bc=BACK_GREEN;
+	int bc=BACK_WHITE;
 	int fc=FORE_BLACK;
 	if(access((char*)mainApp->pages[mainApp->pageNumber].userData,R_OK|W_OK)!=0)
 		//cs.backCol=BACK_RED;

@@ -22,7 +22,7 @@
 
 #include "menus.h"
 
-const char	*menuNames[]= {"File","Edit","Tabs","Navigation","Functions","Bookmarks","Tools","Help",NULL};
+const char	*menuNames[]= {"File","Edit","Tabs","Navigation","Functions","Highlighting","Bookmarks","Tools","Help",NULL};
 const char	*fileMenuNames[]= {" _New"," _Open"," _Save"," Save _As"," Clos_e"," S_hell"," _Quit",NULL};
 const char	*editMenuNames[]= {" _Copy"," C_ut"," _Paste",NULL};
 const char	*tabMenuNames[]= {" Next Tab"," Prev Tab",NULL};
@@ -30,6 +30,7 @@ const char	*navMenuNames[]= {" Goto _Define"," _Open Include"," Goto L_ine"," Op
 const char	*bookmarkMenuNames[]= {" _Remove All Marks"," _Toggle BM",NULL};
 //const char	*toolsMenuNames[]= {" Manage Tools",NULL};
 const char	*helpMenuNames[]= {" _Help"," A_bout",NULL};
+const char	*syntaxMenuNames[]= {" None "," Shell "," C "," Javascript "," PHP "," Perl ",NULL};
 
 shortcutStruct	scKeys[]={{FILEMENU,QUITITEM,'q'},{FILEMENU,NEWITEM,'n'},{FILEMENU,SAVEITEM,'s'},{FILEMENU,SAVEASITEM,'a'},{FILEMENU,CLOSEITEM,'w'},{FILEMENU,SHELLITEM,'h'},{FILEMENU,OPENITEM,'o'},{EDITMENU,COPYWORD,'c'},{EDITMENU,CUTWORD,'x'},{EDITMENU,PASTE,'v'},
 {NAVMENU,NAVGOTODFINE,'d'},
@@ -162,7 +163,7 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 					system(buffer);
 					box->CTK_setRunLoop(false);
 					mainApp->CTK_addPage();
-					sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,uddata);
+					sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,uddata,true);
 					sourcebox->CTK_setShowLineNumbers(showLineNumbers);
 					sourcebox->gadgetColours.useFancy=false;
 					mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)uddata);
@@ -832,6 +833,59 @@ void handleHelpMenu(CTK_cursesMenuClass *mc)
 		}
 }
 
+/*
+	CTK_cursesGadgetClass	*srcbox;
+	CTK_cursesGadgetClass	*edbox;
+	CTK_cursesSourceEditBoxClass	*sourcebox;
+
+	srcbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,SRCGADGET,1);
+	edbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,EDITGADGET,1);
+	if(srcbox!=NULL)
+		box=static_cast<CTK_cursesEditBoxClass*>(srcbox);//static_cast<CTK_cursesEditBoxClass*>(app->pages[app->pageNumber].srcEditBoxes[0]);
+	else if(edbox!=NULL)
+		box=static_cast<CTK_cursesEditBoxClass*>(edbox);
+enum {HILITEPLAIN=0,HILITESHELL,HILITECPP,HILITEJS,HILITEPHP,HILITEPERL};
+enum srcFileType {CPP,SHELL,JS,PHP,PERL,PLAIN};
+	if(box==NULL)
+		return;
+const char	*syntaxMenuNames[]= {" None "," C "," Shell "," Javascript "," PHP "," Perl ",NULL};
+
+*/
+void handleSyntaxMenu(CTK_cursesMenuClass *mc)
+{
+	CTK_cursesSourceEditBoxClass	*sourcebox;
+	CTK_cursesGadgetClass			*srcbox;
+
+	srcbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,SRCGADGET,1);
+	if(srcbox!=NULL)
+		sourcebox=static_cast<CTK_cursesSourceEditBoxClass*>(srcbox);
+
+	if(sourcebox==NULL)
+		return;
+
+	switch(mc->menuItemNumber)
+		{
+			case HILITEPLAIN:
+				sourcebox->CTK_setInputLang(PLAIN);
+				break;
+			case HILITESHELL:
+				sourcebox->CTK_setInputLang(SHELL);
+				break;
+			case HILITECPP:
+				sourcebox->CTK_setInputLang(CPP);
+				break;
+			case HILITEJS:
+				sourcebox->CTK_setInputLang(JS);
+				break;
+			case HILITEPHP:
+				sourcebox->CTK_setInputLang(PHP);
+				break;
+			case HILITEPERL:
+				sourcebox->CTK_setInputLang(PERL);
+				break;
+		}
+}
+
 bool menuSelectCB(void *inst,void *userdata)
 {
 	CTK_cursesMenuClass	*mc=static_cast<CTK_cursesMenuClass*>(inst);
@@ -858,6 +912,10 @@ bool menuSelectCB(void *inst,void *userdata)
 
 			case FUNCMENU:
 				handlefuncMenu(mc);
+				break;
+
+			case SYNTAXMENU:
+				handleSyntaxMenu(mc);
 				break;
 
 			case BMMENU:
@@ -889,6 +947,7 @@ void setupMenus(void)
 	mainApp->menuBar->CTK_addMenuToBar(menuNames[TABMENU]);
 	mainApp->menuBar->CTK_addMenuToBar(menuNames[NAVMENU]);
 	mainApp->menuBar->CTK_addMenuToBar(menuNames[FUNCMENU]);
+	mainApp->menuBar->CTK_addMenuToBar(menuNames[SYNTAXMENU]);
 	mainApp->menuBar->CTK_addMenuToBar(menuNames[BMMENU]);
 	mainApp->menuBar->CTK_addMenuToBar(menuNames[TOOLSMENU]);
 	mainApp->menuBar->CTK_addMenuToBar(menuNames[HELPMENU]);
@@ -918,6 +977,10 @@ void setupMenus(void)
 	cnt=0;
 	while(helpMenuNames[cnt]!=NULL)
 		mainApp->menuBar->CTK_addMenuItem(HELPMENU,helpMenuNames[cnt++]);
+
+	cnt=0;
+	while(syntaxMenuNames[cnt]!=NULL)
+		mainApp->menuBar->CTK_addMenuItem(SYNTAXMENU,syntaxMenuNames[cnt++]);
 
 	cnt=0;
 	do
