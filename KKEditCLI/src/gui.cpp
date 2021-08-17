@@ -22,26 +22,16 @@
 
 void setInfoLabel(void)
 {
-	//coloursStruct	cs;
-
-	//cs.foreCol=FORE_BLACK ;
-	//cs.backCol=BACK_GREEN;
 	int bc=BACK_WHITE;
 	int fc=FORE_BLACK;
 	if(access((char*)mainApp->pages[mainApp->pageNumber].userData,R_OK|W_OK)!=0)
-		//cs.backCol=BACK_RED;
 		bc=BACK_RED;
 
 	if(fileInfoLabel==NULL)
 		fileInfoLabel=mainApp->CTK_addNewLabel((windowCols/2)-(strlen((char*)mainApp->pages[mainApp->pageNumber].userData)/2),INFOLINE,strlen((char*)mainApp->pages[mainApp->pageNumber].userData),1,(char*)mainApp->pages[mainApp->pageNumber].userData);
 	else
-		{
-		//fileInfoLabel->CTK_newLabel((windowCols/2)-(strlen((char*)mainApp->pages[mainApp->pageNumber].userData)/2),INFOLINE,strlen((char*)mainApp->pages[mainApp->pageNumber].userData),1,(char*)mainApp->pages[mainApp->pageNumber].userData);
-			//fileInfoLabel->CTK_updateText((char*)mainApp->pages[mainApp->pageNumber].userData);
-			//delete fileInfoLabel;
-			fileInfoLabel=mainApp->CTK_addNewLabel((windowCols/2)-(strlen((char*)mainApp->pages[mainApp->pageNumber].userData)/2),INFOLINE,strlen((char*)mainApp->pages[mainApp->pageNumber].userData),1,(char*)mainApp->pages[mainApp->pageNumber].userData);
-		}
-	//fileInfoLabel->CTK_setColours(&cs);
+		fileInfoLabel=mainApp->CTK_addNewLabel((windowCols/2)-(strlen((char*)mainApp->pages[mainApp->pageNumber].userData)/2),INFOLINE,strlen((char*)mainApp->pages[mainApp->pageNumber].userData),1,(char*)mainApp->pages[mainApp->pageNumber].userData);
+
 	fileInfoLabel->gadgetColours.backCol=bc;
 	fileInfoLabel->gadgetColours.foreCol=fc;
 }

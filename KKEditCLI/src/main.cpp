@@ -40,7 +40,6 @@ void mainloopCBIn(void *mainc,void *data)
 
 	srcbox=app->CTK_getGadgetNum(app->pageNumber,SRCGADGET,1);
 	edbox=app->CTK_getGadgetNum(app->pageNumber,EDITGADGET,1);
-	//if(app->pages[app->pageNumber].srcEditBoxes.size()>0)
 	if(srcbox!=NULL)
 		box=static_cast<CTK_cursesEditBoxClass*>(srcbox);//static_cast<CTK_cursesEditBoxClass*>(app->pages[app->pageNumber].srcEditBoxes[0]);
 	else if(edbox!=NULL)
@@ -75,14 +74,11 @@ void mainloopCBIn(void *mainc,void *data)
 
 void mainloopCBOut(void *mainc,void *data)
 {
-	
-//	fprintf(stderr,"main loop out\n");
 }
 
 int main(int argc, char **argv)
 {
 	char			tmpfoldertemplate[]="/dev/shm/KKEditCLI-XXXXXX";
-//	coloursStruct	cs;
 	char			*path=NULL;
 	CTK_cursesSourceEditBoxClass	*srcbox;
 
@@ -100,16 +96,9 @@ int main(int argc, char **argv)
 	buildToolsList();
 
 	mainApp->CTK_setTabWidth(TABWIDTH);
-
-	//cs.hiliteBackCol=BACK_CYAN;
-	//cs.hiliteForeCol=FORE_BLACK;
-	//cs.foreCol=FORE_WHITE;
-	//cs.backCol=BACK_BLACK;
-mainApp->windowColours.foreCol=FORE_WHITE;
-mainApp->windowColours.backCol=FORE_BLACK;
-mainApp->windowColours.useFancy=false;
-
-	//mainApp->CTK_setColours(&cs,true);
+	mainApp->windowColours.foreCol=FORE_WHITE;
+	mainApp->windowColours.backCol=FORE_BLACK;
+	mainApp->windowColours.useFancy=false;
 
 	if(argc==1)
 		{
