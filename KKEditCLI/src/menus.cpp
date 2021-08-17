@@ -29,7 +29,7 @@ const char	*tabMenuNames[]= {" Next Tab"," Prev Tab",NULL};
 const char	*navMenuNames[]= {" Goto _Define"," _Open Include"," Goto L_ine"," Open _Manpage"," _Find"," Find A_gain",NULL};
 const char	*bookmarkMenuNames[]= {" _Remove All Marks"," _Toggle BM",NULL};
 const char	*helpMenuNames[]= {" _Help"," A_bout",NULL};
-const char	*syntaxMenuNames[]= {" None "," Shell "," C "," Javascript "," PHP "," Perl ",NULL};
+const char	*syntaxMenuNames[]= {" None "," Shell "," C,C++ "," Javascript "," PHP "," Perl ",NULL};
 
 shortcutStruct	scKeys[]={{FILEMENU,QUITITEM,'q'},{FILEMENU,NEWITEM,'n'},{FILEMENU,SAVEITEM,'s'},{FILEMENU,SAVEASITEM,'a'},{FILEMENU,CLOSEITEM,'w'},{FILEMENU,SHELLITEM,'h'},{FILEMENU,OPENITEM,'o'},{EDITMENU,COPYWORD,'c'},{EDITMENU,CUTWORD,'x'},{EDITMENU,PASTE,'v'},
 {NAVMENU,NAVGOTODFINE,'d'},
@@ -104,6 +104,7 @@ void rebuildBMMenu(void)
 						}
 				}
 		}
+//	fflush(NULL);
 }
 
 void rebuildTabMenu(void)
@@ -650,11 +651,13 @@ void handleBMMenu(CTK_cursesMenuClass *mc)
 							}
 					}
 				rebuildBMMenu();
+				box->CTK_drawGadget();
 				break;
 
-			case TOGGLEMARK://TODO//refresh from shortcut key
+			case TOGGLEMARK:
 				box->CTK_toggleBookMark(box->CTK_getCursLine());
 				rebuildBMMenu();
+				box->CTK_drawGadget();
 				break;
 			default:
 				mainApp->CTK_setPage(bms[mc->menuItemNumber-2].pageNum);

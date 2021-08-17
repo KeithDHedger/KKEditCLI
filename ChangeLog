@@ -1,4 +1,5 @@
 0.2.3
+Fixed updating bookmark while editing.
 Fixed file name colour.
 Added syntax higlighting to menubar.
 Force use internal syntax hilighter ( may change ).
