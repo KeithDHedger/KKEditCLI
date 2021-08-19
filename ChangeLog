@@ -1,4 +1,9 @@
 0.2.3
+Code clean.
+Fixed going to wrong line when switching tabs.
+Fixed jumping to function in different file in same folder.
+Fixed segfault on trying to find non-exestant function.
+Removed manpage colour formatting.
 Fixed updating bookmark while editing.
 Fixed file name colour.
 Added syntax higlighting to menubar.

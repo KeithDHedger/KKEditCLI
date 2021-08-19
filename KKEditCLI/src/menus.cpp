@@ -47,6 +47,37 @@ int			foundY=0;
 std::string	findString="";
 std::string	lowerneedle="";
 
+CTK_cursesEditBoxClass *getCurrentBox(void)
+{
+	CTK_cursesGadgetClass	*box=NULL;
+
+	box=mainApp->CTK_getGadgetNum(mainApp->pageNumber,SRCGADGET,1);
+	if(box!=NULL)
+		return(static_cast<CTK_cursesEditBoxClass*>(box));
+	box=mainApp->CTK_getGadgetNum(mainApp->pageNumber,EDITGADGET,1);
+	if(box!=NULL)
+		return(static_cast<CTK_cursesEditBoxClass*>(box));
+
+	return(NULL);
+}
+
+void setReadOnlyPage(CTK_cursesEditBoxClass *box,std::string pagename)
+{
+	box->CTK_setShowLineNumbers(false);
+	box->CTK_setEditable(false);
+	box->gadgetColours.useFancy=false;
+	box->gadgetColours.foreCol=FORE_WHITE;
+	box->gadgetColours.backCol=BACK_BLACK;	
+	box->gadgetColours.gadgetCustom2BackCol=BACK_GREEN;
+	box->gadgetColours.gadgetCustom2ForeCol=FORE_BLACK;		
+	box->isDirty=true;
+	mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(pagename.c_str()));
+	setInfoLabel();
+	mainApp->CTK_clearScreen();
+	mainApp->CTK_updateScreen(mainApp,NULL);
+	fflush(NULL);
+}
+
 void rebuildBMMenu(void)
 {
 	int		cnt=0;
@@ -104,7 +135,6 @@ void rebuildBMMenu(void)
 						}
 				}
 		}
-//	fflush(NULL);
 }
 
 void rebuildTabMenu(void)
@@ -130,17 +160,9 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 {
 	CTK_cursesEditBoxClass	*box=NULL;
 	char					buffer[PATH_MAX]={0,};
-	CTK_cursesGadgetClass	*srcbox;
-	CTK_cursesGadgetClass	*edbox;
 	CTK_cursesSourceEditBoxClass	*sourcebox;
 
-	srcbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,SRCGADGET,1);
-	edbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,EDITGADGET,1);
-	if(srcbox!=NULL)
-		box=static_cast<CTK_cursesEditBoxClass*>(srcbox);//static_cast<CTK_cursesEditBoxClass*>(app->pages[app->pageNumber].srcEditBoxes[0]);
-	else if(edbox!=NULL)
-		box=static_cast<CTK_cursesEditBoxClass*>(edbox);
-
+	box=getCurrentBox();
 	if(box==NULL)
 		return;
 
@@ -207,7 +229,7 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 
 			case SAVEASITEM:
 				{
-					char				*buf;
+					char					*buf;
 					char					*buffer=(char*)alloca(PATH_MAX);
 					CTK_cursesUtilsClass	cu;
 					char					*holdstr=strdup((char*)mainApp->pages[mainApp->pageNumber].userData);
@@ -307,17 +329,9 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 
 void handleEditMenu(CTK_cursesMenuClass *mc)
 {
-	CTK_cursesGadgetClass	*srcbox;
-	CTK_cursesGadgetClass	*edbox;
 	CTK_cursesEditBoxClass	*box=NULL;
 
-	srcbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,SRCGADGET,1);
-	edbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,EDITGADGET,1);
-	if(srcbox!=NULL)
-		box=static_cast<CTK_cursesEditBoxClass*>(srcbox);
-	else if(edbox!=NULL)
-		box=static_cast<CTK_cursesEditBoxClass*>(edbox);
-
+	box=getCurrentBox();
 	if(box==NULL)
 		return;
 
@@ -358,23 +372,18 @@ void handleEditMenu(CTK_cursesMenuClass *mc)
 
 void handleNavMenu(CTK_cursesMenuClass *mc)
 {
-	std::string	tclip;
-	char		*basedir;
-	const char	*dirn;
-	char		*gdef=NULL;
-	int			line;
-	const char	*fpath;
-	CTK_cursesGadgetClass	*srcbox;
-	CTK_cursesGadgetClass	*edbox;
-	CTK_cursesEditBoxClass	*box=NULL;
+	std::string						tclip;
+	char							*basedir;
+	const char						*dirn;
+	char							*gdef=NULL;
+	int								line;
+	const char						*fpath;
+	CTK_cursesEditBoxClass			*box=NULL;
 	CTK_cursesSourceEditBoxClass	*sourcebox;
 
-	srcbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,SRCGADGET,1);
-	edbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,EDITGADGET,1);
-	if(srcbox!=NULL)
-		box=static_cast<CTK_cursesEditBoxClass*>(srcbox);
-	else if(edbox!=NULL)
-		box=static_cast<CTK_cursesEditBoxClass*>(edbox);
+	box=getCurrentBox();
+	if(box==NULL)
+		return;
 
 	switch(mc->menuItemNumber)
 		{
@@ -385,6 +394,8 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 						if(strcmp(tclip.c_str(),functions[j]->name)==0)
 							{
 								box->CTK_gotoLine(functions[j]->line);
+								mainApp->CTK_clearScreen();
+								mainApp->CTK_updateScreen(mainApp,NULL);
 								return;
 								break;
 							}
@@ -393,8 +404,7 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 					dirn=dirname(basedir);
 					gdef=oneLiner(false,"ctags -x %s/* 2>/dev/null|sort -k 2rb,2rb -k 1b,1b|sed 's@ \\+@ @g'|grep %s|awk '{print $3 \" \" $4}' 2>/dev/null",dirn,tclip.c_str());
 					free(basedir);
-					
-					if(strlen(gdef)>0)
+					if((gdef!=NULL) && (strlen(gdef)>0))
 						{
 							line=atoi(gdef);
 							fpath=strstr(gdef,"/");
@@ -403,21 +413,27 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 								{
 									if(strcmp((char*)mainApp->pages[j].userData,fpath)==0)
 										{
-											sourcebox=getSrcBox(mainApp->pageNumber);//TODO//
+											sourcebox=getSrcBox(mainApp->pageNumber);
 											sourcebox->CTK_setRunLoop(false);
 											mainApp->CTK_setPage(j);
+											sourcebox=getSrcBox(mainApp->pageNumber);
 											sourcebox->CTK_gotoLine(line);
+											mainApp->CTK_clearScreen();
+											rebuildTabMenu();
+											setInfoLabel();
 											mainApp->CTK_updateScreen(mainApp,NULL);
 											freeAndNull(&gdef);
 											return;
 										}
 								}
 							mainApp->CTK_addPage();
-							sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,fpath);
+							sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,fpath,true);
 							sourcebox->CTK_setShowLineNumbers(showLineNumbers);
 							sourcebox->gadgetColours.useFancy=false;
 							mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(fpath));
 							sourcebox->CTK_gotoLine(line);
+							mainApp->CTK_clearScreen();
+							mainApp->CTK_updateScreen(mainApp,NULL);
 							setInfoLabel();
 							rebuildTabMenu();
 							mainApp->CTK_updateScreen(mainApp,NULL);
@@ -446,7 +462,7 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 									{
 										if(strcmp((char*)mainApp->pages[j].userData,filepath)==0)
 											{
-												sourcebox=getSrcBox(mainApp->pageNumber);//TODO//
+												sourcebox=getSrcBox(mainApp->pageNumber);
 												sourcebox->CTK_setRunLoop(false);
 												mainApp->CTK_setPage(j);
 												mainApp->CTK_updateScreen(mainApp,NULL);
@@ -479,7 +495,7 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 												if(strlen(filepath)>1)
 													filepath[strlen(filepath)-1]=0;
 												mainApp->CTK_addPage();
-												sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,filepath);
+												sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,filepath,true);
 												sourcebox->CTK_setShowLineNumbers(showLineNumbers);
 												sourcebox->gadgetColours.useFancy=false;
 												mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(filepath));
@@ -508,7 +524,7 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 				}
 				break;
 
-			case NAVOPENMANPAGE:
+			case NAVOPENMANPAGE://TODO//add manpage to syntax hiliter
 				{
 					char	*command;
 					FILE	*fp;
@@ -525,20 +541,16 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 									if(strlen(filepath)>1)
 										filepath[strlen(filepath)-1]=0;
 									mainApp->CTK_addPage();
-									asprintf(&command,"MAN_KEEP_FORMATTING=1 MANWIDTH=%i man %s|sed 's/" UNDERLINEON BOLDOFF "/" UNDERLINE "/g;s/" UNDERLINEON "/" UNDERLINE "/g;s/" UNDERLINEOFF "/" DEFFORECOL "/g;s/" BOLDON "/" BOLD "/g;s/" BOLDOFF "/" DEFFORECOL "/g' > %s",windowCols-2,filepath,manFile);
+								//	asprintf(&command,"MAN_KEEP_FORMATTING=1 MANWIDTH=%i man %s|sed 's/" UNDERLINEON BOLDOFF "/" UNDERLINE "/g;s/" UNDERLINEON "/" UNDERLINE "/g;s/" UNDERLINEOFF "/" DEFFORECOL "/g;s/" BOLDON "/" BOLD "/g;s/" BOLDOFF "/" DEFFORECOL "/g' > %s",windowCols-2,filepath,manFile);
+									//asprintf(&command,"MAN_KEEP_FORMATTING=1 MANWIDTH=%i man %s|sed 's@\\x1b\\[[^m]*m@@g'|iconv -c -f utf-8 -t ascii > %s",windowCols-2,filepath,manFile);
+									asprintf(&command,"PAGER= MANWIDTH=%i man %s|iconv -c -f utf-8 -t ascii > %s",windowCols-2,filepath,manFile);
+									//asprintf(&command,"MAN_KEEP_FORMATTING=1 MANWIDTH=%i man %s|iconv -c -f utf-8 -t ascii > %s",windowCols-2,filepath,manFile);
 									system(command);
 									free(command);
-
 									box=mainApp->CTK_addNewEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,manFile);
-									box->CTK_setShowLineNumbers(false);
-									box->CTK_setEditable(false);
-									box->gadgetColours.useFancy=false;
-									mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(filepath));
-
-									setInfoLabel();
+									setReadOnlyPage(box,filepath);
+									box->CTK_setEditable(true);
 									rebuildTabMenu();
-									mainApp->CTK_clearScreen();
-									mainApp->CTK_updateScreen(mainApp,NULL);
 								}
 							pclose(fp);
 						}					
@@ -591,11 +603,14 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 
 void handleTabMenu(CTK_cursesMenuClass *mc)
 {
+	CTK_cursesSourceEditBoxClass	*sourcebox;
+
 	switch(mc->menuItemNumber)
 		{
 			case NEXTTAB:
 				mainApp->CTK_nextPage();
 				mainApp->CTK_updateScreen(mainApp,NULL);
+				
 				break;
 
 			case PREVTAB:
@@ -621,29 +636,19 @@ void handlefuncMenu(CTK_cursesMenuClass *mc)
 
 void handleBMMenu(CTK_cursesMenuClass *mc)
 {
-	CTK_cursesGadgetClass	*srcbox;
-	CTK_cursesGadgetClass	*edbox;
-	CTK_cursesEditBoxClass	*box=NULL;
+	CTK_cursesEditBoxClass			*box=NULL;
 	CTK_cursesSourceEditBoxClass	*sourcebox;
 
-	srcbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,SRCGADGET,1);
-	edbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,EDITGADGET,1);
-	if(srcbox!=NULL)
-		box=static_cast<CTK_cursesEditBoxClass*>(srcbox);
-	else if(edbox!=NULL)
-		box=static_cast<CTK_cursesEditBoxClass*>(edbox);
+	box=getCurrentBox();
+	if(box==NULL)
+		return;
 
 	switch(mc->menuItemNumber)
 		{
 			case REMOVEMARKS:
 				for(unsigned j=0;j<mainApp->pages.size();j++)
 					{
-						srcbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,SRCGADGET,1);
-						edbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,EDITGADGET,1);
-						if(srcbox!=NULL)
-							box=static_cast<CTK_cursesEditBoxClass*>(srcbox);
-						else if(edbox!=NULL)
-							box=static_cast<CTK_cursesEditBoxClass*>(edbox);
+						box=getCurrentBox();
 						if(box!=NULL)
 							{
 								for(int k=0;k<box->CTK_getLineCnt();k++)
@@ -661,6 +666,9 @@ void handleBMMenu(CTK_cursesMenuClass *mc)
 				break;
 			default:
 				mainApp->CTK_setPage(bms[mc->menuItemNumber-2].pageNum);
+				box=getCurrentBox();
+				if(box==NULL)
+					return;
 				box->CTK_gotoLine(bms[mc->menuItemNumber-2].lineNum);
 				getTagList((const char*)mainApp->pages[mainApp->pageNumber].userData);
 				break;
@@ -688,17 +696,12 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 	char					line[1024];
 	char					commandpath[PATH_MAX];
 
-	CTK_cursesGadgetClass	*srcbox;
-	CTK_cursesGadgetClass	*edbox;
 	CTK_cursesEditBoxClass	*box=NULL;
 	CTK_cursesSourceEditBoxClass	*sourcebox;
 
-	srcbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,SRCGADGET,1);
-	edbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,EDITGADGET,1);
-	if(srcbox!=NULL)
-		box=static_cast<CTK_cursesEditBoxClass*>(srcbox);
-	else if(edbox!=NULL)
-		box=static_cast<CTK_cursesEditBoxClass*>(edbox);
+	box=getCurrentBox();
+	if(box==NULL)
+		return;
 
 	if(mc->menuItemNumber==0)
 		{
@@ -760,12 +763,7 @@ void handleToolsMenu(CTK_cursesMenuClass *mc)
 		{
 			mainApp->CTK_addPage();
 			box=mainApp->CTK_addNewEditBox(mainApp,1,TOPLINE,windowCols,windowRows,false,str.c_str());
-			box->CTK_setShowLineNumbers(false);
-			box->CTK_setEditable(false);
-			box->isDirty=true;
-			mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup("Tool Output"));
-
-			setInfoLabel();
+			setReadOnlyPage(box,"Tool Output");
 			rebuildTabMenu();
 		}
 }
@@ -778,34 +776,25 @@ void handleHelpMenu(CTK_cursesMenuClass *mc)
 			case HELP:
 				mainApp->CTK_addPage();				
 				box=mainApp->CTK_addNewEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,DATADIR "/help/help");
-				box->CTK_setShowLineNumbers(false);
-				box->gadgetColours.foreCol=FORE_WHITE;
-				box->gadgetColours.backCol=BACK_BLACK;
-				box->gadgetColours.useFancy=false;
-				mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(DATADIR "/help/help"));
-				setInfoLabel();
+				setReadOnlyPage(box,"Help");
 				rebuildTabMenu();
-				mainApp->CTK_clearScreen();
-				mainApp->CTK_updateScreen(mainApp,NULL);
 				break;
 			case ABOUT:
-			 	{
-					mainApp->utils->CTK_aboutDialog("KKEditCli","Cli Text Editor","Copyright ©2019 K.D.Hedger","keithdhedger@gmail.com","http://keithhedger.freeddns.org","K.D.Hedger",DATADIR "/help/LICENSE",80);
-				}
+				mainApp->utils->CTK_aboutDialog("KKEditCli","Cli Text Editor","Copyright ©2019 K.D.Hedger","keithdhedger@gmail.com","http://keithhedger.freeddns.org","K.D.Hedger",DATADIR "/help/LICENSE",80);
 				break;
 		}
 }
 
 void handleSyntaxMenu(CTK_cursesMenuClass *mc)
 {
-	CTK_cursesSourceEditBoxClass	*sourcebox;
-	CTK_cursesGadgetClass			*srcbox;
+	CTK_cursesSourceEditBoxClass	*sourcebox=NULL;
+	CTK_cursesGadgetClass			*srcbox=NULL;
 
 	srcbox=mainApp->CTK_getGadgetNum(mainApp->pageNumber,SRCGADGET,1);
+
 	if(srcbox!=NULL)
 		sourcebox=static_cast<CTK_cursesSourceEditBoxClass*>(srcbox);
-
-	if(sourcebox==NULL)
+	else
 		return;
 
 	switch(mc->menuItemNumber)

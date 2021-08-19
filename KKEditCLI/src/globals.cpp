@@ -106,8 +106,10 @@ char* oneLiner(bool noreturn,const char* fmt,...)
 						buffer[strlen(buffer)-1]=0;
 				}
 			pclose(fp);
-			if(noreturn==false)
+			if(noreturn==true)
 				return(NULL);
+			else
+				return(strdup(buffer));
 		}
 	return(NULL);
 }
@@ -115,7 +117,7 @@ char* oneLiner(bool noreturn,const char* fmt,...)
 //find src box
 CTK_cursesSourceEditBoxClass* getSrcBox(int page)
 {
-	CTK_cursesGadgetClass	*srcbox;
+	CTK_cursesGadgetClass	*srcbox=NULL;
 
 	srcbox=mainApp->CTK_getGadgetNum(page,SRCGADGET,1);
 	return(static_cast<CTK_cursesSourceEditBoxClass*>(srcbox));
