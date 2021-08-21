@@ -1,4 +1,7 @@
 0.2.3
+Fixed seg fault on closing last window.
+Fixed no screen refresh when opening/savin as/new file via kb shortcuts.
+Fixed ui artifacts when using find.
 Code clean.
 Fixed going to wrong line when switching tabs.
 Fixed jumping to function in different file in same folder.

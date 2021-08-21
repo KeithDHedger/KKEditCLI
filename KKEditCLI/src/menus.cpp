@@ -175,6 +175,7 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 					sprintf(buffer,"touch %s",uddata);
 					system(buffer);
 					box->CTK_setRunLoop(false);
+					mainApp->CTK_clearScreen();
 					mainApp->CTK_addPage();
 					sourcebox=mainApp->CTK_addNewSourceEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,uddata,true);
 					sourcebox->CTK_setShowLineNumbers(showLineNumbers);
@@ -183,6 +184,7 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 					setInfoLabel();
 					rebuildTabMenu();
 					mainApp->CTK_clearScreen();
+					mainApp->CTK_updateScreen(mainApp,NULL);
 				}
 			break;
 
@@ -204,6 +206,8 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 							mainApp->CTK_setPageUserData(mainApp->pageNumber,(void*)strdup(mainApp->utils->dialogReturnData.stringValue.c_str()));
 							setInfoLabel();
 							rebuildTabMenu();
+							mainApp->CTK_clearScreen();
+							mainApp->CTK_updateScreen(mainApp,NULL);
 						}
 					free(buffer);
 				}
@@ -254,6 +258,9 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 						}
 					free(buf);
 					free(holdstr);
+					mainApp->CTK_clearScreen();
+					mainApp->CTK_updateScreen(mainApp,NULL);
+					fflush(NULL);
 				}
 				break;
 
@@ -281,9 +288,16 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 				mainApp->CTK_removePage(mainApp->pageNumber);
 				mainApp->CTK_clearScreen();
 				if(mainApp->pageNumber==-1)
-					mainApp->runEventLoop=false;
+					{
+						mainApp->runEventLoop=false;
+						break;
+					}
 				else
 					rebuildTabMenu();
+
+				mainApp->CTK_clearScreen();
+				mainApp->CTK_updateScreen(mainApp,NULL);
+				fflush(NULL);
 				break;
 
 			case SHELLITEM:
@@ -330,7 +344,8 @@ void handleFileMenu(CTK_cursesMenuClass *mc)
 void handleEditMenu(CTK_cursesMenuClass *mc)
 {
 	CTK_cursesEditBoxClass	*box=NULL;
-
+	std::string				tstr;
+	
 	box=getCurrentBox();
 	if(box==NULL)
 		return;
@@ -338,17 +353,25 @@ void handleEditMenu(CTK_cursesMenuClass *mc)
 	switch(mc->menuItemNumber)
 		{
 			case COPYWORD:
-				if(box->isSelecting==true)
+				if(box->CTK_isValidSelection()==true)
 					{
 						clip=box->CTK_getSelection();
-						box->CTK_finishSelecting();
+						tstr="Copied: " + clip.substr(0,windowCols-10);
+						char *ptr=(char*)strchr(tstr.c_str(),'\n');
+						if(ptr!=NULL)
+							*ptr=0;
 					}
 				else
-					clip=box->CTK_getCurrentWord();
+					{
+						clip=box->CTK_getCurrentWord();
+						tstr="Copied: " + clip.substr(0,windowCols-10);
+					}
+				box->CTK_setStatusBar(tstr,true);
+				fflush(NULL);
 				break;
 
 			case CUTWORD:
-				if(box->isSelecting==true)
+				if(box->CTK_isValidSelection()==true)
 					{
 						clip=box->CTK_getSelection();
 						box->CTK_deleteSelection();
@@ -364,6 +387,7 @@ void handleEditMenu(CTK_cursesMenuClass *mc)
 
 			case PASTE:
 				box->CTK_insertText(clip.c_str());
+				//box->CTK_insertText("xxx");
 				box->isDirty=true;
 				box->CTK_getBuffer();
 				break;
@@ -380,6 +404,8 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 	const char						*fpath;
 	CTK_cursesEditBoxClass			*box=NULL;
 	CTK_cursesSourceEditBoxClass	*sourcebox;
+
+std::string xxx;
 
 	box=getCurrentBox();
 	if(box==NULL)
@@ -519,12 +545,13 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 							sourcebox=getSrcBox(mainApp->pageNumber);
 							sourcebox->CTK_gotoLine(atoi(mainApp->utils->dialogReturnData.stringValue.c_str()));
 							mainApp->menuBar->CTK_drawDefaultMenuBar();
+							fflush(NULL);
 							break;
 						}
 				}
 				break;
 
-			case NAVOPENMANPAGE://TODO//add manpage to syntax hiliter
+			case NAVOPENMANPAGE:
 				{
 					char	*command;
 					FILE	*fp;
@@ -541,10 +568,7 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 									if(strlen(filepath)>1)
 										filepath[strlen(filepath)-1]=0;
 									mainApp->CTK_addPage();
-								//	asprintf(&command,"MAN_KEEP_FORMATTING=1 MANWIDTH=%i man %s|sed 's/" UNDERLINEON BOLDOFF "/" UNDERLINE "/g;s/" UNDERLINEON "/" UNDERLINE "/g;s/" UNDERLINEOFF "/" DEFFORECOL "/g;s/" BOLDON "/" BOLD "/g;s/" BOLDOFF "/" DEFFORECOL "/g' > %s",windowCols-2,filepath,manFile);
-									//asprintf(&command,"MAN_KEEP_FORMATTING=1 MANWIDTH=%i man %s|sed 's@\\x1b\\[[^m]*m@@g'|iconv -c -f utf-8 -t ascii > %s",windowCols-2,filepath,manFile);
 									asprintf(&command,"PAGER= MANWIDTH=%i man %s|iconv -c -f utf-8 -t ascii > %s",windowCols-2,filepath,manFile);
-									//asprintf(&command,"MAN_KEEP_FORMATTING=1 MANWIDTH=%i man %s|iconv -c -f utf-8 -t ascii > %s",windowCols-2,filepath,manFile);
 									system(command);
 									free(command);
 									box=mainApp->CTK_addNewEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,manFile);
@@ -559,27 +583,29 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 
 			case NAVFIND:
 				{
-					CTK_cursesUtilsClass	cu;
-
 					foundX=-1;
 					foundY=0;
-					if(cu.CTK_entryDialog("Find Text",findString.c_str(),"Find ...","",1)==false)
+					if(mainApp->utils->CTK_entryDialog("Find Text",findString.c_str(),"Find ...","",1)==false)
 						return;
-
-					findString=cu.dialogReturnData.stringValue;
+					findString=mainApp->utils->dialogReturnData.stringValue;
 					lowerneedle=findString;
 					transform(lowerneedle.begin(),lowerneedle.end(),lowerneedle.begin(),::tolower );
 				}
 
 			case NAVFINDNEXT:
 				{
-					const std::vector<std::string>	str=box->CTK_getStrings();
+					const std::vector<std::string>	txtstr=box->CTK_getStrings();
 					std::string						lowerhaystack;
 					int								tfind=foundX;
+					std::string						statline;
 
-					for(int j=foundY;j<str.size();j++)
+					statline="Can't Find: " + findString + " ...";
+					box->CTK_setStatusBar(statline,true);
+					fflush(NULL);
+
+					for(int j=foundY;j<txtstr.size();j++)
 						{
-							lowerhaystack=str[j];
+							lowerhaystack=txtstr[j];
 							transform(lowerhaystack.begin(),lowerhaystack.end(),lowerhaystack.begin(),::tolower );
 							if(foundX==-1)
 								tfind=lowerhaystack.find(lowerneedle);
@@ -590,6 +616,9 @@ void handleNavMenu(CTK_cursesMenuClass *mc)
 									box->CTK_gotoXY(tfind,j);//TODO//highlight
 									foundX=tfind;
 									foundY=j;
+									statline=str(boost::format("Found: \"%s\" Here: Line %i Col %i") %findString %box->CTK_currentLineNumber() %foundX);
+									box->CTK_setStatusBar(statline,true);
+									fflush(NULL);
 									return;
 								}
 							foundX=-1;

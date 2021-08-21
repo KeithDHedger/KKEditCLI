@@ -55,4 +55,5 @@ void handleTabMenu(CTK_cursesMenuClass *mc);
 void handleHelpMenu(CTK_cursesMenuClass *mc);
 void handleSyntaxMenu(CTK_cursesMenuClass *mc);
 
+void test(void);
 #endif

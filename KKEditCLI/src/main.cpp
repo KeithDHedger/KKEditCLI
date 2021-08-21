@@ -57,11 +57,12 @@ void mainloopCBIn(void *mainc,void *data)
 			cnt++;
 		}
 
-	if(box->isSelecting==true)
+	if((box->isSelecting==true) || (box->CTK_isValidSelection()==true))
 		enable=true;
 
 //enable/disable menus
 //edit
+	enable=true;
 	app->menuBar->menuNames[EDITMENU]->menuItem[COPYWORD]->menuEnabled=enable;
 	app->menuBar->menuNames[EDITMENU]->menuItem[CUTWORD]->menuEnabled=enable;
 //nav
@@ -77,7 +78,7 @@ void mainloopCBOut(void *mainc,void *data)
 }
 
 int main(int argc, char **argv)
-{
+{    
 	char			tmpfoldertemplate[]="/dev/shm/KKEditCLI-XXXXXX";
 	char			*path=NULL;
 	CTK_cursesSourceEditBoxClass	*srcbox;
@@ -163,11 +164,13 @@ int main(int argc, char **argv)
 	free(commandarg);
 	free(commentarg);
 
+	printf("\e[0m");
 	delete mainApp;
 	SETSHOWCURS;
 	unlink(manFile);
 	rmdir(tmpEdDir);
 	free(manFile);
 	free(configFolder);
+	system("clear");
 	return 0;
 }
