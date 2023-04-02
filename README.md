@@ -9,7 +9,8 @@ Or you can use vim, see the man page on your system.
 
 See the INSTALL file for details about installing and dependencies.
 
-Bugs and suggestions welcome please email to keithdhedger@gmail.com
+Bugs and suggestions welcome please email to kdhedger68713@gmail.com
+
 For general info on compiling/installing software on your disro see the relevant forums.
 
 Quick start.
