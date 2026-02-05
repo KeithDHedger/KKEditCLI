@@ -9,9 +9,6 @@
 /* define if the Boost::Regex library is available */
 #undef HAVE_BOOST_REGEX
 
-/* define if the Boost::System library is available */
-#undef HAVE_BOOST_SYSTEM
-
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
@@ -60,7 +57,7 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* Define to 1 if all of the C90 standard headers exist (not just the ones
+/* Define to 1 if all of the C89 standard headers exist (not just the ones
    required in a freestanding environment). This macro is provided for
    backward compatibility; new code need not use it. */
 #undef STDC_HEADERS
