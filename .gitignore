@@ -21,3 +21,11 @@ localconfig
 devwrap
 debug.h
 ignorelibleaks
+configure
+m4
+aclocal.m4
+runtime-x86_64
+KKEditCLI.AppImage
+Makefile.in
+*~
+HOLD

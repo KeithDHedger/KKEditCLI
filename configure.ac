@@ -10,7 +10,7 @@ AM_INIT_AUTOMAKE
 AC_PROG_CC
 AC_HEADER_STDC
 
-AC_CONFIG_MACRO_DIR([./localm4s])
+#AC_CONFIG_MACRO_DIR([./localm4s])
 
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
@@ -42,9 +42,16 @@ if test $CTAGS = false; then
 	exit 0
 fi
 
-AX_BOOST_BASE([1.89],, [AC_MSG_ERROR([CursesToolKit needs Boost, but it was not found in your system])])
+#BOOST_MODULES="boost >= 1.91"
+#PKG_CHECK_MODULES(BOOST, $BOOST_MODULES)
+#AC_SUBST(BOOST_CFLAGS)
+#AC_SUBST(BOOST_LIBS)
+
+AX_BOOST_BASE([1.91.0],, [AC_MSG_ERROR([CursesToolKit needs Boost, but it was not found in your system])])
 AX_BOOST_FILESYSTEM
 AX_BOOST_REGEX
+
+#BOOST_REQUIRE
 
 AC_OUTPUT(Makefile KKEditCLI/app/Makefile)
 
