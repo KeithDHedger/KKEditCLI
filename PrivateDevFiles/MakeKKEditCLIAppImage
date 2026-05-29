@@ -93,4 +93,4 @@ chmod +x ${APPIMAGEFOLDER}/AppRun
 
 ARCH=x86_64 ~/.local/bin/appimagetool-x86_64.AppImage --runtime-file=./runtime-x86_64 ${APPIMAGEFOLDER} ${APPIMAGENAME}.AppImage
 
-#rm -rf "${WHERE}" "$ELFLOG" "$LIBS"
+rm -rf "${WHERE}" "$ELFLOG" "$LIBS"
