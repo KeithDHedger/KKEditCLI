@@ -93,6 +93,14 @@ int main(int argc, char **argv)
 	sinkReturn=asprintf(&configFolder,"%s/.KKEditCLI",getenv("HOME"));
 	oneLiner(false,"mkdir -p %s",configFolder);
 
+	if(getenv("APPDIR")!=NULL)
+		realDataDir=std::string(getenv("APPDIR"))+ "/" + DATADIR;
+	else
+		realDataDir=DATADIR;
+		
+	//puts(realDataDir.c_str());
+	//printf(">>%s<<\n",realDataDir.c_str());
+//exit(0);
 	setupMenus();
 	buildToolsList();
 

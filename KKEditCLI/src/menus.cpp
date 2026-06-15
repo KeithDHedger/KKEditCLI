@@ -804,12 +804,12 @@ void handleHelpMenu(CTK_cursesMenuClass *mc)
 		{
 			case HELP:
 				mainApp->CTK_addPage();				
-				box=mainApp->CTK_addNewEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,DATADIR "/help/help");
+				box=mainApp->CTK_addNewEditBox(mainApp,1,TOPLINE,windowCols,windowRows,true,std::string(realDataDir+"/help/help").c_str());
 				setReadOnlyPage(box,"Help");
 				rebuildTabMenu();
 				break;
 			case ABOUT:
-				mainApp->utils->CTK_aboutDialog("KKEditCli","Cli Text Editor","Copyright ©2019 K.D.Hedger","keithdhedger@gmail.com","http://keithhedger.freeddns.org","K.D.Hedger",DATADIR "/help/LICENSE",80);
+				mainApp->utils->CTK_aboutDialog("KKEditCli","Cli Text Editor","Copyright ©2019 K.D.Hedger","keithdhedger@gmail.com","http://keithhedger.freeddns.org","K.D.Hedger",std::string(realDataDir+"/help/LICENSE").c_str(),80);
 				break;
 		}
 }

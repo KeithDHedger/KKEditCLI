@@ -91,14 +91,14 @@ struct toolStruct
 	char				*filePath=NULL;
 	char				*command=NULL;
 	char				*comment;
-	int					flags=0;
+	int				flags=0;
 	bool				inTerminal;					
 	bool				inPopUp;
 	bool				alwaysPopup;
 	bool				clearView;
 	bool				global;
 	bool				runAsRoot;
-	int					keyCode;
+	int				keyCode;
 	bool				useBar;
 };
 
@@ -134,27 +134,29 @@ extern int						sinkReturn;
 extern char						*sinkReturnStr;
 
 //tools
-extern int					intermarg;
-extern int					flagsarg;
-extern int					inpopup;
-extern int					alwayspopup;
-extern int					clearview;
-extern char				*commandarg;
-extern char				*commentarg;
-extern char				*menuname;
-extern int					rootarg;
-extern int					keycode;
-extern int					usebar;
+extern int						intermarg;
+extern int						flagsarg;
+extern int						inpopup;
+extern int						alwayspopup;
+extern int						clearview;
+extern char						*commandarg;
+extern char						*commentarg;
+extern char						*menuname;
+extern int						rootarg;
+extern int						keycode;
+extern int						usebar;
 extern std::vector<toolStruct>	tools;
 
 //functions
 extern std::vector<funcStruct*>	functions;
+extern std::string				realDataDir;
 //bms
 extern std::vector<bookmarkStruct>	bms;
 
 char* oneLiner(bool noreturn,const char* fmt,...);
 //find src/edit box
-CTK_cursesSourceEditBoxClass*	getSrcBox(int page);
+CTK_cursesSourceEditBoxClass		*getSrcBox(int page);
 CTK_cursesEditBoxClass*			getEditBox(int page);
+
 
 #endif

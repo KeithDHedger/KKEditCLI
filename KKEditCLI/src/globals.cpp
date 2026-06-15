@@ -20,19 +20,19 @@
  
 #include "globals.h"
 
-CTK_mainAppClass		*mainApp=new CTK_mainAppClass;
+CTK_mainAppClass			*mainApp=new CTK_mainAppClass;
 int						windowRows=mainApp->maxRows-TOPLINE;
 int						windowCols=mainApp->maxCols;
 int						showLineNumbers=4;
 const char				*tmpEdDir;
-char					*manFile=NULL;
-char					*configFolder=NULL;
-CTK_cursesLabelClass	*fileInfoLabel=NULL;
+char						*manFile=NULL;
+char						*configFolder=NULL;
+CTK_cursesLabelClass		*fileInfoLabel=NULL;
 
 int						newCnt=0;
 std::string				clip="";
 int						sinkReturn;
-char					*sinkReturnStr;
+char						*sinkReturnStr;
 
 //tools
 int						intermarg=0;
@@ -40,13 +40,14 @@ int						flagsarg=0;
 int						inpopup=0;
 int						alwayspopup=0;
 int						clearview=0;
-char					*commandarg=NULL;
-char					*commentarg=NULL;
-char					*menuname=NULL;
+char						*commandarg=NULL;
+char						*commentarg=NULL;
+char						*menuname=NULL;
 int						rootarg=0;
 int						keycode=0;
 int						usebar=0;
 std::vector<toolStruct>	tools;
+std::string				realDataDir;
 
 //functions
 std::vector<funcStruct*>	functions;

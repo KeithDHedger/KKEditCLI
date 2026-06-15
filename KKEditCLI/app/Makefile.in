@@ -323,8 +323,6 @@ AUTOMAKE_OPTIONS = subdir-objects
 AM_CPPFLAGS = -I$(top_srcdir) \
 			-DPREFIX=\""${prefix}\"" \
 			-DDATADIR=\""${pkgdatadir}"\" \
-			-DSYSCONFDIR=\""${sysconfdir}/${PACKAGE}"\" \
-			-DLIBDIR=\""${libdir}/${PACKAGE}"\" \
 			$(CURSESTOOLKIT_CFLAGS) \
 			$(BOOST_CPPFLAGS)
 
